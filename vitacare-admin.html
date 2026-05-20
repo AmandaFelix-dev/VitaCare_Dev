@@ -577,18 +577,18 @@
   (function authGuard() {
     try {
       const raw = localStorage.getItem('vitacare_session');
-      if (!raw) { window.location.replace('vitacare-login.html'); return; }
+      if (!raw) { window.location.replace('index.html'); return; }
       const session = JSON.parse(raw);
       if (!session || session.perfil !== 'administrador') {
-        window.location.replace('vitacare-login.html'); return;
+        window.location.replace('index.html'); return;
       }
       // Sessão expira em 8 horas
       if (Date.now() - session.loginAt > 8 * 60 * 60 * 1000) {
         localStorage.removeItem('vitacare_session');
-        window.location.replace('vitacare-login.html'); return;
+        window.location.replace('index.html'); return;
       }
     } catch(e) {
-      window.location.replace('vitacare-login.html');
+      window.location.replace('index.html');
     }
   })();
 
@@ -812,7 +812,7 @@
   function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); document.body.style.overflow = ''; }
   document.getElementById('btnLogout').addEventListener('click', () => {
     localStorage.removeItem('vitacare_session');
-    window.location.href = 'vitacare-login.html';
+    window.location.href = 'index.html';
   });
 </script>
 </body>

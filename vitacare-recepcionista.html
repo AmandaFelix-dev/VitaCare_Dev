@@ -1387,17 +1387,17 @@
   (function authGuard() {
     try {
       const raw = localStorage.getItem('vitacare_session');
-      if (!raw) { window.location.replace('vitacare-login.html'); return; }
+      if (!raw) { window.location.replace('index.html'); return; }
       const session = JSON.parse(raw);
       if (!session || session.perfil !== 'recepcionista') {
-        window.location.replace('vitacare-login.html'); return;
+        window.location.replace('index.html'); return;
       }
       if (Date.now() - session.loginAt > 8 * 60 * 60 * 1000) {
         localStorage.removeItem('vitacare_session');
-        window.location.replace('vitacare-login.html'); return;
+        window.location.replace('index.html'); return;
       }
     } catch(e) {
-      window.location.replace('vitacare-login.html');
+      window.location.replace('index.html');
     }
   })();
 
@@ -1484,7 +1484,7 @@
 
   document.getElementById('btnLogout').addEventListener('click', () => {
     localStorage.removeItem('vitacare_session');
-    window.location.href = 'vitacare-login.html';
+    window.location.href = 'index.html';
   });
 
   /* ══════════════════════════════════════════
