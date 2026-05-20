@@ -1,0 +1,3886 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VitaCare — Sistema Médico</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    /* ══ SISTEMA DE PÁGINAS ══════════════════════════════════ */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ══ AGENDA STYLES ═══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:         #0A2540;
+      --navy-mid:     #0E3460;
+      --navy-light:   #164080;
+      --cyan:         #00B4D8;
+      --cyan-light:   #48CAE4;
+      --cyan-glow:    rgba(0,180,216,0.18);
+      --white:        #FFFFFF;
+      --surface:      #F8FAFC;
+      --surface-2:    #EEF4FB;
+      --border:       #D6E4F0;
+      --text-main:    #0A2540;
+      --text-sub:     #4A6785;
+      --text-muted:   #8BA7C2;
+      --error:        #E63946;
+      --error-bg:     #FFF0F1;
+      --success:      #2DB86F;
+      --success-bg:   #EDFBF4;
+      --warn:         #F4A261;
+      --warn-bg:      #FFF8F0;
+      --warn-border:  #FFE0C0;
+
+      /* Status Colors */
+      --status-agendado:    #3B82F6;
+      --status-agendado-bg: #EFF6FF;
+      --status-agendado-bd: #BFDBFE;
+      --status-presente:    #F59E0B;
+      --status-presente-bg: #FFFBEB;
+      --status-presente-bd: #FDE68A;
+      --status-andamento:   #8B5CF6;
+      --status-andamento-bg:#F5F3FF;
+      --status-andamento-bd:#DDD6FE;
+      --status-concluido:   #2DB86F;
+      --status-concluido-bg:#EDFBF4;
+      --status-concluido-bd:#A7F3D0;
+      --status-cancelado:   #E63946;
+      --status-cancelado-bg:#FFF0F1;
+      --status-cancelado-bd:#FFCCD0;
+
+      --sidebar-w:    280px;
+      --header-h:     64px;
+      --transition:   0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--text-main); overflow-x: hidden; }
+
+    /* ── HEADER ──────────────────────────────────────────────── */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: var(--navy);
+      display: flex; align-items: center;
+      padding: 0 24px; gap: 16px;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    }
+
+    .btn-hamburger {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+      transition: background var(--transition);
+    }
+    .btn-hamburger:hover { background: rgba(255,255,255,0.13); }
+    .btn-hamburger svg { width: 18px; height: 18px; color: rgba(255,255,255,0.8); }
+
+    .header-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .header-logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--cyan), var(--cyan-light));
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,180,216,0.3);
+      flex-shrink: 0;
+    }
+    .header-logo-icon svg { width: 20px; height: 20px; }
+    .header-logo-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--white); letter-spacing: -0.2px;
+    }
+    .header-logo-name span { color: var(--cyan); }
+
+    .header-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.1); margin: 0 4px; }
+    .header-page-title {
+      font-size: 0.82rem; font-weight: 500;
+      color: rgba(255,255,255,0.45); letter-spacing: 0.2px;
+    }
+
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .header-user { display: flex; align-items: center; gap: 10px; }
+    .header-avatar {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+      border: 2px solid rgba(0,180,216,0.35);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--cyan); flex-shrink: 0;
+    }
+    .header-user-info { display: flex; flex-direction: column; }
+    .header-user-name { font-size: 0.82rem; font-weight: 600; color: var(--white); line-height: 1.2; }
+    .header-user-badge {
+      font-size: 0.68rem; font-weight: 600;
+      color: var(--cyan); letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .btn-logout {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.6);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem; font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-logout:hover { background: rgba(230,57,70,0.15); border-color: rgba(230,57,70,0.3); color: #E63946; }
+    .btn-logout svg { width: 15px; height: 15px; }
+
+    /* ── SIDEBAR OVERLAY ─────────────────────────────────────── */
+    .sidebar-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,37,64,0.65);
+      backdrop-filter: blur(3px);
+      z-index: 200;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active { opacity: 1; pointer-events: all; }
+
+    /* ── SIDEBAR ─────────────────────────────────────────────── */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--navy);
+      z-index: 300;
+      display: flex; flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 4px 0 32px rgba(0,0,0,0.35);
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    .sidebar-header {
+      height: var(--header-h);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0;
+    }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; }
+    .sidebar-logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--cyan), var(--cyan-light));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sidebar-logo-icon svg { width: 18px; height: 18px; }
+    .sidebar-logo-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.05rem; font-weight: 700; color: var(--white);
+    }
+    .sidebar-logo-name span { color: var(--cyan); }
+
+    .btn-sidebar-close {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .btn-sidebar-close:hover { background: rgba(255,255,255,0.13); }
+    .btn-sidebar-close svg { width: 16px; height: 16px; color: rgba(255,255,255,0.6); }
+
+    .sidebar-section-label {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      padding: 24px 20px 8px;
+    }
+
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 4px 12px; }
+    .sidebar-nav::-webkit-scrollbar { width: 4px; }
+    .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background var(--transition);
+      margin-bottom: 2px;
+      text-decoration: none;
+      position: relative;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.07); }
+    .nav-item.active { background: rgba(0,180,216,0.12); }
+    .nav-item.active::before {
+      content: '';
+      position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 3px; height: 20px;
+      background: var(--cyan);
+      border-radius: 0 3px 3px 0;
+    }
+    .nav-item-icon {
+      width: 34px; height: 34px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+    }
+    .nav-item.active .nav-item-icon { background: rgba(0,180,216,0.18); }
+    .nav-item-icon svg { width: 17px; height: 17px; color: rgba(255,255,255,0.5); }
+    .nav-item.active .nav-item-icon svg { color: var(--cyan); }
+    .nav-item-text { flex: 1; }
+    .nav-item-label {
+      font-size: 0.85rem; font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      display: block; line-height: 1.2;
+    }
+    .nav-item.active .nav-item-label { color: var(--white); font-weight: 600; }
+    .nav-item-sub { font-size: 0.7rem; color: rgba(255,255,255,0.3); display: block; }
+
+    .badge-soon {
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      background: rgba(244,162,97,0.15);
+      color: var(--warn);
+      border: 1px solid rgba(244,162,97,0.25);
+      padding: 2px 7px; border-radius: 20px; flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+    }
+    .sidebar-avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+      border: 2px solid rgba(0,180,216,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--cyan); flex-shrink: 0;
+    }
+    .sidebar-user-name { font-size: 0.82rem; font-weight: 600; color: var(--white); }
+    .sidebar-user-role { font-size: 0.7rem; color: var(--cyan); font-weight: 500; }
+
+    /* ── MAIN ────────────────────────────────────────────────── */
+    .main {
+      margin-top: var(--header-h);
+      min-height: calc(100vh - var(--header-h));
+      padding: 32px 40px;
+      max-width: 1100px;
+      margin-left: auto; margin-right: auto;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 24px;
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+    .breadcrumb svg { width: 13px; height: 13px; }
+    .breadcrumb span { font-weight: 500; }
+    .breadcrumb .current { color: var(--text-sub); font-weight: 600; }
+
+    /* ── PAGE HEADER ─────────────────────────────────────────── */
+    .page-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 24px; gap: 16px;
+    }
+    .page-header-left {}
+    .page-eyebrow {
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 6px;
+    }
+    .page-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.55rem; font-weight: 700;
+      color: var(--text-main); letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+    .page-desc { font-size: 0.85rem; color: var(--text-sub); }
+
+    /* ── DATE NAVIGATOR ──────────────────────────────────────── */
+    .date-nav {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 6px 8px;
+      box-shadow: 0 2px 8px rgba(10,37,64,0.06);
+      flex-shrink: 0;
+    }
+    .date-nav-btn {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      color: var(--text-sub);
+    }
+    .date-nav-btn:hover { background: var(--surface-2); border-color: var(--cyan); color: var(--cyan); }
+    .date-nav-btn svg { width: 16px; height: 16px; }
+    .date-nav-info { text-align: center; padding: 0 12px; }
+    .date-nav-day {
+      font-family: 'Sora', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--text-main); line-height: 1.2;
+    }
+    .date-nav-weekday { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+    .date-nav-today {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.8px; text-transform: uppercase;
+      color: var(--cyan);
+      background: var(--cyan-glow);
+      border: 1px solid rgba(0,180,216,0.2);
+      border-radius: 20px;
+      padding: 2px 8px;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .date-nav-today:hover { background: rgba(0,180,216,0.25); }
+
+    /* ── KPI CARDS ───────────────────────────────────────────── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 2px 8px rgba(10,37,64,0.05);
+      animation: fadeSlideUp 0.4s ease both;
+    }
+    .kpi-card:nth-child(1) { animation-delay: 0.05s; }
+    .kpi-card:nth-child(2) { animation-delay: 0.10s; }
+    .kpi-card:nth-child(3) { animation-delay: 0.15s; }
+    .kpi-card:nth-child(4) { animation-delay: 0.20s; }
+
+    .kpi-icon {
+      width: 42px; height: 42px;
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .kpi-icon svg { width: 20px; height: 20px; }
+    .kpi-icon.total    { background: var(--surface-2); }
+    .kpi-icon.total svg    { color: var(--cyan); }
+    .kpi-icon.concluido { background: var(--status-concluido-bg); }
+    .kpi-icon.concluido svg { color: var(--status-concluido); }
+    .kpi-icon.pendente  { background: var(--status-presente-bg); }
+    .kpi-icon.pendente svg  { color: var(--status-presente); }
+    .kpi-icon.cancelado { background: var(--status-cancelado-bg); }
+    .kpi-icon.cancelado svg { color: var(--status-cancelado); }
+
+    .kpi-info {}
+    .kpi-value {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.55rem; font-weight: 700;
+      color: var(--text-main); line-height: 1;
+      margin-bottom: 3px;
+    }
+    .kpi-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
+
+    /* ── AGENDA CONTAINER ────────────────────────────────────── */
+    .agenda-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(10,37,64,0.07);
+      overflow: hidden;
+      animation: fadeSlideUp 0.4s ease 0.25s both;
+    }
+
+    .agenda-card-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      gap: 16px;
+    }
+    .agenda-card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--text-main);
+    }
+    .agenda-card-subtitle { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* Filtros de status */
+    .status-filters {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .status-filter-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem; font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: 1px solid transparent;
+      background: var(--surface-2);
+      color: var(--text-sub);
+      border-color: var(--border);
+    }
+    .status-filter-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .status-filter-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .status-filter-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+    /* ── TIMELINE ────────────────────────────────────────────── */
+    .timeline {
+      padding: 0;
+    }
+
+    .timeline-slot {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      min-height: 72px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      transition: background var(--transition);
+    }
+    .timeline-slot:last-child { border-bottom: none; }
+    .timeline-slot.now { background: rgba(0,180,216,0.025); }
+
+    .timeline-time {
+      display: flex; align-items: flex-start;
+      justify-content: flex-end;
+      padding: 16px 16px 0 0;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .timeline-slot.now .timeline-time { color: var(--cyan); }
+
+    /* Linha "agora" */
+    .now-indicator {
+      position: absolute;
+      right: -1px; top: 22px;
+      width: 8px; height: 8px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(0,180,216,0.25);
+    }
+
+    .timeline-content {
+      padding: 10px 20px 10px 16px;
+      display: flex; align-items: center;
+    }
+
+    /* Slot disponível */
+    .slot-available {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.78rem; font-weight: 500;
+    }
+    .slot-available-line {
+      flex: 1;
+      height: 1px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--border) 0px,
+        var(--border) 6px,
+        transparent 6px,
+        transparent 12px
+      );
+    }
+
+    /* Card de consulta */
+    .consult-card {
+      display: flex; align-items: center; gap: 14px;
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border-left: 4px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+    }
+    .consult-card:hover { transform: translateX(2px); box-shadow: 0 4px 16px rgba(10,37,64,0.1); }
+
+    .consult-card.agendado {
+      background: var(--status-agendado-bg);
+      border-left-color: var(--status-agendado);
+    }
+    .consult-card.presente {
+      background: var(--status-presente-bg);
+      border-left-color: var(--status-presente);
+    }
+    .consult-card.andamento {
+      background: var(--status-andamento-bg);
+      border-left-color: var(--status-andamento);
+    }
+    .consult-card.concluido {
+      background: var(--status-concluido-bg);
+      border-left-color: var(--status-concluido);
+      opacity: 0.75;
+    }
+    .consult-card.cancelado {
+      background: var(--status-cancelado-bg);
+      border-left-color: var(--status-cancelado);
+      opacity: 0.6;
+    }
+
+    /* Pulsação no card em andamento */
+    .consult-card.andamento .consult-avatar {
+      animation: pulse-ring 2s ease infinite;
+    }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(139,92,246,0.4); }
+      70%  { box-shadow: 0 0 0 8px rgba(139,92,246,0); }
+      100% { box-shadow: 0 0 0 0 rgba(139,92,246,0); }
+    }
+
+    .consult-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.82rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .agendado  .consult-avatar { background: rgba(59,130,246,0.15); color: var(--status-agendado); }
+    .presente  .consult-avatar { background: rgba(245,158,11,0.15); color: var(--status-presente); }
+    .andamento .consult-avatar { background: rgba(139,92,246,0.15); color: var(--status-andamento); }
+    .concluido .consult-avatar { background: rgba(45,184,111,0.15); color: var(--status-concluido); }
+    .cancelado .consult-avatar { background: rgba(230,57,70,0.12); color: var(--status-cancelado); }
+
+    .consult-info { flex: 1; min-width: 0; }
+    .consult-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 0.9rem; font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cancelado .consult-name { text-decoration: line-through; opacity: 0.7; }
+    .consult-meta {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap;
+    }
+    .consult-type {
+      font-size: 0.72rem; font-weight: 600;
+      color: var(--text-sub);
+    }
+    .consult-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); }
+    .consult-duration { font-size: 0.72rem; color: var(--text-muted); }
+
+    .consult-badges { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .badge-tipo {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .badge-tipo.primeira   { background: rgba(59,130,246,0.1); color: var(--status-agendado); border: 1px solid var(--status-agendado-bd); }
+    .badge-tipo.retorno    { background: rgba(45,184,111,0.1); color: var(--status-concluido); border: 1px solid var(--status-concluido-bd); }
+    .badge-tipo.urgencia   { background: rgba(230,57,70,0.1); color: var(--status-cancelado); border: 1px solid var(--status-cancelado-bd); }
+    .badge-tipo.exame      { background: rgba(139,92,246,0.1); color: var(--status-andamento); border: 1px solid var(--status-andamento-bd); }
+
+    .badge-status {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.3px; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .badge-status.agendado  { background: var(--status-agendado-bg); color: var(--status-agendado); border: 1px solid var(--status-agendado-bd); }
+    .badge-status.presente  { background: var(--status-presente-bg); color: var(--status-presente); border: 1px solid var(--status-presente-bd); }
+    .badge-status.andamento { background: var(--status-andamento-bg); color: var(--status-andamento); border: 1px solid var(--status-andamento-bd); }
+    .badge-status.concluido { background: var(--status-concluido-bg); color: var(--status-concluido); border: 1px solid var(--status-concluido-bd); }
+    .badge-status.cancelado { background: var(--status-cancelado-bg); color: var(--status-cancelado); border: 1px solid var(--status-cancelado-bd); }
+
+    .consult-action {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.06);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all var(--transition);
+      color: var(--text-muted);
+    }
+    .consult-card:hover .consult-action { background: var(--navy); border-color: var(--navy); color: var(--white); }
+    .consult-action svg { width: 15px; height: 15px; }
+
+    /* Intervalo de almoço */
+    .timeline-break {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 8px,
+        rgba(10,37,64,0.015) 8px,
+        rgba(10,37,64,0.015) 16px
+      );
+      border-bottom: 1px solid var(--border);
+    }
+    .timeline-break .timeline-time {
+      padding: 12px 16px 12px 0;
+      align-items: center;
+    }
+    .timeline-break .timeline-content {
+      padding: 12px 20px;
+    }
+    .break-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--text-muted);
+    }
+    .break-label svg { width: 14px; height: 14px; }
+
+    /* ── MODAL ───────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,37,64,0.55);
+      backdrop-filter: blur(4px);
+      z-index: 400;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 24px;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 20px;
+      width: 100%; max-width: 520px;
+      box-shadow: 0 24px 80px rgba(10,37,64,0.25);
+      overflow: hidden;
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .modal-overlay.active .modal { transform: translateY(0) scale(1); }
+
+    .modal-header {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 16px;
+    }
+    .modal-header-left { display: flex; align-items: center; gap: 14px; }
+    .modal-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      background: var(--surface-2);
+      color: var(--navy-mid);
+      flex-shrink: 0;
+    }
+    .modal-patient-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--text-main); margin-bottom: 4px;
+    }
+    .modal-patient-meta { font-size: 0.78rem; color: var(--text-muted); }
+
+    .btn-modal-close {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+      transition: all var(--transition);
+      color: var(--text-muted);
+    }
+    .btn-modal-close:hover { background: var(--error-bg); border-color: var(--error); color: var(--error); }
+    .btn-modal-close svg { width: 16px; height: 16px; }
+
+    .modal-body { padding: 22px 24px; }
+
+    .modal-info-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; margin-bottom: 20px;
+    }
+    .modal-info-item {}
+    .modal-info-label {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .modal-info-value {
+      font-size: 0.88rem; font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .modal-alert {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 14px;
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.78rem; color: var(--warn);
+      font-weight: 500;
+    }
+    .modal-alert svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex; gap: 10px; justify-content: flex-end;
+    }
+    .btn-secondary {
+      padding: 9px 18px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-sub);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.83rem; font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-secondary:hover { border-color: var(--text-sub); }
+    .btn-primary {
+      display: flex; align-items: center; gap: 7px;
+      padding: 9px 18px;
+      border-radius: 9px;
+      border: none;
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.83rem; font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-primary:hover { background: var(--navy-mid); }
+    .btn-primary svg { width: 15px; height: 15px; }
+
+    /* ── LEGENDA ─────────────────────────────────────────────── */
+    .legend-row {
+      display: flex; align-items: center; gap: 16px;
+      padding: 12px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; font-weight: 500;
+      color: var(--text-muted);
+    }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── ANIMATIONS ──────────────────────────────────────────── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .main { padding: 20px 16px; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .consult-badges { display: none; }
+      .header-user-info { display: none; }
+      .page-header { flex-direction: column; }
+      .modal-info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <style id="prontuario-styles" disabled>
+    /* ══ PRONTUÁRIO STYLES ═══════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:            #0A2540;
+      --navy-mid:        #0E3460;
+      --navy-light:      #164080;
+      --cyan:            #00B4D8;
+      --cyan-light:      #48CAE4;
+      --cyan-glow:       rgba(0,180,216,0.18);
+      --white:           #FFFFFF;
+      --surface:         #F8FAFC;
+      --surface-2:       #EEF4FB;
+      --border:          #D6E4F0;
+      --text-main:       #0A2540;
+      --text-sub:        #4A6785;
+      --text-muted:      #8BA7C2;
+      --error:           #E63946;
+      --error-bg:        #FFF0F1;
+      --error-border:    #FFCCD0;
+      --success:         #2DB86F;
+      --success-bg:      #EDFBF4;
+      --success-border:  rgba(45,184,111,0.25);
+      --warn:            #F4A261;
+      --warn-bg:         #FFF8F0;
+      --warn-border:     #FFE0C0;
+      --sidebar-w:       280px;
+      --header-h:        64px;
+      --transition:      0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--text-main); overflow-x: hidden; }
+
+    /* ── HEADER ─────────────────────────────────────────────── */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: var(--navy);
+      display: flex; align-items: center;
+      padding: 0 24px; gap: 16px;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    }
+    .btn-hamburger {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+      transition: background var(--transition);
+    }
+    .btn-hamburger:hover { background: rgba(255,255,255,0.13); }
+    .btn-hamburger svg { width: 18px; height: 18px; color: rgba(255,255,255,0.8); }
+    .header-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .header-logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--cyan), var(--cyan-light));
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(0,180,216,0.3); flex-shrink: 0;
+    }
+    .header-logo-icon svg { width: 20px; height: 20px; }
+    .header-logo-name { font-family: 'Sora', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); letter-spacing: -0.2px; }
+    .header-logo-name span { color: var(--cyan); }
+    .header-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.1); margin: 0 4px; }
+    .header-page-title { font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.45); letter-spacing: 0.2px; }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .header-user { display: flex; align-items: center; gap: 10px; }
+    .header-avatar {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+      border: 2px solid rgba(0,180,216,0.35); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-size: 0.75rem; font-weight: 700; color: var(--cyan); flex-shrink: 0;
+    }
+    .header-user-info { display: flex; flex-direction: column; }
+    .header-user-name { font-size: 0.82rem; font-weight: 600; color: var(--white); line-height: 1.2; }
+    .header-user-badge { font-size: 0.68rem; font-weight: 600; color: var(--cyan); letter-spacing: 0.5px; text-transform: uppercase; }
+    .btn-logout {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; color: rgba(255,255,255,0.6);
+      font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+      cursor: pointer; transition: all var(--transition);
+    }
+    .btn-logout:hover { background: rgba(230,57,70,0.15); border-color: rgba(230,57,70,0.3); color: #E63946; }
+    .btn-logout svg { width: 15px; height: 15px; }
+
+    /* ── AUTOSAVE INDICATOR ──────────────────────────────────── */
+    .autosave-indicator {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem; font-weight: 600;
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .autosave-indicator.saved {
+      background: rgba(45,184,111,0.15);
+      color: var(--success);
+      border: 1px solid rgba(45,184,111,0.25);
+    }
+    .autosave-indicator.unsaved {
+      background: rgba(244,162,97,0.15);
+      color: var(--warn);
+      border: 1px solid rgba(244,162,97,0.3);
+    }
+    .autosave-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .saved .autosave-dot { background: var(--success); }
+    .unsaved .autosave-dot { background: var(--warn); animation: pulse-dot 1.5s ease infinite; }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+
+    /* ── SIDEBAR OVERLAY ─────────────────────────────────────── */
+    .sidebar-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,37,64,0.65); backdrop-filter: blur(3px);
+      z-index: 200; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active { opacity: 1; pointer-events: all; }
+
+    /* ── SIDEBAR ─────────────────────────────────────────────── */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w); background: var(--navy);
+      z-index: 300; display: flex; flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 4px 0 32px rgba(0,0,0,0.35);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-header {
+      height: var(--header-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,0.07); flex-shrink: 0;
+    }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; }
+    .sidebar-logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--cyan), var(--cyan-light));
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .sidebar-logo-icon svg { width: 18px; height: 18px; }
+    .sidebar-logo-name { font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); }
+    .sidebar-logo-name span { color: var(--cyan); }
+    .btn-sidebar-close {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background var(--transition);
+    }
+    .btn-sidebar-close:hover { background: rgba(255,255,255,0.13); }
+    .btn-sidebar-close svg { width: 16px; height: 16px; color: rgba(255,255,255,0.6); }
+    .sidebar-section-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.25); padding: 24px 20px 8px;
+    }
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 4px 12px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 12px; border-radius: 10px; cursor: pointer;
+      transition: background var(--transition); margin-bottom: 2px;
+      text-decoration: none; position: relative;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.07); }
+    .nav-item.active { background: rgba(0,180,216,0.12); }
+    .nav-item.active::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 3px; height: 20px; background: var(--cyan); border-radius: 0 3px 3px 0;
+    }
+    .nav-item-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; background: rgba(255,255,255,0.06);
+    }
+    .nav-item.active .nav-item-icon { background: rgba(0,180,216,0.18); }
+    .nav-item-icon svg { width: 17px; height: 17px; color: rgba(255,255,255,0.5); }
+    .nav-item.active .nav-item-icon svg { color: var(--cyan); }
+    .nav-item-text { flex: 1; }
+    .nav-item-label { font-size: 0.85rem; font-weight: 500; color: rgba(255,255,255,0.6); display: block; line-height: 1.2; }
+    .nav-item.active .nav-item-label { color: var(--white); font-weight: 600; }
+    .nav-item-sub { font-size: 0.7rem; color: rgba(255,255,255,0.3); display: block; }
+    .badge-soon {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      background: rgba(244,162,97,0.15); color: var(--warn);
+      border: 1px solid rgba(244,162,97,0.25); padding: 2px 7px; border-radius: 20px; flex-shrink: 0;
+    }
+    .sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.07); }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; background: rgba(255,255,255,0.04); border-radius: 10px;
+    }
+    .sidebar-avatar {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+      border: 2px solid rgba(0,180,216,0.3); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--cyan); flex-shrink: 0;
+    }
+    .sidebar-user-name { font-size: 0.82rem; font-weight: 600; color: var(--white); }
+    .sidebar-user-role { font-size: 0.7rem; color: var(--cyan); font-weight: 500; }
+
+    /* ── LAYOUT PRINCIPAL ────────────────────────────────────── */
+    .main {
+      margin-top: var(--header-h);
+      min-height: calc(100vh - var(--header-h));
+      padding: 32px 40px;
+      max-width: 1200px;
+      margin-left: auto; margin-right: auto;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 22px; font-size: 0.78rem; color: var(--text-muted);
+    }
+    .breadcrumb svg { width: 13px; height: 13px; }
+    .breadcrumb span { font-weight: 500; }
+    .breadcrumb .current { color: var(--text-sub); font-weight: 600; }
+
+    /* Page header */
+    .page-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 24px; gap: 16px;
+    }
+    .page-eyebrow {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--cyan); margin-bottom: 6px;
+    }
+    .page-title {
+      font-family: 'Sora', sans-serif; font-size: 1.55rem; font-weight: 700;
+      color: var(--text-main); letter-spacing: -0.3px; margin-bottom: 4px;
+    }
+    .page-desc { font-size: 0.85rem; color: var(--text-sub); }
+
+    .lgpd-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 20px; font-size: 0.73rem; font-weight: 600;
+      color: var(--text-sub); flex-shrink: 0;
+    }
+    .lgpd-badge svg { width: 13px; height: 13px; color: var(--cyan); }
+
+    /* ── GRID DE DUAS COLUNAS ────────────────────────────────── */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── CARD DO PACIENTE ────────────────────────────────────── */
+    .patient-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(10,37,64,0.07);
+      overflow: hidden;
+      margin-bottom: 20px;
+      animation: fadeSlideUp 0.35s ease both;
+    }
+
+    /* Banner de alergia */
+    .allergy-banner {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px;
+      background: var(--error-bg);
+      border-bottom: 1px solid var(--error-border);
+      font-size: 0.78rem; font-weight: 600; color: var(--error);
+    }
+    .allergy-banner svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .allergy-banner strong { font-weight: 700; }
+
+    .patient-card-body {
+      padding: 20px 24px;
+      display: flex; align-items: center; gap: 18px;
+    }
+    .patient-big-avatar {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, var(--surface-2), var(--border));
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700;
+      color: var(--navy-mid); flex-shrink: 0;
+    }
+    .patient-main-info { flex: 1; }
+    .patient-name {
+      font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 700;
+      color: var(--text-main); margin-bottom: 4px;
+    }
+    .patient-meta-row {
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap; margin-bottom: 6px;
+    }
+    .patient-meta-item { font-size: 0.78rem; color: var(--text-sub); font-weight: 500; }
+    .patient-meta-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--text-muted); }
+    .patient-cpf {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; font-weight: 600;
+      background: var(--surface-2); border: 1px solid var(--border);
+      padding: 3px 10px; border-radius: 20px; color: var(--text-sub);
+    }
+    .patient-cpf svg { width: 11px; height: 11px; color: var(--cyan); }
+
+    .consult-info-strip {
+      display: flex; gap: 0;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .consult-info-item {
+      flex: 1; padding: 12px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .consult-info-item:last-child { border-right: none; }
+    .consult-info-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;
+    }
+    .consult-info-value {
+      font-size: 0.83rem; font-weight: 600; color: var(--text-main);
+    }
+    .status-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 700;
+      background: rgba(139,92,246,0.1); color: #7C3AED;
+      border: 1px solid rgba(139,92,246,0.2);
+    }
+    .status-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #7C3AED; animation: pulse-dot 1.5s ease infinite; }
+
+    /* ── NAV ÂNCORAS ─────────────────────────────────────────── */
+    .section-nav {
+      display: flex; gap: 4px; flex-wrap: wrap;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 6px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(10,37,64,0.05);
+      animation: fadeSlideUp 0.35s ease 0.05s both;
+    }
+    .section-nav-btn {
+      flex: 1; min-width: fit-content;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--text-sub);
+      cursor: pointer; transition: all var(--transition);
+      display: flex; align-items: center; gap: 6px;
+      justify-content: center; white-space: nowrap;
+    }
+    .section-nav-btn:hover { background: var(--surface-2); color: var(--text-main); }
+    .section-nav-btn.active { background: var(--navy); color: var(--white); }
+    .section-nav-btn svg { width: 14px; height: 14px; }
+    .section-nav-number {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(0,180,216,0.15); color: var(--cyan);
+      font-size: 0.65rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .section-nav-btn.active .section-nav-number { background: rgba(255,255,255,0.2); color: var(--white); }
+
+    /* ── SEÇÕES DO FORMULÁRIO ────────────────────────────────── */
+    .form-section {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(10,37,64,0.06);
+      overflow: hidden;
+      margin-bottom: 20px;
+      animation: fadeSlideUp 0.4s ease both;
+    }
+    .form-section:nth-child(1) { animation-delay: 0.1s; }
+    .form-section:nth-child(2) { animation-delay: 0.15s; }
+    .form-section:nth-child(3) { animation-delay: 0.20s; }
+    .form-section:nth-child(4) { animation-delay: 0.25s; }
+
+    .section-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .section-icon {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-icon svg { width: 19px; height: 19px; }
+    .section-icon.cyan { background: rgba(0,180,216,0.1); }
+    .section-icon.cyan svg { color: var(--cyan); }
+    .section-icon.purple { background: rgba(139,92,246,0.1); }
+    .section-icon.purple svg { color: #7C3AED; }
+    .section-icon.green { background: rgba(45,184,111,0.1); }
+    .section-icon.green svg { color: var(--success); }
+    .section-icon.orange { background: rgba(244,162,97,0.1); }
+    .section-icon.orange svg { color: var(--warn); }
+
+    .section-header-text {}
+    .section-title {
+      font-family: 'Sora', sans-serif; font-size: 0.95rem; font-weight: 700;
+      color: var(--text-main); margin-bottom: 2px;
+    }
+    .section-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+
+    .section-body { padding: 24px; }
+
+    /* Grid de campos */
+    .field-grid { display: grid; gap: 18px; }
+    .field-grid.col-2 { grid-template-columns: 1fr 1fr; }
+    .field-grid.col-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .field-grid.col-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .col-span-2 { grid-column: span 2; }
+    .col-span-3 { grid-column: span 3; }
+    .col-span-full { grid-column: 1 / -1; }
+
+    /* Campo */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label {
+      font-size: 0.78rem; font-weight: 600; color: var(--text-sub);
+      letter-spacing: 0.2px; display: flex; align-items: center; gap: 6px;
+    }
+    .field label .req { color: var(--error); }
+    .field label .lock-icon { width: 11px; height: 11px; color: var(--cyan); }
+
+    .input-wrap { position: relative; display: flex; align-items: center; }
+    .input-wrap .input-icon {
+      position: absolute; left: 13px; color: var(--text-muted);
+      display: flex; align-items: center; pointer-events: none;
+      transition: color var(--transition);
+    }
+    .input-wrap .input-icon svg { width: 15px; height: 15px; }
+    .input-wrap input, .input-wrap select {
+      width: 100%; padding: 10px 13px 10px 38px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+      color: var(--text-main); background: var(--white); outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      appearance: none;
+    }
+    .input-wrap input::placeholder { color: var(--text-muted); font-weight: 300; }
+    .input-wrap input:focus, .input-wrap select:focus {
+      border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-glow);
+    }
+    .input-wrap:focus-within .input-icon { color: var(--cyan); }
+    .input-unit {
+      position: absolute; right: 12px;
+      font-size: 0.72rem; font-weight: 600; color: var(--text-muted);
+      pointer-events: none;
+    }
+    .input-wrap input.has-unit { padding-right: 42px; }
+
+    /* Textarea */
+    .textarea-wrap { position: relative; }
+    .textarea-wrap textarea {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+      color: var(--text-main); background: var(--white); outline: none;
+      resize: vertical; min-height: 90px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      line-height: 1.6;
+    }
+    .textarea-wrap textarea::placeholder { color: var(--text-muted); font-weight: 300; }
+    .textarea-wrap textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-glow); }
+    .char-counter {
+      position: absolute; bottom: 10px; right: 12px;
+      font-size: 0.68rem; color: var(--text-muted); font-weight: 500;
+      pointer-events: none;
+    }
+
+    /* Sinal vital com alerta */
+    .vital-field {}
+    .vital-input-wrap { position: relative; display: flex; align-items: center; }
+    .vital-input-wrap input {
+      width: 100%; padding: 10px 50px 10px 13px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem;
+      color: var(--text-main); background: var(--white); outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .vital-input-wrap input::placeholder { color: var(--text-muted); font-weight: 300; }
+    .vital-input-wrap input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-glow); }
+    .vital-input-wrap input.warn-value { border-color: var(--warn); box-shadow: 0 0 0 3px rgba(244,162,97,0.15); background: var(--warn-bg); }
+    .vital-unit {
+      position: absolute; right: 12px;
+      font-size: 0.7rem; font-weight: 700; color: var(--text-muted);
+    }
+    .vital-warn-msg {
+      font-size: 0.7rem; color: var(--warn); font-weight: 600;
+      margin-top: 4px; display: none;
+    }
+    .vital-warn-msg.visible { display: block; }
+
+    /* IMC calculado */
+    .imc-display {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      background: var(--surface);
+      font-size: 0.875rem; font-weight: 600; color: var(--text-muted);
+      min-height: 42px; display: flex; align-items: center;
+    }
+    .imc-display.calculated { background: var(--surface-2); color: var(--text-main); border-color: var(--cyan); }
+
+    /* CID select simulado */
+    .cid-select-wrap { position: relative; }
+    .cid-display {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      cursor: pointer; background: var(--white);
+      transition: border-color var(--transition), box-shadow var(--transition), border-radius 0.15s ease;
+    }
+    .cid-display:hover { border-color: var(--cyan); }
+    .cid-display.active { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-glow); border-radius: 9px 9px 0 0; border-bottom-color: var(--border); }
+    .cid-placeholder { font-size: 0.875rem; color: var(--text-muted); font-weight: 300; }
+    .cid-selected { font-size: 0.875rem; color: var(--text-main); font-weight: 500; }
+    .cid-badge {
+      font-size: 0.72rem; font-weight: 700;
+      background: rgba(0,180,216,0.1); color: var(--cyan);
+      border: 1px solid rgba(0,180,216,0.2);
+      padding: 2px 8px; border-radius: 5px; flex-shrink: 0;
+    }
+    .cid-dropdown {
+      display: none;
+      border: 1.5px solid var(--cyan);
+      border-top: none;
+      border-radius: 0 0 9px 9px;
+      background: var(--white);
+      box-shadow: 0 8px 24px rgba(10,37,64,0.12);
+      overflow: hidden;
+      margin-top: -3px;
+    }
+    .cid-dropdown.open { display: block; }
+    .cid-search {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .cid-search input {
+      width: 100%; border: none; outline: none;
+      font-family: 'DM Sans', sans-serif; font-size: 0.83rem;
+      color: var(--text-main); background: transparent;
+    }
+    #cidList {
+      overflow-y: visible;
+    }
+    #cidList::-webkit-scrollbar { width: 4px; }
+    #cidList::-webkit-scrollbar-track { background: transparent; }
+    #cidList::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .cid-option {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; cursor: pointer;
+      transition: background var(--transition); font-size: 0.83rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .cid-option:last-child { border-bottom: none; }
+    .cid-option:hover { background: var(--surface-2); }
+    .cid-option-code { font-weight: 700; color: var(--cyan); font-size: 0.78rem; flex-shrink: 0; margin-left: 12px; }
+    .cid-option-desc { color: var(--text-sub); }
+
+    /* Radio / Checkbox visual */
+    .radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .radio-option { display: none; }
+    .radio-label {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 14px; border-radius: 8px;
+      border: 1.5px solid var(--border); cursor: pointer;
+      font-size: 0.8rem; font-weight: 500; color: var(--text-sub);
+      transition: all var(--transition); user-select: none;
+    }
+    .radio-label:hover { border-color: var(--cyan); color: var(--text-main); }
+    .radio-option:checked + .radio-label {
+      background: rgba(0,180,216,0.08); border-color: var(--cyan); color: var(--navy);
+      font-weight: 600;
+    }
+    .radio-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid var(--border); flex-shrink: 0;
+      transition: all var(--transition);
+    }
+    .radio-option:checked + .radio-label .radio-dot {
+      border-color: var(--cyan); background: var(--cyan);
+      box-shadow: inset 0 0 0 2px white;
+    }
+
+    /* Divider */
+    .section-divider {
+      border: none; border-top: 1px solid var(--border);
+      margin: 20px 0;
+    }
+
+    /* ── BOTÕES ──────────────────────────────────────────────── */
+    .form-footer {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 4px 24px rgba(10,37,64,0.06);
+      animation: fadeSlideUp 0.4s ease 0.35s both;
+    }
+    .form-footer-note {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.73rem; color: var(--text-muted);
+    }
+    .form-footer-note svg { width: 13px; height: 13px; color: var(--cyan); }
+    .form-actions { display: flex; gap: 10px; }
+    .btn-secondary {
+      padding: 10px 20px; background: var(--white);
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
+      color: var(--text-sub); cursor: pointer; transition: all var(--transition);
+    }
+    .btn-secondary:hover { border-color: var(--text-muted); color: var(--text-main); }
+    .btn-primary {
+      padding: 10px 24px;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+      color: var(--white); border: none; border-radius: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(14,52,96,0.3); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary svg { width: 16px; height: 16px; }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: none;
+    }
+    .btn-primary.loading .spinner { display: block; }
+    .btn-primary.loading .btn-label,
+    .btn-primary.loading .btn-icon { display: none; }
+
+    /* ── PAINEL LATERAL ──────────────────────────────────────── */
+    .sidebar-panel {
+      display: flex; flex-direction: column; gap: 16px;
+      position: sticky; top: calc(var(--header-h) + 24px);
+    }
+
+    .panel-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(10,37,64,0.06);
+      overflow: hidden;
+      animation: fadeSlideUp 0.4s ease both;
+    }
+    .panel-card:nth-child(1) { animation-delay: 0.1s; }
+    .panel-card:nth-child(2) { animation-delay: 0.2s; }
+
+    .panel-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .panel-header-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .panel-header-icon svg { width: 15px; height: 15px; }
+    .panel-header-icon.blue { background: rgba(0,180,216,0.1); }
+    .panel-header-icon.blue svg { color: var(--cyan); }
+    .panel-header-icon.red { background: var(--error-bg); }
+    .panel-header-icon.red svg { color: var(--error); }
+    .panel-title { font-family: 'Sora', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+    .panel-count {
+      margin-left: auto; font-size: 0.7rem; font-weight: 700;
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text-sub); padding: 2px 8px; border-radius: 20px;
+    }
+
+    /* Histórico de consultas */
+    .history-list { padding: 8px 0; max-height: 340px; overflow-y: auto; }
+    .history-list::-webkit-scrollbar { width: 3px; }
+    .history-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .history-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 18px; cursor: pointer;
+      transition: background var(--transition);
+      border-bottom: 1px solid var(--border);
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:hover { background: var(--surface-2); }
+
+    .history-date-badge {
+      display: flex; flex-direction: column; align-items: center;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 5px 8px; flex-shrink: 0; min-width: 42px;
+    }
+    .history-date-day { font-family: 'Sora', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--navy); line-height: 1; }
+    .history-date-month { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+
+    .history-info { flex: 1; }
+    .history-type { font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
+    .history-diag { font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
+    .history-arrow { color: var(--text-muted); align-self: center; }
+    .history-arrow svg { width: 14px; height: 14px; }
+
+    /* Alergias e alertas */
+    .allergy-list { padding: 14px 18px; display: flex; flex-direction: column; gap: 8px; }
+    .allergy-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
+      background: var(--error-bg); border: 1px solid var(--error-border);
+      border-radius: 8px;
+    }
+    .allergy-item svg { width: 14px; height: 14px; color: var(--error); flex-shrink: 0; }
+    .allergy-name { font-size: 0.78rem; font-weight: 600; color: var(--error); }
+    .allergy-severity { font-size: 0.68rem; color: var(--text-muted); margin-left: auto; font-weight: 500; }
+
+    /* Log de acesso */
+    .access-log {
+      padding: 12px 18px;
+      font-size: 0.72rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .access-log svg { width: 12px; height: 12px; color: var(--cyan); flex-shrink: 0; }
+
+    /* ── TOAST ───────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 28px; right: 28px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px;
+      background: var(--navy);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      z-index: 500;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      min-width: 280px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+    .toast-icon {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .toast-icon.success { background: rgba(45,184,111,0.2); }
+    .toast-icon.success svg { width: 16px; height: 16px; color: var(--success); }
+    .toast-text { flex: 1; }
+    .toast-title { font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+    .toast-desc { font-size: 0.73rem; color: rgba(255,255,255,0.5); }
+
+    /* ── ANIMATIONS ──────────────────────────────────────────── */
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    /* sidebar-panel removido */
+    @media (max-width: 640px) {
+      .main { padding: 20px 16px; }
+      .field-grid.col-2, .field-grid.col-3, .field-grid.col-4 { grid-template-columns: 1fr; }
+      .col-span-2, .col-span-3 { grid-column: span 1; }
+      .header-user-info { display: none; }
+      .consult-info-strip { flex-wrap: wrap; }
+      .section-nav { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA: AGENDA DIÁRIA
+═══════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-agenda">
+<!-- ── HEADER ───────────────────────────────────────────────── -->
+<header class="header">
+  <button class="btn-hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+
+  <a href="#" class="header-logo">
+    <div class="header-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    </div>
+    <span class="header-logo-name">Vita<span>Care</span></span>
+  </a>
+
+  <div class="header-divider"></div>
+  <span class="header-page-title">Agenda do Médico</span>
+
+  <div class="header-right">
+    <div class="header-user">
+      <div class="header-avatar">CM</div>
+      <div class="header-user-info">
+        <span class="header-user-name">Dr. Carlos Menezes</span>
+        <span class="header-user-badge">Médico · CRM 123456</span>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="localStorage.removeItem('vitacare_session'); window.location.href='index.html'">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
+      </svg>
+      Sair
+    </button>
+  </div>
+</header>
+
+<!-- ── SIDEBAR OVERLAY ───────────────────────────────────────── -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ── SIDEBAR ───────────────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+      </div>
+      <span class="sidebar-logo-name">Vita<span>Care</span></span>
+    </div>
+    <button class="btn-sidebar-close" onclick="toggleSidebar()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="sidebar-section-label">Funcionalidades</div>
+
+  <nav class="sidebar-nav">
+    <a class="nav-item active nav-agenda" href="#" onclick="showPage('agenda');return false;">
+      <div class="nav-item-icon">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <div class="nav-item-text">
+        <span class="nav-item-label">Agenda Diária</span>
+        <span class="nav-item-sub">US04 — Ativo</span>
+      </div>
+    </a>
+
+    <a class="nav-item nav-prontuarios" href="#" onclick="showPage('lista-prontuarios');return false;">
+      <div class="nav-item-icon">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
+      <div class="nav-item-text">
+        <span class="nav-item-label">Prontuários</span>
+        <span class="nav-item-sub">US05</span>
+      </div>
+    </a>
+
+    <a class="nav-item" href="#">
+      <div class="nav-item-icon">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="nav-item-text">
+        <span class="nav-item-label">Histórico do Paciente</span>
+        <span class="nav-item-sub">US11</span>
+      </div>
+      <span class="badge-soon">Em breve</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">CM</div>
+      <div>
+        <div class="sidebar-user-name">Dr. Carlos Menezes</div>
+        <div class="sidebar-user-role">Médico</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN ──────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+    </svg>
+    <span>Médico</span>
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:10px;height:10px">
+      <path stroke-linecap="round" d="M9 5l7 7-7 7"/>
+    </svg>
+    <span class="current">Agenda Diária</span>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-eyebrow">US04 — Médico</div>
+      <h1 class="page-title">Agenda Diária</h1>
+      <p class="page-desc">Visualize seus atendimentos do dia e acesse o prontuário de cada paciente.</p>
+    </div>
+
+    <!-- Date Navigator -->
+    <div class="date-nav">
+      <button class="date-nav-btn" onclick="changeDay(-1)" title="Dia anterior">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <div class="date-nav-info">
+        <div class="date-nav-day" id="dateDisplay">16 de maio</div>
+        <div class="date-nav-weekday" id="weekdayDisplay">Sexta-feira</div>
+      </div>
+      <button class="date-nav-btn" onclick="changeDay(1)" title="Próximo dia">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+      <button class="date-nav-today" onclick="goToday()">Hoje</button>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon total">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-value">8</div>
+        <div class="kpi-label">Total do dia</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon concluido">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-value">3</div>
+        <div class="kpi-label">Concluídos</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon pendente">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-value">4</div>
+        <div class="kpi-label">Pendentes</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon cancelado">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-value">1</div>
+        <div class="kpi-label">Cancelados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agenda Card -->
+  <div class="agenda-card">
+    <!-- Cabeçalho -->
+    <div class="agenda-card-header">
+      <div>
+        <div class="agenda-card-title">Atendimentos do Dia</div>
+        <div class="agenda-card-subtitle">Dr. Carlos Menezes · Clínico Geral · CRM 123456-SP</div>
+      </div>
+      <div class="status-filters">
+        <button class="status-filter-btn active" onclick="filterStatus(this, 'todos')">
+          Todos
+        </button>
+        <button class="status-filter-btn" onclick="filterStatus(this, 'agendado')">
+          <span class="status-filter-dot" style="background:var(--status-agendado)"></span>
+          Agendado
+        </button>
+        <button class="status-filter-btn" onclick="filterStatus(this, 'presente')">
+          <span class="status-filter-dot" style="background:var(--status-presente)"></span>
+          Aguardando
+        </button>
+        <button class="status-filter-btn" onclick="filterStatus(this, 'andamento')">
+          <span class="status-filter-dot" style="background:var(--status-andamento)"></span>
+          Em atendimento
+        </button>
+        <button class="status-filter-btn" onclick="filterStatus(this, 'concluido')">
+          <span class="status-filter-dot" style="background:var(--status-concluido)"></span>
+          Concluído
+        </button>
+      </div>
+    </div>
+
+    <!-- Timeline — preenchida dinamicamente pelo JS -->
+    <div class="timeline" id="timeline">
+      <!-- slots renderizados via renderTimeline() -->
+    </div><!-- /timeline -->
+
+    <!-- Legenda -->
+    <div class="legend-row">
+      <span style="font-size:0.72rem;font-weight:600;color:var(--text-muted);margin-right:4px;">Legenda:</span>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--status-agendado)"></div>Agendado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--status-presente)"></div>Aguardando</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--status-andamento)"></div>Em atendimento</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--status-concluido)"></div>Concluído</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--status-cancelado)"></div>Cancelado</div>
+    </div>
+
+  </div><!-- /agenda-card -->
+
+</main>
+
+<!-- ── MODAL ─────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-avatar" id="modalAvatar">AB</div>
+        <div>
+          <div class="modal-patient-name" id="modalName">Ana Beatriz Souza</div>
+          <div class="modal-patient-meta" id="modalMeta">08:00 · Retorno · Concluído</div>
+        </div>
+      </div>
+      <button class="btn-modal-close" onclick="closeModal()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-info-grid">
+        <div class="modal-info-item">
+          <div class="modal-info-label">Horário</div>
+          <div class="modal-info-value" id="modalTime">08:00</div>
+        </div>
+        <div class="modal-info-item">
+          <div class="modal-info-label">Tipo de Consulta</div>
+          <div class="modal-info-value" id="modalType">Retorno</div>
+        </div>
+        <div class="modal-info-item">
+          <div class="modal-info-label">Motivo</div>
+          <div class="modal-info-value" id="modalReason">Hipertensão arterial</div>
+        </div>
+        <div class="modal-info-item">
+          <div class="modal-info-label">Status</div>
+          <div class="modal-info-value" id="modalStatus">Concluído</div>
+        </div>
+      </div>
+
+      <div class="modal-alert" id="modalNote">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span id="modalNoteText">Consulta de rotina. Paciente relata melhora dos sintomas com novo esquema.</span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--text-muted);">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px;color:var(--cyan)">
+          <path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+        Dados protegidos — LGPD · Acesso restrito ao médico responsável
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Fechar</button>
+      <button class="btn-primary" id="modalProntuarioBtn" onclick="">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <span id="modalProntuarioBtnLabel">Abrir Prontuário</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+  /* ══════════════════════════════════════════
+     GUARD DE AUTENTICAÇÃO
+  ══════════════════════════════════════════ */
+  (function authGuard() {
+    try {
+      const raw = localStorage.getItem('vitacare_session');
+      if (!raw) { window.location.replace('index.html'); return; }
+      const session = JSON.parse(raw);
+      if (!session || session.perfil !== 'medico') {
+        window.location.replace('index.html'); return;
+      }
+      if (Date.now() - session.loginAt > 8 * 60 * 60 * 1000) {
+        localStorage.removeItem('vitacare_session');
+        window.location.replace('index.html'); return;
+      }
+    } catch(e) {
+      window.location.replace('index.html');
+    }
+  })();
+
+  /* ── Sidebar ──────────────────────────────────────────────── */
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+  }
+
+  /* ── Data e Hora Real ─────────────────────────────────────── */
+  const months   = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const weekdays = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+
+  // Data de hoje vinda do relógio do usuário
+  const TODAY = new Date();
+  TODAY.setHours(0,0,0,0);
+
+  let currentDate = new Date(TODAY);
+
+  // Agendas fictícias por offset de dia (0 = hoje, 1 = amanhã, etc.)
+  const AGENDAS = {
+    0: [ // HOJE
+      { hora:'08:00', status:'concluido', nome:'Ana Beatriz Souza',  iniciais:'AB', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Concluído',        motivo:'Hipertensão arterial',           note:'Consulta de rotina. Paciente relata melhora dos sintomas.' },
+      { hora:'08:30', status:'concluido', nome:'Roberto Alves Lima', iniciais:'RL', especialidade:'Cardiologia',    duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',   statusLabel:'Concluído',        motivo:'Avaliação cardiológica',          note:'Encaminhado para ECG. Aguardar resultado em 5 dias.' },
+      { hora:'09:15', status:'concluido', nome:'Mariana Costa',      iniciais:'MC', especialidade:'Clínica Geral',  duracao:'20 min', tipo:'exame',    tipoLabel:'Exame',         statusLabel:'Concluído',        motivo:'Resultado de exame laboratorial', note:'Resultados dentro da normalidade. Manter medicação.' },
+      { hora:'10:00', status:'andamento', nome:'Fernando Gomes',     iniciais:'FG', especialidade:'Endocrinologia', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Em atendimento',   motivo:'Diabetes tipo 2 — controle glicêmico', note:'Em andamento. Revisão dos exames de hemoglobina glicada.' },
+      { hora:'11:00', status:'presente',  nome:'Cláudia Mendes',     iniciais:'CM', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'urgencia', tipoLabel:'Urgência',      statusLabel:'Aguardando',       motivo:'Dor abdominal aguda',            note:'Paciente realizou check-in. Aguardando chamada.' },
+      { hora:'13:00', status:'agendado',  nome:'Juliana Ferreira',   iniciais:'JF', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',   statusLabel:'Agendado',         motivo:'Avaliação clínica geral',         note:'Paciente ainda não realizou check-in.' },
+      { hora:'13:30', status:'cancelado', nome:'Pedro Rocha',        iniciais:'PR', especialidade:'Cirurgia Geral', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Cancelado',        motivo:'Acompanhamento pós-operatório',   note:'Paciente cancelou por motivo pessoal.' },
+      { hora:'14:00', status:'agendado',  nome:'Sebastião Nunes',    iniciais:'SN', especialidade:'Cardiologia',    duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',         motivo:'Controle de pressão arterial',   note:'Aguardando confirmação de chegada.' },
+      { hora:'15:00', status:'agendado',  nome:'Tatiana Oliveira',   iniciais:'TO', especialidade:'Dermatologia',   duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',   statusLabel:'Agendado',         motivo:'Consulta dermatológica',          note:'Paciente confirmou presença via SMS.' },
+    ],
+    1: [ // AMANHÃ
+      { hora:'08:00', status:'agendado',  nome:'Ricardo Pinto',      iniciais:'RP', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Controle de colesterol',       note:'Aguardando chegada.' },
+      { hora:'09:00', status:'agendado',  nome:'Luciana Matos',      iniciais:'LM', especialidade:'Cardiologia',    duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Palpitações frequentes',       note:'Primeira consulta cardiológica.' },
+      { hora:'10:00', status:'agendado',  nome:'Eduardo Santos',     iniciais:'ES', especialidade:'Endocrinologia', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Controle de tireoide',         note:'Aguardando resultado de TSH.' },
+      { hora:'11:00', status:'agendado',  nome:'Patrícia Lima',      iniciais:'PL', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'exame',    tipoLabel:'Exame',        statusLabel:'Agendado',  motivo:'Avaliação de exames anuais',   note:'Exames em mãos para avaliação.' },
+      { hora:'14:00', status:'agendado',  nome:'Marcos Vieira',      iniciais:'MV', especialidade:'Cardiologia',    duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'HAS — ajuste de medicação',    note:'Uso de losartana 50mg.' },
+      { hora:'15:30', status:'agendado',  nome:'Camila Ramos',       iniciais:'CR', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'urgencia', tipoLabel:'Urgência',     statusLabel:'Agendado',  motivo:'Febre há 3 dias',              note:'Encaixe de urgência.' },
+    ],
+    2: [ // +2 dias
+      { hora:'08:30', status:'agendado',  nome:'Henrique Costa',     iniciais:'HC', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Check-up geral',               note:'Primeira consulta na clínica.' },
+      { hora:'10:00', status:'agendado',  nome:'Vanessa Teixeira',   iniciais:'VT', especialidade:'Endocrinologia', duracao:'45 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Diabetes tipo 1 — controle',   note:'HbA1c solicitada.' },
+      { hora:'13:00', status:'agendado',  nome:'Diego Martins',      iniciais:'DM', especialidade:'Cardiologia',    duracao:'30 min', tipo:'exame',    tipoLabel:'Exame',        statusLabel:'Agendado',  motivo:'Resultado de Holter 24h',      note:'Trazer o aparelho devolvido.' },
+      { hora:'15:00', status:'agendado',  nome:'Fernanda Braga',     iniciais:'FB', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Controle pós-operatório',      note:'Retirada de pontos.' },
+    ],
+    3: [ // +3 dias
+      { hora:'09:00', status:'agendado',  nome:'Rodrigo Azevedo',    iniciais:'RA', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Dor lombar crônica',           note:'Primeira consulta.' },
+      { hora:'10:30', status:'agendado',  nome:'Simone Barros',      iniciais:'SB', especialidade:'Endocrinologia', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Hipotireoidismo — controle',   note:'Aguardando resultado de TSH.' },
+      { hora:'14:00', status:'agendado',  nome:'Bruno Carvalho',     iniciais:'BC', especialidade:'Cardiologia',    duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Avaliação pré-operatória',     note:'Cirurgia agendada para próximo mês.' },
+    ],
+    4: [ // +4 dias
+      { hora:'08:00', status:'agendado',  nome:'Alice Mendonça',     iniciais:'AM', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Controle de pressão',          note:'PA descontrolada na última visita.' },
+      { hora:'11:00', status:'agendado',  nome:'Gabriel Torres',     iniciais:'GT', especialidade:'Dermatologia',   duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Lesão de pele suspeita',       note:'Fotos enviadas pelo paciente.' },
+      { hora:'15:00', status:'agendado',  nome:'Isabela Cruz',       iniciais:'IC', especialidade:'Clínica Geral',  duracao:'45 min', tipo:'exame',    tipoLabel:'Exame',        statusLabel:'Agendado',  motivo:'Avaliação laboratorial anual', note:'Exames completos em mãos.' },
+    ],
+    5: [ // +5 dias
+      { hora:'09:00', status:'agendado',  nome:'Thiago Lopes',       iniciais:'TL', especialidade:'Cardiologia',    duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Pós-stent — controle',         note:'Primeiro retorno após procedimento.' },
+      { hora:'10:30', status:'agendado',  nome:'Natália Souza',      iniciais:'NS', especialidade:'Endocrinologia', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'DM2 — ajuste insulina',        note:'Trazer registro glicêmico.' },
+      { hora:'14:30', status:'agendado',  nome:'Paulo Machado',      iniciais:'PM', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Fadiga crônica',               note:'Encaminhado pelo clínico geral.' },
+    ],
+    6: [ // +6 dias
+      { hora:'09:30', status:'agendado',  nome:'Aline Peixoto',      iniciais:'AP', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Anemia ferropriva — controle', note:'Resultado de hemograma solicitado.' },
+      { hora:'11:00', status:'agendado',  nome:'Leonardo Faria',     iniciais:'LF', especialidade:'Cardiologia',    duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Dor precordial atípica',       note:'ECG e ecocardiograma em mãos.' },
+      { hora:'15:00', status:'agendado',  nome:'Carolina Neves',     iniciais:'CN', especialidade:'Dermatologia',   duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Acompanhamento dermatológico', note:'Retorno após tratamento.' },
+    ],
+  };
+
+  /* ── Funções de data ──────────────────────────────────────── */
+  function getOffset(date) {
+    const d = new Date(date); d.setHours(0,0,0,0);
+    const t = new Date(TODAY); t.setHours(0,0,0,0);
+    return Math.round((d - t) / 86400000);
+  }
+
+  function isToday(date) {
+    return getOffset(date) === 0;
+  }
+
+  function updateDateDisplay() {
+    const d = currentDate;
+    document.getElementById('dateDisplay').textContent  = `${d.getDate()} de ${months[d.getMonth()]}`;
+    document.getElementById('weekdayDisplay').textContent = weekdays[d.getDay()];
+    // Mostrar/esconder botão "Hoje"
+    document.querySelector('.date-nav-today').style.display = isToday(d) ? 'none' : '';
+    renderTimeline();
+  }
+
+  function changeDay(delta) {
+    currentDate = new Date(currentDate);
+    currentDate.setDate(currentDate.getDate() + delta);
+    updateDateDisplay();
+  }
+
+  function goToday() {
+    currentDate = new Date(TODAY);
+    updateDateDisplay();
+  }
+
+  /* ── Renderização dinâmica da timeline ───────────────────── */
+  const SLOT_TIMES = ['08:00','08:30','09:15','09:35','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:45','16:30','17:00'];
+
+  function nowMinutes() {
+    const n = new Date();
+    return n.getHours() * 60 + n.getMinutes();
+  }
+
+  function timeToMin(str) {
+    const [h,m] = str.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  function renderTimeline() {
+    const offset  = getOffset(currentDate);
+    const agenda  = AGENDAS[offset] || [];
+    const isToday_ = isToday(currentDate);
+    const nowMin  = nowMinutes();
+    const container = document.getElementById('timeline');
+
+    // Mapear consultas por hora
+    const consultasByTime = {};
+    agenda.forEach(c => { consultasByTime[c.hora] = c; });
+
+    // Calcular KPIs
+    const total     = agenda.length;
+    const concluidos= agenda.filter(c => c.status === 'concluido').length;
+    const cancelados= agenda.filter(c => c.status === 'cancelado').length;
+    const pendentes = agenda.filter(c => !['concluido','cancelado'].includes(c.status)).length;
+    document.querySelector('.kpi-card:nth-child(1) .kpi-value').textContent = total;
+    document.querySelector('.kpi-card:nth-child(2) .kpi-value').textContent = concluidos;
+    document.querySelector('.kpi-card:nth-child(3) .kpi-value').textContent = pendentes;
+    document.querySelector('.kpi-card:nth-child(4) .kpi-value').textContent = cancelados;
+
+    // Horários padrão da agenda
+    const horariosConsulta = ['08:00','08:30','09:15','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:45','16:30','17:00'];
+
+    let html = '';
+
+    horariosConsulta.forEach((hora, idx) => {
+      // Intervalo de lanche
+      if (hora === '10:00') {
+        html += `
+        <div class="timeline-break">
+          <div class="timeline-time" style="align-items:center;font-size:0.7rem;">09:35</div>
+          <div class="timeline-content">
+            <div class="break-label">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              Intervalo — 09:35 às 10:00
+            </div>
+          </div>
+        </div>`;
+      }
+      // Intervalo de almoço
+      if (hora === '13:00') {
+        html += `
+        <div class="timeline-break">
+          <div class="timeline-time" style="align-items:center;font-size:0.7rem;">12:00</div>
+          <div class="timeline-content">
+            <div class="break-label">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 3v1m0 16v1M4.22 4.22l.707.707m11.314 11.314l.707.707M1 12h1m20 0h1M4.22 19.78l.707-.707M18.657 5.636l.707-.707M12 6a6 6 0 100 12 6 6 0 000-12z"/></svg>
+              Intervalo de almoço — 12:00 às 13:00
+            </div>
+          </div>
+        </div>`;
+      }
+
+      const consulta = consultasByTime[hora];
+      const slotMin  = timeToMin(hora);
+      const isNowSlot = isToday_ && nowMin >= slotMin && nowMin < slotMin + 60;
+      const noBorder = idx === horariosConsulta.length - 1 ? 'style="border-bottom:none"' : '';
+
+      if (consulta) {
+        const nowClass = isNowSlot ? ' now' : '';
+        html += `
+        <div class="timeline-slot${nowClass}" data-status="${consulta.status}" ${noBorder}>
+          <div class="timeline-time">
+            ${hora}
+            ${isNowSlot ? '<div class="now-indicator"></div>' : ''}
+          </div>
+          <div class="timeline-content">
+            <div class="consult-card ${consulta.status}" onclick="openModal('${consulta.nome}','${hora}','${consulta.tipoLabel}','${consulta.motivo}','${consulta.statusLabel}','${consulta.iniciais}','${consulta.note}')">
+              <div class="consult-avatar">${consulta.iniciais}</div>
+              <div class="consult-info">
+                <div class="consult-name">${consulta.nome}</div>
+                <div class="consult-meta">
+                  <span class="consult-type">${consulta.especialidade}</span>
+                  <span class="consult-dot"></span>
+                  <span class="consult-duration">${consulta.duracao}</span>
+                </div>
+              </div>
+              <div class="consult-badges">
+                <span class="badge-tipo ${consulta.tipo}">${consulta.tipoLabel}</span>
+                <span class="badge-status ${consulta.status}">${consulta.statusLabel}</span>
+              </div>
+              <div class="consult-action">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      } else {
+        html += `
+        <div class="timeline-slot" data-status="disponivel" ${noBorder}>
+          <div class="timeline-time">${isNowSlot ? '<div class="now-indicator"></div>' : ''}${hora}</div>
+          <div class="timeline-content">
+            <div class="slot-available">
+              <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="width:14px;height:14px;color:var(--text-muted)"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg>
+              Horário disponível
+              <div class="slot-available-line"></div>
+            </div>
+          </div>
+        </div>`;
+      }
+    });
+
+    container.innerHTML = html;
+  }
+
+  /* ── Relógio em tempo real na topbar ─────────────────────── */
+  function startClock() {
+    // Não há elemento de clock na topbar nesta página, mas atualizamos
+    // o indicador "now" da timeline a cada minuto
+    setInterval(() => {
+      if (isToday(currentDate)) renderTimeline();
+    }, 60000);
+  }
+
+  /* ── Init ─────────────────────────────────────────────────── */
+  updateDateDisplay();
+  startClock();
+
+  /* ── Filtro de status ─────────────────────────────────────── */
+  function filterStatus(btn, status) {
+    document.querySelectorAll('.status-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.timeline-slot').forEach(slot => {
+      if (status === 'todos' || slot.dataset.status === status || slot.dataset.status === 'disponivel') {
+        slot.style.display = '';
+      } else {
+        slot.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.timeline-break').forEach(b => b.style.display = '');
+  }
+
+  /* ── Modal ────────────────────────────────────────────────── */
+  function openModal(name, time, type, reason, status, initials, note) {
+    document.getElementById('modalAvatar').textContent   = initials;
+    document.getElementById('modalName').textContent     = name;
+    document.getElementById('modalMeta').textContent     = `${time} · ${type} · ${status}`;
+    document.getElementById('modalTime').textContent     = time;
+    document.getElementById('modalType').textContent     = type;
+    document.getElementById('modalReason').textContent   = reason;
+    document.getElementById('modalStatus').textContent   = status;
+    document.getElementById('modalNoteText').textContent = note;
+
+    // Lógica do botão de prontuário conforme status
+    const btn = document.getElementById('modalProntuarioBtn');
+    const lbl = document.getElementById('modalProntuarioBtnLabel');
+    const rawStatus = getRawStatus(status);
+    const hasProntuario = rawStatus === 'concluido' || rawStatus === 'andamento';
+    const isCancelado = rawStatus === 'cancelado';
+
+    if (isCancelado) {
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = '';
+      lbl.textContent = hasProntuario ? 'Abrir Prontuário' : 'Adicionar Prontuário';
+      btn.onclick = () => { closeModal(); showPage('prontuario', { nome: name, iniciais: initials, hora: time, tipo: type, motivo: reason, status: rawStatus }); };
+    }
+
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function getRawStatus(statusLabel) {
+    const map = { 'Concluído': 'concluido', 'Em atendimento': 'andamento', 'Aguardando': 'presente', 'Agendado': 'agendado', 'Cancelado': 'cancelado' };
+    return map[statusLabel] || 'agendado';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA: PRONTUÁRIO
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-prontuario">
+
+<!-- ── HEADER ───────────────────────────────────────────────── -->
+<header class="header">
+  <button class="btn-hamburger" onclick="toggleSidebar()">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+
+  <a href="#" class="header-logo">
+    <div class="header-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <span class="header-logo-name">Vita<span>Care</span></span>
+  </a>
+
+  <div class="header-divider"></div>
+  <span class="header-page-title">Prontuário Eletrônico</span>
+
+  <div class="header-right">
+    <!-- Autosave -->
+    <div class="autosave-indicator saved" id="autosaveIndicator">
+      <div class="autosave-dot"></div>
+      <span id="autosaveText">Salvo às --:--</span>
+    </div>
+
+    <div class="header-user">
+      <div class="header-avatar">CM</div>
+      <div class="header-user-info">
+        <span class="header-user-name">Dr. Carlos Menezes</span>
+        <span class="header-user-badge">Médico · CRM 123456</span>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="localStorage.removeItem('vitacare_session'); window.location.href='index.html'">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
+      </svg>
+      Sair
+    </button>
+  </div>
+</header>
+
+<!-- ── MAIN ──────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+    </svg>
+    <span>Médico</span>
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:10px;height:10px"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg>
+    <a href="#" onclick="showPage('lista-prontuarios');return false;" style="color:inherit;text-decoration:none;"><span>Prontuários</span></a>
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:10px;height:10px"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg>
+    <span class="current">Prontuário</span>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">US05 — Médico</div>
+      <h1 class="page-title">Prontuário Eletrônico</h1>
+      <p class="page-desc" id="consultDesc">Registro clínico vinculado à consulta de Fernando Gomes · <span id="realDate">17/05/2026</span> às 10:00</p>
+    </div>
+    <div class="lgpd-badge">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+      </svg>
+      Dados protegidos — LGPD · CFM
+    </div>
+  </div>
+
+  <!-- GRID PRINCIPAL -->
+  <div class="content-grid">
+
+    <!-- COLUNA ESQUERDA: FORMULÁRIO -->
+    <div>
+
+      <!-- Card do Paciente -->
+      <div class="patient-card">
+        <!-- Banner de Alergia -->
+        <div class="allergy-banner">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <span>⚠️ Paciente com <strong>alergia registrada</strong>: Penicilina (grave) · Dipirona (moderada). Verifique antes de prescrever.</span>
+        </div>
+
+        <div class="patient-card-body">
+          <div class="patient-big-avatar" id="stripPatientInitials">FG</div>
+          <div class="patient-main-info">
+            <div class="patient-name" id="stripPatientName">Fernando Gomes</div>
+            <div class="patient-meta-row">
+              <span class="patient-meta-item">54 anos</span>
+              <span class="patient-meta-sep"></span>
+              <span class="patient-meta-item">Masculino</span>
+              <span class="patient-meta-sep"></span>
+              <span class="patient-meta-item">Unimed SP</span>
+            </div>
+            <span class="patient-cpf">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              CPF: ***.456.789-**
+            </span>
+          </div>
+        </div>
+
+        <!-- Dados da consulta -->
+        <div class="consult-info-strip">
+          <div class="consult-info-item">
+            <div class="consult-info-label">Data</div>
+            <div class="consult-info-value" id="stripDate">—</div>
+          </div>
+          <div class="consult-info-item">
+            <div class="consult-info-label">Horário</div>
+            <div class="consult-info-value" id="stripTime">—</div>
+          </div>
+          <div class="consult-info-item">
+            <div class="consult-info-label">Tipo</div>
+            <div class="consult-info-value">Retorno</div>
+          </div>
+          <div class="consult-info-item">
+            <div class="consult-info-label">Status</div>
+            <div class="consult-info-value">
+              <span class="status-chip">
+                <span class="status-chip-dot"></span>
+                Em atendimento
+              </span>
+            </div>
+          </div>
+          <div class="consult-info-item">
+            <div class="consult-info-label">Médico Responsável</div>
+            <div class="consult-info-value">Dr. Carlos Menezes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navegação por seções -->
+      <div class="section-nav">
+        <button class="section-nav-btn active" onclick="scrollToSection('anamnese', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+          Anamnese
+        </button>
+        <button class="section-nav-btn" onclick="scrollToSection('sinais', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Sinais Vitais
+        </button>
+        <button class="section-nav-btn" onclick="scrollToSection('diagnostico', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          Diagnóstico
+        </button>
+        <button class="section-nav-btn" onclick="scrollToSection('conduta', this)">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Conduta
+        </button>
+      </div>
+
+      <!-- ── SEÇÃO 1: ANAMNESE ─────────────────────────────── -->
+      <div class="form-section" id="anamnese">
+        <div class="section-header">
+          <div class="section-icon cyan">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+          </div>
+          <div class="section-header-text">
+            <div class="section-title">Anamnese</div>
+            <div class="section-subtitle">Queixa principal, história clínica e antecedentes do paciente</div>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="field-grid">
+
+            <!-- Queixa principal -->
+            <div class="field col-span-full">
+              <label>
+                Queixa Principal
+                <span class="req">*</span>
+                <svg class="lock-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              </label>
+              <div class="textarea-wrap">
+                <textarea id="queixaPrincipal" placeholder="Descreva a queixa principal do paciente..." onInput="markUnsaved(); updateCounter(this, 'qpCounter', 500)" maxlength="500">Paciente retorna para controle de diabetes tipo 2. Relata que tem seguido a dieta prescrita, porém apresenta episódios de hiperglicemia vespertina. Refere leve fadiga ao final do dia.</textarea>
+                <span class="char-counter" id="qpCounter">351/500</span>
+              </div>
+            </div>
+
+            <!-- HDA -->
+            <div class="field col-span-full">
+              <label>
+                História da Doença Atual (HDA)
+                <svg class="lock-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              </label>
+              <div class="textarea-wrap">
+                <textarea placeholder="Descreva a evolução e características da doença atual..." style="min-height:80px" onInput="markUnsaved(); updateCounter(this, 'hdaCounter', 1000)" maxlength="1000">Diabetes mellitus tipo 2 diagnosticado há 8 anos. Em uso de metformina 850mg 2x/dia e sitagliptina 100mg/dia. Último exame de hemoglobina glicada (HbA1c): 7,8% há 3 meses. Paciente relata adesão parcial ao tratamento dietético.</textarea>
+                <span class="char-counter" id="hdaCounter">331/1000</span>
+              </div>
+            </div>
+
+            <hr class="section-divider col-span-full">
+
+            <!-- Antecedentes Pessoais -->
+            <div class="field col-span-full">
+              <label>Antecedentes Pessoais</label>
+              <div class="textarea-wrap">
+                <textarea placeholder="Doenças prévias, cirurgias, internações, uso de medicamentos contínuos..." style="min-height:72px" onInput="markUnsaved()">HAS (hipertensão arterial sistêmica) em uso de losartana 50mg/dia. Dislipidemia em uso de atorvastatina 20mg. Sem cirurgias prévias. Alergia: Penicilina (grave), Dipirona (moderada).</textarea>
+              </div>
+            </div>
+
+            <!-- Antecedentes Familiares -->
+            <div class="field col-span-full">
+              <label>Antecedentes Familiares</label>
+              <div class="textarea-wrap">
+                <textarea placeholder="Histórico familiar relevante..." style="min-height:64px" onInput="markUnsaved()">Pai com DM2 e IAM aos 62 anos. Mãe com HAS e AVC isquêmico. Irmão com dislipidemia.</textarea>
+              </div>
+            </div>
+
+            <hr class="section-divider col-span-full">
+
+            <!-- Hábitos de vida -->
+            <div class="field">
+              <label>Tabagismo</label>
+              <div class="radio-group">
+                <input class="radio-option" type="radio" name="tabagismo" id="tab-nao" checked>
+                <label class="radio-label" for="tab-nao"><span class="radio-dot"></span>Não</label>
+                <input class="radio-option" type="radio" name="tabagismo" id="tab-ex">
+                <label class="radio-label" for="tab-ex"><span class="radio-dot"></span>Ex-fumante</label>
+                <input class="radio-option" type="radio" name="tabagismo" id="tab-sim">
+                <label class="radio-label" for="tab-sim"><span class="radio-dot"></span>Sim</label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Etilismo</label>
+              <div class="radio-group">
+                <input class="radio-option" type="radio" name="etilismo" id="eti-nao" checked>
+                <label class="radio-label" for="eti-nao"><span class="radio-dot"></span>Não</label>
+                <input class="radio-option" type="radio" name="etilismo" id="eti-oc">
+                <label class="radio-label" for="eti-oc"><span class="radio-dot"></span>Ocasional</label>
+                <input class="radio-option" type="radio" name="etilismo" id="eti-sim">
+                <label class="radio-label" for="eti-sim"><span class="radio-dot"></span>Sim</label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Atividade Física</label>
+              <div class="radio-group">
+                <input class="radio-option" type="radio" name="atividade" id="atv-nao">
+                <label class="radio-label" for="atv-nao"><span class="radio-dot"></span>Sedentário</label>
+                <input class="radio-option" type="radio" name="atividade" id="atv-leve" checked>
+                <label class="radio-label" for="atv-leve"><span class="radio-dot"></span>Leve</label>
+                <input class="radio-option" type="radio" name="atividade" id="atv-mod">
+                <label class="radio-label" for="atv-mod"><span class="radio-dot"></span>Moderada</label>
+                <input class="radio-option" type="radio" name="atividade" id="atv-int">
+                <label class="radio-label" for="atv-int"><span class="radio-dot"></span>Intensa</label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SEÇÃO 2: SINAIS VITAIS ────────────────────────── -->
+      <div class="form-section" id="sinais">
+        <div class="section-header">
+          <div class="section-icon purple">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="section-header-text">
+            <div class="section-title">Sinais Vitais</div>
+            <div class="section-subtitle">Parâmetros clínicos mensurados na consulta</div>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="field-grid col-4">
+
+            <!-- PA -->
+            <div class="field vital-field">
+              <label>Pressão Arterial</label>
+              <div class="vital-input-wrap">
+                <input type="text" id="paInput" value="148/92" placeholder="120/80"
+                  oninput="checkPA(this); markUnsaved()">
+                <span class="vital-unit">mmHg</span>
+              </div>
+              <div class="vital-warn-msg visible" id="paWarn">⚠️ PA elevada</div>
+            </div>
+
+            <!-- FC -->
+            <div class="field vital-field">
+              <label>Freq. Cardíaca</label>
+              <div class="vital-input-wrap">
+                <input type="number" value="82" placeholder="75" min="30" max="250"
+                  oninput="markUnsaved()">
+                <span class="vital-unit">bpm</span>
+              </div>
+            </div>
+
+            <!-- Temperatura -->
+            <div class="field vital-field">
+              <label>Temperatura</label>
+              <div class="vital-input-wrap">
+                <input type="number" value="36.4" step="0.1" placeholder="36.5" min="34" max="42"
+                  oninput="markUnsaved()">
+                <span class="vital-unit">°C</span>
+              </div>
+            </div>
+
+            <!-- SpO2 -->
+            <div class="field vital-field">
+              <label>Saturação O₂</label>
+              <div class="vital-input-wrap">
+                <input type="number" value="97" placeholder="98" min="80" max="100"
+                  oninput="markUnsaved()">
+                <span class="vital-unit">%</span>
+              </div>
+            </div>
+
+            <!-- Peso -->
+            <div class="field vital-field">
+              <label>Peso</label>
+              <div class="vital-input-wrap">
+                <input type="number" id="pesoInput" value="88" step="0.1" placeholder="70.0" min="1" max="300"
+                  oninput="calcIMC(); markUnsaved()">
+                <span class="vital-unit">kg</span>
+              </div>
+            </div>
+
+            <!-- Altura -->
+            <div class="field vital-field">
+              <label>Altura</label>
+              <div class="vital-input-wrap">
+                <input type="number" id="alturaInput" value="172" placeholder="170" min="50" max="250"
+                  oninput="calcIMC(); markUnsaved()">
+                <span class="vital-unit">cm</span>
+              </div>
+            </div>
+
+            <!-- IMC calculado -->
+            <div class="field col-span-2">
+              <label>IMC (calculado automaticamente)</label>
+              <div class="imc-display calculated" id="imcDisplay">29,8 kg/m² — Sobrepeso</div>
+            </div>
+
+            <!-- FR -->
+            <div class="field vital-field">
+              <label>Freq. Respiratória</label>
+              <div class="vital-input-wrap">
+                <input type="number" value="16" placeholder="16" min="8" max="60"
+                  oninput="markUnsaved()">
+                <span class="vital-unit">irpm</span>
+              </div>
+            </div>
+
+            <!-- Glicemia -->
+            <div class="field vital-field">
+              <label>Glicemia Capilar</label>
+              <div class="vital-input-wrap">
+                <input type="number" id="glicInput" value="214" placeholder="100" min="20" max="600"
+                  oninput="checkGlicemia(this); markUnsaved()">
+                <span class="vital-unit">mg/dL</span>
+              </div>
+              <div class="vital-warn-msg visible" id="glicWarn">⚠️ Glicemia elevada</div>
+            </div>
+
+            <!-- Dor (EVA) -->
+            <div class="field col-span-2">
+              <label>Escala de Dor (EVA 0–10)</label>
+              <div class="vital-input-wrap">
+                <input type="range" min="0" max="10" value="2" id="dor-range"
+                  style="width:100%;padding:10px 0;cursor:pointer;accent-color:var(--cyan)"
+                  oninput="document.getElementById('dor-val').textContent = this.value + '/10'; markUnsaved()">
+              </div>
+              <div style="font-size:0.8rem;color:var(--text-sub);font-weight:600;margin-top:2px;">Intensidade: <span id="dor-val">2/10</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SEÇÃO 3: DIAGNÓSTICO ──────────────────────────── -->
+      <div class="form-section" id="diagnostico">
+        <div class="section-header">
+          <div class="section-icon green">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </div>
+          <div class="section-header-text">
+            <div class="section-title">Diagnóstico</div>
+            <div class="section-subtitle">Hipótese diagnóstica e CID-10 — dados restritos ao médico</div>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="field-grid">
+
+            <!-- Hipótese diagnóstica -->
+            <div class="field col-span-full">
+              <label>
+                Hipótese Diagnóstica
+                <span class="req">*</span>
+                <svg class="lock-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              </label>
+              <div class="textarea-wrap">
+                <textarea placeholder="Descreva a hipótese diagnóstica..." style="min-height:72px" onInput="markUnsaved()">Diabetes mellitus tipo 2 descompensado (HbA1c 7,8%). Hipertensão arterial sistêmica em acompanhamento. Sobrepeso grau I (IMC 29,8).</textarea>
+              </div>
+            </div>
+
+            <!-- CID-10 -->
+            <div class="field col-span-full">
+              <label>
+                CID-10
+                <span class="req">*</span>
+                <svg class="lock-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              </label>
+              <div class="cid-select-wrap">
+                <div class="cid-display active" onclick="toggleCID()">
+                  <div>
+                    <span class="cid-selected">Diabetes mellitus não-insulinodependente</span>
+                  </div>
+                  <span class="cid-badge">E11</span>
+                </div>
+                <div class="cid-dropdown" id="cidDropdown">
+                  <div class="cid-search">
+                    <input type="text" placeholder="Buscar CID-10..." oninput="filterCID(this.value)">
+                  </div>
+                  <div id="cidList">
+                    <div class="cid-option" onclick="selectCID('E11','Diabetes mellitus não-insulinodependente')">
+                      <span class="cid-option-desc">Diabetes mellitus não-insulinodependente</span>
+                      <span class="cid-option-code">E11</span>
+                    </div>
+                    <div class="cid-option" onclick="selectCID('I10','Hipertensão essencial (primária)')">
+                      <span class="cid-option-desc">Hipertensão essencial (primária)</span>
+                      <span class="cid-option-code">I10</span>
+                    </div>
+                    <div class="cid-option" onclick="selectCID('E66','Obesidade')">
+                      <span class="cid-option-desc">Obesidade</span>
+                      <span class="cid-option-code">E66</span>
+                    </div>
+                    <div class="cid-option" onclick="selectCID('E78','Distúrbios do metabolismo das lipoproteínas')">
+                      <span class="cid-option-desc">Distúrbios do metabolismo das lipoproteínas</span>
+                      <span class="cid-option-code">E78</span>
+                    </div>
+                    <div class="cid-option" onclick="selectCID('J06','Infecções agudas das vias aéreas superiores')">
+                      <span class="cid-option-desc">Infecções agudas das vias aéreas superiores</span>
+                      <span class="cid-option-code">J06</span>
+                    </div>
+                    <div class="cid-option" onclick="selectCID('K21','Doença de refluxo gastroesofágico')">
+                      <span class="cid-option-desc">Doença de refluxo gastroesofágico</span>
+                      <span class="cid-option-code">K21</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Diagnóstico confirmado -->
+            <div class="field col-span-full">
+              <label>
+                Diagnóstico Confirmado
+                <svg class="lock-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              </label>
+              <div class="textarea-wrap">
+                <textarea placeholder="Diagnóstico clínico confirmado após avaliação..." style="min-height:72px" onInput="markUnsaved()">DM2 descompensado com necessidade de ajuste terapêutico. Solicitada HbA1c e perfil glicêmico ampliado. HAS em controle parcial. Reforçar orientações dietéticas e monitoramento glicêmico domiciliar.</textarea>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SEÇÃO 4: CONDUTA ──────────────────────────────── -->
+      <div class="form-section" id="conduta">
+        <div class="section-header">
+          <div class="section-icon orange">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <div class="section-header-text">
+            <div class="section-title">Conduta Médica</div>
+            <div class="section-subtitle">Prescrições, orientações, retorno e encaminhamentos</div>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="field-grid">
+
+            <!-- Prescrição -->
+            <div class="field col-span-full">
+              <label>
+                Prescrição / Medicamentos
+                <svg class="lock-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              </label>
+              <div class="textarea-wrap">
+                <textarea placeholder="Liste os medicamentos com posologia..." style="min-height:96px" onInput="markUnsaved()">1. Metformina 850mg — 1 comprimido 2x/dia (manhã e jantar)
+2. Sitagliptina 100mg — 1 comprimido 1x/dia (manhã) ← MANTIDA
+3. Losartana 50mg — 1 comprimido 1x/dia (manhã) ← MANTIDA
+4. Atorvastatina 20mg — 1 comprimido 1x/dia (noite) ← MANTIDA
+⚠️ ATENÇÃO: Alergia a Penicilina e Dipirona — evitar prescrição</textarea>
+              </div>
+            </div>
+
+            <!-- Orientações -->
+            <div class="field col-span-full">
+              <label>Orientações ao Paciente</label>
+              <div class="textarea-wrap">
+                <textarea placeholder="Orientações de acompanhamento, dieta, estilo de vida..." style="min-height:80px" onInput="markUnsaved()">Reforçar dieta de baixo índice glicêmico. Aumentar atividade física gradualmente (caminhadas de 30 min, 3x/semana). Monitorar glicemia capilar em jejum e 2h pós-prandial. Retornar com exames em 60 dias.</textarea>
+              </div>
+            </div>
+
+            <!-- Exames solicitados -->
+            <div class="field col-span-full">
+              <label>Exames Solicitados</label>
+              <div class="textarea-wrap">
+                <textarea placeholder="Liste os exames solicitados..." style="min-height:72px" onInput="markUnsaved()">- Hemoglobina glicada (HbA1c)
+- Glicemia em jejum e pós-prandial
+- Perfil lipídico completo
+- Creatinina e ureia
+- Microalbuminúria (24h)</textarea>
+              </div>
+            </div>
+
+            <!-- Retorno e encaminhamento -->
+            <div class="field">
+              <label>Retorno Previsto</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </span>
+                <input type="text" value="60 dias" placeholder="ex: 30 dias, 3 meses..." onInput="markUnsaved()">
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Encaminhamento</label>
+              <div class="input-wrap">
+                <span class="input-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </span>
+                <input type="text" value="Endocrinologista — reavaliação de esquema insulínico" placeholder="Especialidade / motivo..." onInput="markUnsaved()">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Rodapé / Botões -->
+      <div class="form-footer">
+        <div class="form-footer-note">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          Dados armazenados com conformidade LGPD · Acesso restrito — Dr. Carlos Menezes · CRM 123456-SP
+        </div>
+        <div class="form-actions">
+          <button class="btn-secondary" onclick="showPage('agenda')">Voltar à Agenda</button>
+          <button class="btn-primary" id="btnSalvar" onclick="salvarProntuario()">
+            <svg class="btn-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+            </svg>
+            <span class="btn-label">Salvar Prontuário</span>
+            <div class="spinner"></div>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /coluna esquerda -->
+
+  </div><!-- /content-grid -->
+
+</main>
+
+<!-- ── TOAST ──────────────────────────────────────────────────── -->
+<div class="toast" id="toast">
+  <div class="toast-icon success">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" d="M5 13l4 4L19 7"/>
+    </svg>
+  </div>
+  <div class="toast-text">
+    <div class="toast-title">Prontuário salvo com sucesso</div>
+    <div class="toast-desc">Vinculado a Fernando Gomes · 17/05/2026 · 10:00</div>
+  </div>
+</div>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+  /* Sidebar */
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+  }
+
+  /* ── Data e Hora Real ──────────────────────────────────── */
+  function realNow() {
+    const n = new Date();
+    const hh = String(n.getHours()).padStart(2,'0');
+    const mm = String(n.getMinutes()).padStart(2,'0');
+    return `${hh}:${mm}`;
+  }
+  function realDateStr() {
+    const n = new Date();
+    const dd = String(n.getDate()).padStart(2,'0');
+    const mo = String(n.getMonth()+1).padStart(2,'0');
+    const yy = n.getFullYear();
+    return `${dd}/${mo}/${yy}`;
+  }
+
+  // Sincronizar data real na descrição da página e no log de acesso
+  window.addEventListener('DOMContentLoaded', () => {
+    const now = new Date();
+
+    // helpers
+    const hh  = String(now.getHours()).padStart(2,'0');
+    const mm  = String(now.getMinutes()).padStart(2,'0');
+    const timeStart = `${hh}:${mm}`;
+
+    // hora de término = agora + 30 min
+    const end = new Date(now.getTime() + 30 * 60000);
+    const eh  = String(end.getHours()).padStart(2,'0');
+    const em  = String(end.getMinutes()).padStart(2,'0');
+    const timeEnd = `${eh}:${em}`;
+
+    const dateStr = realDateStr();
+
+    // breadcrumb / desc
+    const rd = document.getElementById('realDate');
+    if (rd) rd.textContent = dateStr;
+
+    // strip da consulta
+    const sd = document.getElementById('stripDate');
+    if (sd) sd.textContent = dateStr;
+    const st = document.getElementById('stripTime');
+    if (st) st.textContent = `${timeStart} – ${timeEnd}`;
+
+    // desc da página
+    const cd = document.getElementById('consultDesc');
+    if (cd) cd.innerHTML = `Registro clínico vinculado à consulta de Fernando Gomes · ${dateStr} às ${timeStart}`;
+
+    // autosave
+    document.getElementById('autosaveText').textContent = `Salvo às ${timeStart}`;
+
+    // log de acesso LGPD
+    const al = document.getElementById('accessLog');
+    if (al) al.textContent = `Acessado por Dr. Carlos Menezes em ${dateStr} às ${timeStart}`;
+
+    // toast
+    const td = document.querySelector('.toast-desc');
+    if (td) td.textContent = `Vinculado a Fernando Gomes · ${dateStr} · ${timeStart}`;
+  });
+
+  /* ── Autosave indicator ─────────────────────────────────── */
+  let unsavedTimer;
+  function markUnsaved() {
+    const ind = document.getElementById('autosaveIndicator');
+    const txt = document.getElementById('autosaveText');
+    ind.className = 'autosave-indicator unsaved';
+    txt.textContent = 'Alterações não salvas';
+    clearTimeout(unsavedTimer);
+  }
+  function markSaved() {
+    const ind = document.getElementById('autosaveIndicator');
+    const txt = document.getElementById('autosaveText');
+    ind.className = 'autosave-indicator saved';
+    txt.textContent = `Salvo às ${realNow()}`;
+  }
+
+  /* Char counter */
+  function updateCounter(el, counterId, max) {
+    document.getElementById(counterId).textContent = el.value.length + '/' + max;
+  }
+  // init counters
+  const qp = document.getElementById('queixaPrincipal');
+  if (qp) document.getElementById('qpCounter').textContent = qp.value.length + '/500';
+
+  /* IMC Calculator */
+  function calcIMC() {
+    const peso = parseFloat(document.getElementById('pesoInput').value);
+    const alt  = parseFloat(document.getElementById('alturaInput').value) / 100;
+    const disp = document.getElementById('imcDisplay');
+    if (peso > 0 && alt > 0) {
+      const imc = (peso / (alt * alt)).toFixed(1);
+      let cat = '';
+      if      (imc < 18.5) cat = 'Abaixo do peso';
+      else if (imc < 25)   cat = 'Peso normal';
+      else if (imc < 30)   cat = 'Sobrepeso';
+      else if (imc < 35)   cat = 'Obesidade grau I';
+      else if (imc < 40)   cat = 'Obesidade grau II';
+      else                 cat = 'Obesidade grau III';
+      disp.textContent = `${String(imc).replace('.',',')} kg/m² — ${cat}`;
+      disp.className = 'imc-display calculated';
+    } else {
+      disp.textContent = '—';
+      disp.className = 'imc-display';
+    }
+  }
+
+  /* PA check */
+  function checkPA(input) {
+    const val = input.value;
+    const match = val.match(/(\d+)\/(\d+)/);
+    const warn = document.getElementById('paWarn');
+    if (match) {
+      const sys = parseInt(match[1]), dia = parseInt(match[2]);
+      if (sys >= 140 || dia >= 90) {
+        input.classList.add('warn-value');
+        warn.classList.add('visible');
+      } else {
+        input.classList.remove('warn-value');
+        warn.classList.remove('visible');
+      }
+    }
+  }
+
+  /* Glicemia check */
+  function checkGlicemia(input) {
+    const warn = document.getElementById('glicWarn');
+    if (parseFloat(input.value) > 180) {
+      input.classList.add('warn-value');
+      warn.classList.add('visible');
+    } else {
+      input.classList.remove('warn-value');
+      warn.classList.remove('visible');
+    }
+  }
+
+  /* CID dropdown */
+  function toggleCID() {
+    const dd = document.getElementById('cidDropdown');
+    dd.classList.toggle('open');
+  }
+  function selectCID(code, desc) {
+    const disp = document.querySelector('.cid-display');
+    disp.querySelector('.cid-selected').textContent = desc;
+    disp.querySelector('.cid-badge').textContent = code;
+    document.getElementById('cidDropdown').classList.remove('open');
+    markUnsaved();
+  }
+  function filterCID(q) {
+    document.querySelectorAll('.cid-option').forEach(opt => {
+      opt.style.display = opt.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.cid-select-wrap')) {
+      document.getElementById('cidDropdown').classList.remove('open');
+    }
+  });
+
+  /* Section nav */
+  function scrollToSection(id, btn) {
+    document.querySelectorAll('.section-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* Salvar prontuário */
+  function salvarProntuario() {
+    const btn = document.getElementById('btnSalvar');
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      markSaved();
+      showToast();
+    }, 1800);
+  }
+
+  /* Toast */
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  /* Keyboard close CID */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('cidDropdown').classList.remove('open');
+  });
+</script>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVEGAÇÃO ENTRE PÁGINAS
+═══════════════════════════════════════════════════════════ -->
+<script>
+  /* ── Troca de página ─────────────────────────────────────── */
+  function showPage(name, patientData) {
+    // Fecha o menu lateral sempre que navegar
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+    // Esconde todas as páginas
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Mostra a página solicitada
+    document.getElementById('page-' + name).classList.add('active');
+    // Scroll para o topo
+    window.scrollTo(0, 0);
+    // Atualiza title
+    const titles = {
+      agenda: 'VitaCare — Agenda do Médico',
+      prontuario: 'VitaCare — Prontuário Eletrônico',
+      'lista-prontuarios': 'VitaCare — Prontuários'
+    };
+    document.title = titles[name] || 'VitaCare';
+    // Atualiza nav ativo em todas as sidebars
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    if (name === 'agenda') {
+      document.querySelectorAll('.nav-agenda').forEach(i => i.classList.add('active'));
+    } else if (name === 'prontuario' || name === 'lista-prontuarios') {
+      document.querySelectorAll('.nav-prontuarios').forEach(i => i.classList.add('active'));
+    }
+    // Re-inicializa a página ao mostrar
+    if (name === 'agenda') initAgenda();
+    if (name === 'prontuario') initProntuario(patientData);
+    if (name === 'lista-prontuarios') initListaProntuarios();
+  }
+</script>
+
+<!-- ── SCRIPTS DA AGENDA ──────────────────────────────────── -->
+<script>
+  function initAgenda() {
+    updateDateDisplay();
+  }
+  
+  /* ── Sidebar ──────────────────────────────────────────────── */
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+  }
+
+  /* ── Data e Hora Real ─────────────────────────────────────── */
+  const months   = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const weekdays = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+
+  // Data de hoje vinda do relógio do usuário
+  const TODAY = new Date();
+  TODAY.setHours(0,0,0,0);
+
+  let currentDate = new Date(TODAY);
+
+  // Agendas fictícias por offset de dia (0 = hoje, 1 = amanhã, etc.)
+  const AGENDAS = {
+    0: [ // HOJE
+      { hora:'08:00', status:'concluido', nome:'Ana Beatriz Souza',  iniciais:'AB', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Concluído',        motivo:'Hipertensão arterial',           note:'Consulta de rotina. Paciente relata melhora dos sintomas.' },
+      { hora:'08:30', status:'concluido', nome:'Roberto Alves Lima', iniciais:'RL', especialidade:'Cardiologia',    duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',   statusLabel:'Concluído',        motivo:'Avaliação cardiológica',          note:'Encaminhado para ECG. Aguardar resultado em 5 dias.' },
+      { hora:'09:15', status:'concluido', nome:'Mariana Costa',      iniciais:'MC', especialidade:'Clínica Geral',  duracao:'20 min', tipo:'exame',    tipoLabel:'Exame',         statusLabel:'Concluído',        motivo:'Resultado de exame laboratorial', note:'Resultados dentro da normalidade. Manter medicação.' },
+      { hora:'10:00', status:'andamento', nome:'Fernando Gomes',     iniciais:'FG', especialidade:'Endocrinologia', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Em atendimento',   motivo:'Diabetes tipo 2 — controle glicêmico', note:'Em andamento. Revisão dos exames de hemoglobina glicada.' },
+      { hora:'11:00', status:'presente',  nome:'Cláudia Mendes',     iniciais:'CM', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'urgencia', tipoLabel:'Urgência',      statusLabel:'Aguardando',       motivo:'Dor abdominal aguda',            note:'Paciente realizou check-in. Aguardando chamada.' },
+      { hora:'13:00', status:'agendado',  nome:'Juliana Ferreira',   iniciais:'JF', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',   statusLabel:'Agendado',         motivo:'Avaliação clínica geral',         note:'Paciente ainda não realizou check-in.' },
+      { hora:'13:30', status:'cancelado', nome:'Pedro Rocha',        iniciais:'PR', especialidade:'Cirurgia Geral', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Cancelado',        motivo:'Acompanhamento pós-operatório',   note:'Paciente cancelou por motivo pessoal.' },
+      { hora:'14:00', status:'agendado',  nome:'Sebastião Nunes',    iniciais:'SN', especialidade:'Cardiologia',    duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',         motivo:'Controle de pressão arterial',   note:'Aguardando confirmação de chegada.' },
+      { hora:'15:00', status:'agendado',  nome:'Tatiana Oliveira',   iniciais:'TO', especialidade:'Dermatologia',   duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',   statusLabel:'Agendado',         motivo:'Consulta dermatológica',          note:'Paciente confirmou presença via SMS.' },
+    ],
+    1: [ // AMANHÃ
+      { hora:'08:00', status:'agendado',  nome:'Ricardo Pinto',      iniciais:'RP', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Controle de colesterol',       note:'Aguardando chegada.' },
+      { hora:'09:00', status:'agendado',  nome:'Luciana Matos',      iniciais:'LM', especialidade:'Cardiologia',    duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Palpitações frequentes',       note:'Primeira consulta cardiológica.' },
+      { hora:'10:00', status:'agendado',  nome:'Eduardo Santos',     iniciais:'ES', especialidade:'Endocrinologia', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Controle de tireoide',         note:'Aguardando resultado de TSH.' },
+      { hora:'11:00', status:'agendado',  nome:'Patrícia Lima',      iniciais:'PL', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'exame',    tipoLabel:'Exame',        statusLabel:'Agendado',  motivo:'Avaliação de exames anuais',   note:'Exames em mãos para avaliação.' },
+      { hora:'14:00', status:'agendado',  nome:'Marcos Vieira',      iniciais:'MV', especialidade:'Cardiologia',    duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'HAS — ajuste de medicação',    note:'Uso de losartana 50mg.' },
+      { hora:'15:30', status:'agendado',  nome:'Camila Ramos',       iniciais:'CR', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'urgencia', tipoLabel:'Urgência',     statusLabel:'Agendado',  motivo:'Febre há 3 dias',              note:'Encaixe de urgência.' },
+    ],
+    2: [ // +2 dias
+      { hora:'08:30', status:'agendado',  nome:'Henrique Costa',     iniciais:'HC', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Check-up geral',               note:'Primeira consulta na clínica.' },
+      { hora:'10:00', status:'agendado',  nome:'Vanessa Teixeira',   iniciais:'VT', especialidade:'Endocrinologia', duracao:'45 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Diabetes tipo 1 — controle',   note:'HbA1c solicitada.' },
+      { hora:'13:00', status:'agendado',  nome:'Diego Martins',      iniciais:'DM', especialidade:'Cardiologia',    duracao:'30 min', tipo:'exame',    tipoLabel:'Exame',        statusLabel:'Agendado',  motivo:'Resultado de Holter 24h',      note:'Trazer o aparelho devolvido.' },
+      { hora:'15:00', status:'agendado',  nome:'Fernanda Braga',     iniciais:'FB', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Controle pós-operatório',      note:'Retirada de pontos.' },
+    ],
+    3: [ // +3 dias
+      { hora:'09:00', status:'agendado',  nome:'Rodrigo Azevedo',    iniciais:'RA', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Dor lombar crônica',           note:'Primeira consulta.' },
+      { hora:'10:30', status:'agendado',  nome:'Simone Barros',      iniciais:'SB', especialidade:'Endocrinologia', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Hipotireoidismo — controle',   note:'Aguardando resultado de TSH.' },
+      { hora:'14:00', status:'agendado',  nome:'Bruno Carvalho',     iniciais:'BC', especialidade:'Cardiologia',    duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Avaliação pré-operatória',     note:'Cirurgia agendada para próximo mês.' },
+    ],
+    4: [ // +4 dias
+      { hora:'08:00', status:'agendado',  nome:'Alice Mendonça',     iniciais:'AM', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Controle de pressão',          note:'PA descontrolada na última visita.' },
+      { hora:'11:00', status:'agendado',  nome:'Gabriel Torres',     iniciais:'GT', especialidade:'Dermatologia',   duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Lesão de pele suspeita',       note:'Fotos enviadas pelo paciente.' },
+      { hora:'15:00', status:'agendado',  nome:'Isabela Cruz',       iniciais:'IC', especialidade:'Clínica Geral',  duracao:'45 min', tipo:'exame',    tipoLabel:'Exame',        statusLabel:'Agendado',  motivo:'Avaliação laboratorial anual', note:'Exames completos em mãos.' },
+    ],
+    5: [ // +5 dias
+      { hora:'09:00', status:'agendado',  nome:'Thiago Lopes',       iniciais:'TL', especialidade:'Cardiologia',    duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Pós-stent — controle',         note:'Primeiro retorno após procedimento.' },
+      { hora:'10:30', status:'agendado',  nome:'Natália Souza',      iniciais:'NS', especialidade:'Endocrinologia', duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'DM2 — ajuste insulina',        note:'Trazer registro glicêmico.' },
+      { hora:'14:30', status:'agendado',  nome:'Paulo Machado',      iniciais:'PM', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Fadiga crônica',               note:'Encaminhado pelo clínico geral.' },
+    ],
+    6: [ // +6 dias
+      { hora:'09:30', status:'agendado',  nome:'Aline Peixoto',      iniciais:'AP', especialidade:'Clínica Geral',  duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Anemia ferropriva — controle', note:'Resultado de hemograma solicitado.' },
+      { hora:'11:00', status:'agendado',  nome:'Leonardo Faria',     iniciais:'LF', especialidade:'Cardiologia',    duracao:'45 min', tipo:'primeira', tipoLabel:'1ª Consulta',  statusLabel:'Agendado',  motivo:'Dor precordial atípica',       note:'ECG e ecocardiograma em mãos.' },
+      { hora:'15:00', status:'agendado',  nome:'Carolina Neves',     iniciais:'CN', especialidade:'Dermatologia',   duracao:'30 min', tipo:'retorno',  tipoLabel:'Retorno',      statusLabel:'Agendado',  motivo:'Acompanhamento dermatológico', note:'Retorno após tratamento.' },
+    ],
+  };
+
+  /* ── Funções de data ──────────────────────────────────────── */
+  function getOffset(date) {
+    const d = new Date(date); d.setHours(0,0,0,0);
+    const t = new Date(TODAY); t.setHours(0,0,0,0);
+    return Math.round((d - t) / 86400000);
+  }
+
+  function isToday(date) {
+    return getOffset(date) === 0;
+  }
+
+  function updateDateDisplay() {
+    const d = currentDate;
+    document.getElementById('dateDisplay').textContent  = `${d.getDate()} de ${months[d.getMonth()]}`;
+    document.getElementById('weekdayDisplay').textContent = weekdays[d.getDay()];
+    // Mostrar/esconder botão "Hoje"
+    document.querySelector('.date-nav-today').style.display = isToday(d) ? 'none' : '';
+    renderTimeline();
+  }
+
+  function changeDay(delta) {
+    currentDate = new Date(currentDate);
+    currentDate.setDate(currentDate.getDate() + delta);
+    updateDateDisplay();
+  }
+
+  function goToday() {
+    currentDate = new Date(TODAY);
+    updateDateDisplay();
+  }
+
+  /* ── Renderização dinâmica da timeline ───────────────────── */
+  const SLOT_TIMES = ['08:00','08:30','09:15','09:35','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:45','16:30','17:00'];
+
+  function nowMinutes() {
+    const n = new Date();
+    return n.getHours() * 60 + n.getMinutes();
+  }
+
+  function timeToMin(str) {
+    const [h,m] = str.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  function renderTimeline() {
+    const offset  = getOffset(currentDate);
+    const agenda  = AGENDAS[offset] || [];
+    const isToday_ = isToday(currentDate);
+    const nowMin  = nowMinutes();
+    const container = document.getElementById('timeline');
+
+    // Mapear consultas por hora
+    const consultasByTime = {};
+    agenda.forEach(c => { consultasByTime[c.hora] = c; });
+
+    // Calcular KPIs
+    const total     = agenda.length;
+    const concluidos= agenda.filter(c => c.status === 'concluido').length;
+    const cancelados= agenda.filter(c => c.status === 'cancelado').length;
+    const pendentes = agenda.filter(c => !['concluido','cancelado'].includes(c.status)).length;
+    document.querySelector('.kpi-card:nth-child(1) .kpi-value').textContent = total;
+    document.querySelector('.kpi-card:nth-child(2) .kpi-value').textContent = concluidos;
+    document.querySelector('.kpi-card:nth-child(3) .kpi-value').textContent = pendentes;
+    document.querySelector('.kpi-card:nth-child(4) .kpi-value').textContent = cancelados;
+
+    // Horários padrão da agenda
+    const horariosConsulta = ['08:00','08:30','09:15','10:00','10:30','11:00','11:30','13:00','13:30','14:00','14:30','15:00','15:45','16:30','17:00'];
+
+    let html = '';
+
+    horariosConsulta.forEach((hora, idx) => {
+      // Intervalo de lanche
+      if (hora === '10:00') {
+        html += `
+        <div class="timeline-break">
+          <div class="timeline-time" style="align-items:center;font-size:0.7rem;">09:35</div>
+          <div class="timeline-content">
+            <div class="break-label">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              Intervalo — 09:35 às 10:00
+            </div>
+          </div>
+        </div>`;
+      }
+      // Intervalo de almoço
+      if (hora === '13:00') {
+        html += `
+        <div class="timeline-break">
+          <div class="timeline-time" style="align-items:center;font-size:0.7rem;">12:00</div>
+          <div class="timeline-content">
+            <div class="break-label">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 3v1m0 16v1M4.22 4.22l.707.707m11.314 11.314l.707.707M1 12h1m20 0h1M4.22 19.78l.707-.707M18.657 5.636l.707-.707M12 6a6 6 0 100 12 6 6 0 000-12z"/></svg>
+              Intervalo de almoço — 12:00 às 13:00
+            </div>
+          </div>
+        </div>`;
+      }
+
+      const consulta = consultasByTime[hora];
+      const slotMin  = timeToMin(hora);
+      const isNowSlot = isToday_ && nowMin >= slotMin && nowMin < slotMin + 60;
+      const noBorder = idx === horariosConsulta.length - 1 ? 'style="border-bottom:none"' : '';
+
+      if (consulta) {
+        const nowClass = isNowSlot ? ' now' : '';
+        html += `
+        <div class="timeline-slot${nowClass}" data-status="${consulta.status}" ${noBorder}>
+          <div class="timeline-time">
+            ${hora}
+            ${isNowSlot ? '<div class="now-indicator"></div>' : ''}
+          </div>
+          <div class="timeline-content">
+            <div class="consult-card ${consulta.status}" onclick="openModal('${consulta.nome}','${hora}','${consulta.tipoLabel}','${consulta.motivo}','${consulta.statusLabel}','${consulta.iniciais}','${consulta.note}')">
+              <div class="consult-avatar">${consulta.iniciais}</div>
+              <div class="consult-info">
+                <div class="consult-name">${consulta.nome}</div>
+                <div class="consult-meta">
+                  <span class="consult-type">${consulta.especialidade}</span>
+                  <span class="consult-dot"></span>
+                  <span class="consult-duration">${consulta.duracao}</span>
+                </div>
+              </div>
+              <div class="consult-badges">
+                <span class="badge-tipo ${consulta.tipo}">${consulta.tipoLabel}</span>
+                <span class="badge-status ${consulta.status}">${consulta.statusLabel}</span>
+              </div>
+              <div class="consult-action">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      } else {
+        html += `
+        <div class="timeline-slot" data-status="disponivel" ${noBorder}>
+          <div class="timeline-time">${isNowSlot ? '<div class="now-indicator"></div>' : ''}${hora}</div>
+          <div class="timeline-content">
+            <div class="slot-available">
+              <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="width:14px;height:14px;color:var(--text-muted)"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg>
+              Horário disponível
+              <div class="slot-available-line"></div>
+            </div>
+          </div>
+        </div>`;
+      }
+    });
+
+    container.innerHTML = html;
+  }
+
+  /* ── Relógio em tempo real na topbar ─────────────────────── */
+  function startClock() {
+    // Não há elemento de clock na topbar nesta página, mas atualizamos
+    // o indicador "now" da timeline a cada minuto
+    setInterval(() => {
+      if (isToday(currentDate)) renderTimeline();
+    }, 60000);
+  }
+
+  /* ── Init ─────────────────────────────────────────────────── */
+  updateDateDisplay();
+  startClock();
+
+  /* ── Filtro de status ─────────────────────────────────────── */
+  function filterStatus(btn, status) {
+    document.querySelectorAll('.status-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.timeline-slot').forEach(slot => {
+      if (status === 'todos' || slot.dataset.status === status || slot.dataset.status === 'disponivel') {
+        slot.style.display = '';
+      } else {
+        slot.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.timeline-break').forEach(b => b.style.display = '');
+  }
+
+  /* ── Modal ────────────────────────────────────────────────── */
+  function openModal(name, time, type, reason, status, initials, note) {
+    document.getElementById('modalAvatar').textContent   = initials;
+    document.getElementById('modalName').textContent     = name;
+    document.getElementById('modalMeta').textContent     = `${time} · ${type} · ${status}`;
+    document.getElementById('modalTime').textContent     = time;
+    document.getElementById('modalType').textContent     = type;
+    document.getElementById('modalReason').textContent   = reason;
+    document.getElementById('modalStatus').textContent   = status;
+    document.getElementById('modalNoteText').textContent = note;
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+</script>
+
+<!-- ── SCRIPTS DO PRONTUÁRIO ─────────────────────────────── -->
+<script>
+  function initProntuario(patientData) {
+    // Re-dispara o DOMContentLoaded logic manualmente
+    const now = new Date();
+    const hh  = String(now.getHours()).padStart(2,'0');
+    const mm  = String(now.getMinutes()).padStart(2,'0');
+    const timeStart = hh + ':' + mm;
+    const end = new Date(now.getTime() + 30 * 60000);
+    const eh  = String(end.getHours()).padStart(2,'0');
+    const em  = String(end.getMinutes()).padStart(2,'0');
+    const timeEnd = eh + ':' + mm;
+    const dateStr = realDateStr();
+
+    // Se veio dados do paciente da agenda, usa eles; senão usa Fernando Gomes como padrão
+    const patient = patientData || { nome: 'Fernando Gomes', iniciais: 'FG', hora: timeStart, tipo: 'Retorno', motivo: 'Diabetes tipo 2', status: 'andamento' };
+
+    const rd = document.getElementById('realDate');
+    if (rd) rd.textContent = dateStr;
+    const sd = document.getElementById('stripDate');
+    if (sd) sd.textContent = dateStr;
+    const st = document.getElementById('stripTime');
+    if (st) st.textContent = (patient.hora || timeStart) + ' – ' + timeEnd;
+    const cd = document.getElementById('consultDesc');
+    if (cd) cd.innerHTML = 'Registro clínico vinculado à consulta de ' + patient.nome + ' · ' + dateStr + ' às ' + (patient.hora || timeStart);
+    const ai = document.getElementById('autosaveText');
+    if (ai) ai.textContent = 'Salvo às ' + timeStart;
+    const al = document.getElementById('accessLog');
+    if (al) al.textContent = 'Acessado por Dr. Carlos Menezes em ' + dateStr + ' às ' + timeStart;
+    const td = document.querySelector('#page-prontuario .toast-desc');
+    if (td) td.textContent = 'Vinculado a ' + patient.nome + ' · ' + dateStr + ' · ' + (patient.hora || timeStart);
+
+    // Atualiza nome do paciente no strip de consulta
+    const stripName = document.getElementById('stripPatientName');
+    if (stripName) stripName.textContent = patient.nome;
+    const stripInitials = document.getElementById('stripPatientInitials');
+    if (stripInitials) stripInitials.textContent = patient.iniciais || 'FG';
+    const stripMotivo = document.getElementById('stripMotivo');
+    if (stripMotivo) stripMotivo.textContent = patient.motivo || 'Diabetes tipo 2';
+
+    // Define modo: visualização (concluido) ou edição (andamento/outros)
+    const isView = patient.status === 'concluido';
+    const prontuarioBody = document.getElementById('prontuarioEditBody');
+    const prontuarioViewBody = document.getElementById('prontuarioViewBody');
+    if (prontuarioBody) prontuarioBody.style.display = isView ? 'none' : '';
+    if (prontuarioViewBody) prontuarioViewBody.style.display = isView ? '' : 'none';
+  }
+  
+  /* Sidebar */
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+  }
+
+  /* ── Data e Hora Real ──────────────────────────────────── */
+  function realNow() {
+    const n = new Date();
+    const hh = String(n.getHours()).padStart(2,'0');
+    const mm = String(n.getMinutes()).padStart(2,'0');
+    return `${hh}:${mm}`;
+  }
+  function realDateStr() {
+    const n = new Date();
+    const dd = String(n.getDate()).padStart(2,'0');
+    const mo = String(n.getMonth()+1).padStart(2,'0');
+    const yy = n.getFullYear();
+    return `${dd}/${mo}/${yy}`;
+  }
+
+  // Sincronizar data real na descrição da página e no log de acesso
+  window.addEventListener('DOMContentLoaded', () => {
+    const now = new Date();
+
+    // helpers
+    const hh  = String(now.getHours()).padStart(2,'0');
+    const mm  = String(now.getMinutes()).padStart(2,'0');
+    const timeStart = `${hh}:${mm}`;
+
+    // hora de término = agora + 30 min
+    const end = new Date(now.getTime() + 30 * 60000);
+    const eh  = String(end.getHours()).padStart(2,'0');
+    const em  = String(end.getMinutes()).padStart(2,'0');
+    const timeEnd = `${eh}:${em}`;
+
+    const dateStr = realDateStr();
+
+    // breadcrumb / desc
+    const rd = document.getElementById('realDate');
+    if (rd) rd.textContent = dateStr;
+
+    // strip da consulta
+    const sd = document.getElementById('stripDate');
+    if (sd) sd.textContent = dateStr;
+    const st = document.getElementById('stripTime');
+    if (st) st.textContent = `${timeStart} – ${timeEnd}`;
+
+    // desc da página
+    const cd = document.getElementById('consultDesc');
+    if (cd) cd.innerHTML = `Registro clínico vinculado à consulta de Fernando Gomes · ${dateStr} às ${timeStart}`;
+
+    // autosave
+    document.getElementById('autosaveText').textContent = `Salvo às ${timeStart}`;
+
+    // log de acesso LGPD
+    const al = document.getElementById('accessLog');
+    if (al) al.textContent = `Acessado por Dr. Carlos Menezes em ${dateStr} às ${timeStart}`;
+
+    // toast
+    const td = document.querySelector('.toast-desc');
+    if (td) td.textContent = `Vinculado a Fernando Gomes · ${dateStr} · ${timeStart}`;
+  });
+
+  /* ── Autosave indicator ─────────────────────────────────── */
+  let unsavedTimer;
+  function markUnsaved() {
+    const ind = document.getElementById('autosaveIndicator');
+    const txt = document.getElementById('autosaveText');
+    ind.className = 'autosave-indicator unsaved';
+    txt.textContent = 'Alterações não salvas';
+    clearTimeout(unsavedTimer);
+  }
+  function markSaved() {
+    const ind = document.getElementById('autosaveIndicator');
+    const txt = document.getElementById('autosaveText');
+    ind.className = 'autosave-indicator saved';
+    txt.textContent = `Salvo às ${realNow()}`;
+  }
+
+  /* Char counter */
+  function updateCounter(el, counterId, max) {
+    document.getElementById(counterId).textContent = el.value.length + '/' + max;
+  }
+  // init counters
+  const qp = document.getElementById('queixaPrincipal');
+  if (qp) document.getElementById('qpCounter').textContent = qp.value.length + '/500';
+
+  /* IMC Calculator */
+  function calcIMC() {
+    const peso = parseFloat(document.getElementById('pesoInput').value);
+    const alt  = parseFloat(document.getElementById('alturaInput').value) / 100;
+    const disp = document.getElementById('imcDisplay');
+    if (peso > 0 && alt > 0) {
+      const imc = (peso / (alt * alt)).toFixed(1);
+      let cat = '';
+      if      (imc < 18.5) cat = 'Abaixo do peso';
+      else if (imc < 25)   cat = 'Peso normal';
+      else if (imc < 30)   cat = 'Sobrepeso';
+      else if (imc < 35)   cat = 'Obesidade grau I';
+      else if (imc < 40)   cat = 'Obesidade grau II';
+      else                 cat = 'Obesidade grau III';
+      disp.textContent = `${String(imc).replace('.',',')} kg/m² — ${cat}`;
+      disp.className = 'imc-display calculated';
+    } else {
+      disp.textContent = '—';
+      disp.className = 'imc-display';
+    }
+  }
+
+  /* PA check */
+  function checkPA(input) {
+    const val = input.value;
+    const match = val.match(/(\d+)\/(\d+)/);
+    const warn = document.getElementById('paWarn');
+    if (match) {
+      const sys = parseInt(match[1]), dia = parseInt(match[2]);
+      if (sys >= 140 || dia >= 90) {
+        input.classList.add('warn-value');
+        warn.classList.add('visible');
+      } else {
+        input.classList.remove('warn-value');
+        warn.classList.remove('visible');
+      }
+    }
+  }
+
+  /* Glicemia check */
+  function checkGlicemia(input) {
+    const warn = document.getElementById('glicWarn');
+    if (parseFloat(input.value) > 180) {
+      input.classList.add('warn-value');
+      warn.classList.add('visible');
+    } else {
+      input.classList.remove('warn-value');
+      warn.classList.remove('visible');
+    }
+  }
+
+  /* CID dropdown */
+  function toggleCID() {
+    const dd = document.getElementById('cidDropdown');
+    dd.classList.toggle('open');
+  }
+  function selectCID(code, desc) {
+    const disp = document.querySelector('.cid-display');
+    disp.querySelector('.cid-selected').textContent = desc;
+    disp.querySelector('.cid-badge').textContent = code;
+    document.getElementById('cidDropdown').classList.remove('open');
+    markUnsaved();
+  }
+  function filterCID(q) {
+    document.querySelectorAll('.cid-option').forEach(opt => {
+      opt.style.display = opt.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+    });
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.cid-select-wrap')) {
+      document.getElementById('cidDropdown').classList.remove('open');
+    }
+  });
+
+  /* Section nav */
+  function scrollToSection(id, btn) {
+    document.querySelectorAll('.section-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* Salvar prontuário */
+  function salvarProntuario() {
+    const btn = document.getElementById('btnSalvar');
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      markSaved();
+      showToast();
+    }, 1800);
+  }
+
+  /* Toast */
+  function showToast() {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  /* Keyboard close CID */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('cidDropdown').classList.remove('open');
+  });
+
+</script>
+
+<script>
+  /* ── Init ao carregar ─────────────────────────────────────── */
+  document.addEventListener('DOMContentLoaded', () => {
+    initAgenda();
+  });
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA: LISTA DE PRONTUÁRIOS
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-lista-prontuarios">
+
+<!-- ── HEADER ───────────────────────────────────────────────── -->
+<header class="header">
+  <button class="btn-hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+  <a href="#" class="header-logo">
+    <div class="header-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <span class="header-logo-name">Vita<span>Care</span></span>
+  </a>
+  <div class="header-divider"></div>
+  <span class="header-page-title">Prontuários</span>
+  <div class="header-right">
+    <div class="header-user">
+      <div class="header-avatar">CM</div>
+      <div class="header-user-info">
+        <span class="header-user-name">Dr. Carlos Menezes</span>
+        <span class="header-user-badge">Médico · CRM 123456</span>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="localStorage.removeItem('vitacare_session'); window.location.href='index.html'">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
+      </svg>
+      Sair
+    </button>
+  </div>
+</header>
+
+<style>
+  /* ══ LISTA PRONTUÁRIOS STYLES ══ */
+  #page-lista-prontuarios .main { margin-top: var(--header-h,64px); min-height: calc(100vh - 64px); padding: 32px 40px; max-width: 1100px; margin-left: auto; margin-right: auto; }
+  #page-lista-prontuarios .lp-search-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .lp-search-wrap { flex: 1; min-width: 220px; position: relative; }
+  .lp-search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none; }
+  .lp-search-input { width: 100%; padding: 10px 12px 10px 38px; border: 1px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text-main); background: var(--white); outline: none; transition: border-color 0.2s; }
+  .lp-search-input:focus { border-color: var(--cyan); }
+  .lp-filter-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .lp-filter-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; color: var(--text-sub); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+  .lp-filter-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .lp-filter-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+  .lp-filter-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .lp-kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 24px; }
+  .lp-kpi { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(10,37,64,0.05); }
+  .lp-kpi-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .lp-kpi-icon svg { width: 18px; height: 18px; }
+  .lp-kpi-icon.all { background: var(--surface-2); } .lp-kpi-icon.all svg { color: var(--cyan); }
+  .lp-kpi-icon.done { background: var(--status-concluido-bg); } .lp-kpi-icon.done svg { color: var(--status-concluido); }
+  .lp-kpi-icon.wip  { background: var(--status-andamento-bg); } .lp-kpi-icon.wip svg  { color: var(--status-andamento); }
+  .lp-kpi-icon.pend { background: var(--warn-bg); } .lp-kpi-icon.pend svg { color: var(--warn); }
+  .lp-kpi-val { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-main); line-height: 1; margin-bottom: 3px; }
+  .lp-kpi-lbl { font-size: 0.73rem; color: var(--text-muted); font-weight: 500; }
+  .lp-table-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 24px rgba(10,37,64,0.07); overflow: hidden; animation: fadeSlideUp 0.4s ease 0.15s both; }
+  .lp-table-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .lp-table-title { font-family: 'Sora', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
+  .lp-table-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+  .lp-table { width: 100%; border-collapse: collapse; }
+  .lp-table thead th { padding: 12px 20px; text-align: left; font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--surface); }
+  .lp-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; cursor: pointer; }
+  .lp-table tbody tr:last-child { border-bottom: none; }
+  .lp-table tbody tr:hover { background: var(--surface); }
+  .lp-table td { padding: 14px 20px; font-size: 0.85rem; color: var(--text-main); vertical-align: middle; }
+  .lp-patient-cell { display: flex; align-items: center; gap: 10px; }
+  .lp-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 0.75rem; font-weight: 700; background: var(--surface-2); color: var(--navy-mid); flex-shrink: 0; }
+  .lp-patient-name { font-weight: 600; color: var(--text-main); }
+  .lp-patient-spec { font-size: 0.73rem; color: var(--text-muted); margin-top: 2px; }
+  .lp-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+  .lp-badge.concluido { background: var(--status-concluido-bg); color: var(--status-concluido); border: 1px solid var(--status-concluido-bd); }
+  .lp-badge.andamento { background: var(--status-andamento-bg); color: var(--status-andamento); border: 1px solid var(--status-andamento-bd); }
+  .lp-badge.sem-pront  { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn-border); }
+  .lp-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .lp-action-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .lp-action-btn.open { background: var(--navy); color: var(--white); }
+  .lp-action-btn.open:hover { background: var(--navy-mid); }
+  .lp-action-btn.add { background: var(--cyan-glow); color: var(--cyan); border: 1px solid rgba(0,180,216,0.25); }
+  .lp-action-btn.add:hover { background: rgba(0,180,216,0.25); }
+  .lp-action-btn svg { width: 14px; height: 14px; }
+  .lp-empty { padding: 48px 24px; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+  .lp-empty svg { width: 40px; height: 40px; margin-bottom: 12px; color: var(--border); }
+  @media (max-width: 768px) {
+    #page-lista-prontuarios .main { padding: 20px 16px; }
+    .lp-kpi-grid { grid-template-columns: repeat(2,1fr); }
+    .lp-table thead th:nth-child(3), .lp-table td:nth-child(3),
+    .lp-table thead th:nth-child(4), .lp-table td:nth-child(4) { display: none; }
+  }
+</style>
+
+<main class="main" id="lpMain">
+
+  <nav class="breadcrumb">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    <span>Médico</span>
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:10px;height:10px"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg>
+    <span class="current">Prontuários</span>
+  </nav>
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-eyebrow">US05 — Médico</div>
+      <h1 class="page-title">Prontuários</h1>
+      <p class="page-desc">Gerencie e acesse os prontuários de todos os seus pacientes.</p>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="lp-kpi-grid" id="lpKpis">
+    <div class="lp-kpi"><div class="lp-kpi-icon all"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div><div><div class="lp-kpi-val" id="lpKpiTotal">0</div><div class="lp-kpi-lbl">Total de pacientes</div></div></div>
+    <div class="lp-kpi"><div class="lp-kpi-icon done"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="lp-kpi-val" id="lpKpiConcluido">0</div><div class="lp-kpi-lbl">Concluídos</div></div></div>
+    <div class="lp-kpi"><div class="lp-kpi-icon wip"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></div><div><div class="lp-kpi-val" id="lpKpiAndamento">0</div><div class="lp-kpi-lbl">Em andamento</div></div></div>
+    <div class="lp-kpi"><div class="lp-kpi-icon pend"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg></div><div><div class="lp-kpi-val" id="lpKpiSem">0</div><div class="lp-kpi-lbl">Sem prontuário</div></div></div>
+  </div>
+
+  <!-- Busca e filtros -->
+  <div class="lp-search-bar">
+    <div class="lp-search-wrap">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
+      <input class="lp-search-input" id="lpSearch" type="text" placeholder="Buscar paciente, especialidade ou motivo…" oninput="filterLP()">
+    </div>
+    <div class="lp-filter-btns">
+      <button class="lp-filter-btn active" data-lp-filter="todos" onclick="setLpFilter(this)">Todos</button>
+      <button class="lp-filter-btn" data-lp-filter="concluido" onclick="setLpFilter(this)">
+        <span class="lp-filter-dot" style="background:var(--status-concluido)"></span>Concluído
+      </button>
+      <button class="lp-filter-btn" data-lp-filter="andamento" onclick="setLpFilter(this)">
+        <span class="lp-filter-dot" style="background:var(--status-andamento)"></span>Em andamento
+      </button>
+      <button class="lp-filter-btn" data-lp-filter="sem" onclick="setLpFilter(this)">
+        <span class="lp-filter-dot" style="background:var(--warn)"></span>Sem prontuário
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabela -->
+  <div class="lp-table-card">
+    <div class="lp-table-header">
+      <div>
+        <div class="lp-table-title">Lista de Prontuários</div>
+        <div class="lp-table-sub" id="lpTableSub">Dr. Carlos Menezes · Clínico Geral · CRM 123456-SP</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="lp-table" id="lpTable">
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Data da Consulta</th>
+            <th>Tipo</th>
+            <th>Motivo</th>
+            <th>Status Prontuário</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="lpTableBody">
+        </tbody>
+      </table>
+    </div>
+    <div class="lp-empty" id="lpEmpty" style="display:none">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <div style="font-weight:600;color:var(--text-sub);margin-bottom:4px;">Nenhum prontuário encontrado</div>
+      <div>Tente ajustar a busca ou o filtro selecionado.</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  /* ── Dataset de prontuários — todos os pacientes de todas as agendas ── */
+  // Prontuário state: concluido = finalizado, andamento = em preenchimento, sem = não criado
+  const LP_RECORDS = [
+    // Hoje — concluídos têm prontuário finalizado; andamento = preenchendo; agendado/presente = sem prontuário
+    { nome:'Ana Beatriz Souza',   iniciais:'AB', especialidade:'Clínica Geral',   data:'Hoje',      hora:'08:00', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'Hipertensão arterial',            prontuario:'concluido', status:'concluido' },
+    { nome:'Roberto Alves Lima',  iniciais:'RL', especialidade:'Cardiologia',     data:'Hoje',      hora:'08:30', tipo:'1ª Consulta', tipoRaw:'primeira', motivo:'Avaliação cardiológica',           prontuario:'concluido', status:'concluido' },
+    { nome:'Mariana Costa',       iniciais:'MC', especialidade:'Clínica Geral',   data:'Hoje',      hora:'09:15', tipo:'Exame',       tipoRaw:'exame',    motivo:'Resultado de exame laboratorial',  prontuario:'concluido', status:'concluido' },
+    { nome:'Fernando Gomes',      iniciais:'FG', especialidade:'Endocrinologia',  data:'Hoje',      hora:'10:00', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'Diabetes tipo 2 — controle',       prontuario:'andamento', status:'andamento' },
+    { nome:'Cláudia Mendes',      iniciais:'CM', especialidade:'Clínica Geral',   data:'Hoje',      hora:'11:00', tipo:'Urgência',    tipoRaw:'urgencia', motivo:'Dor abdominal aguda',              prontuario:'sem',       status:'presente'  },
+    { nome:'Juliana Ferreira',    iniciais:'JF', especialidade:'Clínica Geral',   data:'Hoje',      hora:'13:00', tipo:'1ª Consulta', tipoRaw:'primeira', motivo:'Avaliação clínica geral',          prontuario:'sem',       status:'agendado'  },
+    { nome:'Sebastião Nunes',     iniciais:'SN', especialidade:'Cardiologia',     data:'Hoje',      hora:'14:00', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'Controle de pressão arterial',     prontuario:'sem',       status:'agendado'  },
+    { nome:'Tatiana Oliveira',    iniciais:'TO', especialidade:'Dermatologia',    data:'Hoje',      hora:'15:00', tipo:'1ª Consulta', tipoRaw:'primeira', motivo:'Consulta dermatológica',           prontuario:'sem',       status:'agendado'  },
+    // Amanhã
+    { nome:'Ricardo Pinto',       iniciais:'RP', especialidade:'Clínica Geral',   data:'Amanhã',    hora:'08:00', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'Controle de colesterol',           prontuario:'sem',       status:'agendado'  },
+    { nome:'Luciana Matos',       iniciais:'LM', especialidade:'Cardiologia',     data:'Amanhã',    hora:'09:00', tipo:'1ª Consulta', tipoRaw:'primeira', motivo:'Palpitações frequentes',           prontuario:'sem',       status:'agendado'  },
+    { nome:'Eduardo Santos',      iniciais:'ES', especialidade:'Endocrinologia',  data:'Amanhã',    hora:'10:00', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'Controle de tireoide',             prontuario:'sem',       status:'agendado'  },
+    { nome:'Patrícia Lima',       iniciais:'PL', especialidade:'Clínica Geral',   data:'Amanhã',    hora:'11:00', tipo:'Exame',       tipoRaw:'exame',    motivo:'Avaliação de exames anuais',       prontuario:'sem',       status:'agendado'  },
+    { nome:'Marcos Vieira',       iniciais:'MV', especialidade:'Cardiologia',     data:'Amanhã',    hora:'14:00', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'HAS — ajuste de medicação',        prontuario:'sem',       status:'agendado'  },
+    { nome:'Camila Ramos',        iniciais:'CR', especialidade:'Clínica Geral',   data:'Amanhã',    hora:'15:30', tipo:'Urgência',    tipoRaw:'urgencia', motivo:'Febre há 3 dias',                  prontuario:'sem',       status:'agendado'  },
+    // +2
+    { nome:'Henrique Costa',      iniciais:'HC', especialidade:'Clínica Geral',   data:'+2 dias',   hora:'08:30', tipo:'1ª Consulta', tipoRaw:'primeira', motivo:'Check-up geral',                   prontuario:'sem',       status:'agendado'  },
+    { nome:'Vanessa Teixeira',    iniciais:'VT', especialidade:'Endocrinologia',  data:'+2 dias',   hora:'10:00', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'Diabetes tipo 1 — controle',       prontuario:'sem',       status:'agendado'  },
+    { nome:'Diego Martins',       iniciais:'DM', especialidade:'Cardiologia',     data:'+2 dias',   hora:'13:00', tipo:'Exame',       tipoRaw:'exame',    motivo:'Resultado de Holter 24h',          prontuario:'sem',       status:'agendado'  },
+    { nome:'Fernanda Braga',      iniciais:'FB', especialidade:'Clínica Geral',   data:'+2 dias',   hora:'15:00', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'Controle pós-operatório',          prontuario:'sem',       status:'agendado'  },
+    // +3
+    { nome:'Rodrigo Azevedo',     iniciais:'RA', especialidade:'Clínica Geral',   data:'+3 dias',   hora:'09:00', tipo:'1ª Consulta', tipoRaw:'primeira', motivo:'Dor lombar crônica',               prontuario:'sem',       status:'agendado'  },
+    { nome:'Simone Barros',       iniciais:'SB', especialidade:'Endocrinologia',  data:'+3 dias',   hora:'10:30', tipo:'Retorno',     tipoRaw:'retorno',  motivo:'Hipotireoidismo — controle',       prontuario:'sem',       status:'agendado'  },
+    { nome:'Bruno Carvalho',      iniciais:'BC', especialidade:'Cardiologia',     data:'+3 dias',   hora:'14:00', tipo:'1ª Consulta', tipoRaw:'primeira', motivo:'Avaliação pré-operatória',         prontuario:'sem',       status:'agendado'  },
+  ];
+
+  let lpCurrentFilter = 'todos';
+  let lpCurrentSearch = '';
+
+  function initListaProntuarios() {
+    lpCurrentFilter = 'todos';
+    lpCurrentSearch = '';
+    const search = document.getElementById('lpSearch');
+    if (search) search.value = '';
+    document.querySelectorAll('.lp-filter-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.lpFilter === 'todos');
+    });
+    renderLP();
+  }
+
+  function setLpFilter(btn) {
+    lpCurrentFilter = btn.dataset.lpFilter;
+    document.querySelectorAll('.lp-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderLP();
+  }
+
+  function filterLP() {
+    lpCurrentSearch = document.getElementById('lpSearch').value.toLowerCase();
+    renderLP();
+  }
+
+  function renderLP() {
+    let records = LP_RECORDS;
+
+    // Filtro por status de prontuário
+    if (lpCurrentFilter !== 'todos') {
+      records = records.filter(r => r.prontuario === lpCurrentFilter);
+    }
+
+    // Busca textual
+    if (lpCurrentSearch) {
+      records = records.filter(r =>
+        r.nome.toLowerCase().includes(lpCurrentSearch) ||
+        r.especialidade.toLowerCase().includes(lpCurrentSearch) ||
+        r.motivo.toLowerCase().includes(lpCurrentSearch) ||
+        r.tipo.toLowerCase().includes(lpCurrentSearch)
+      );
+    }
+
+    // KPIs sempre do dataset completo
+    const total    = LP_RECORDS.length;
+    const conc     = LP_RECORDS.filter(r => r.prontuario === 'concluido').length;
+    const and_     = LP_RECORDS.filter(r => r.prontuario === 'andamento').length;
+    const sem      = LP_RECORDS.filter(r => r.prontuario === 'sem').length;
+    document.getElementById('lpKpiTotal').textContent    = total;
+    document.getElementById('lpKpiConcluido').textContent = conc;
+    document.getElementById('lpKpiAndamento').textContent = and_;
+    document.getElementById('lpKpiSem').textContent       = sem;
+
+    const tbody = document.getElementById('lpTableBody');
+    const empty = document.getElementById('lpEmpty');
+
+    if (records.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = '';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = records.map(r => {
+      const badgeMap = {
+        concluido: `<span class="lp-badge concluido"><span class="lp-badge-dot"></span>Concluído</span>`,
+        andamento: `<span class="lp-badge andamento"><span class="lp-badge-dot"></span>Em andamento</span>`,
+        sem:       `<span class="lp-badge sem-pront"><span class="lp-badge-dot"></span>Sem prontuário</span>`,
+      };
+      const hasPront = r.prontuario === 'concluido' || r.prontuario === 'andamento';
+      const btnLabel = hasPront ? 'Abrir Prontuário' : 'Adicionar Prontuário';
+      const btnClass = hasPront ? 'open' : 'add';
+      const btnIcon  = hasPront
+        ? `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`
+        : `<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg>`;
+      const data = JSON.stringify({nome:r.nome,iniciais:r.iniciais,hora:r.hora,tipo:r.tipo,motivo:r.motivo,status:r.status}).replace(/'/g,'&apos;');
+      return `<tr onclick="lpOpenRecord('${r.prontuario}', '${r.nome}', '${r.iniciais}', '${r.hora}', '${r.tipo}', '${r.motivo}', '${r.status}')">
+        <td><div class="lp-patient-cell"><div class="lp-avatar">${r.iniciais}</div><div><div class="lp-patient-name">${r.nome}</div><div class="lp-patient-spec">${r.especialidade}</div></div></div></td>
+        <td style="color:var(--text-sub);font-size:0.82rem;">${r.data} · ${r.hora}</td>
+        <td style="color:var(--text-sub);font-size:0.82rem;">${r.tipo}</td>
+        <td style="color:var(--text-sub);font-size:0.82rem;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.motivo}</td>
+        <td>${badgeMap[r.prontuario]}</td>
+        <td>
+          <button class="lp-action-btn ${btnClass}" onclick="event.stopPropagation();lpOpenRecord('${r.prontuario}','${r.nome}','${r.iniciais}','${r.hora}','${r.tipo}','${r.motivo}','${r.status}')">
+            ${btnIcon} ${btnLabel}
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function lpOpenRecord(prontuario, nome, iniciais, hora, tipo, motivo, status) {
+    showPage('prontuario', { nome, iniciais, hora, tipo, motivo, status });
+  }
+</script>
+
+</div><!-- /page-lista-prontuarios -->
+
+</body>
+</html>
