@@ -1668,7 +1668,7 @@
       </div>
     </a>
 
-    <a class="nav-item" href="#">
+    <a class="nav-item nav-historico" href="#" onclick="showPage('historico');return false;">
       <div class="nav-item-icon">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -1676,9 +1676,8 @@
       </div>
       <div class="nav-item-text">
         <span class="nav-item-label">Histórico do Paciente</span>
-        <span class="nav-item-sub">US11</span>
+        <span class="nav-item-sub">US11 — Ativo</span>
       </div>
-      <span class="badge-soon">Em breve</span>
     </a>
   </nav>
 
@@ -1931,6 +1930,12 @@
 
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeModal()">Fechar</button>
+      <button class="btn-secondary" id="modalHistoricoBtn" onclick="">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:15px;height:15px">
+          <path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Histórico
+      </button>
       <button class="btn-primary" id="modalProntuarioBtn" onclick="">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -2196,16 +2201,21 @@
     // Lógica do botão de prontuário conforme status
     const btn = document.getElementById('modalProntuarioBtn');
     const lbl = document.getElementById('modalProntuarioBtnLabel');
+    const btnHist = document.getElementById('modalHistoricoBtn');
     const rawStatus = getRawStatus(status);
     const hasProntuario = rawStatus === 'concluido' || rawStatus === 'andamento';
     const isCancelado = rawStatus === 'cancelado';
 
+    // Botão histórico sempre visível (exceto cancelado)
     if (isCancelado) {
       btn.style.display = 'none';
+      btnHist.style.display = 'none';
     } else {
       btn.style.display = '';
+      btnHist.style.display = '';
       lbl.textContent = hasProntuario ? 'Abrir Prontuário' : 'Adicionar Prontuário';
       btn.onclick = () => { closeModal(); showPage('prontuario', { nome: name, iniciais: initials, hora: time, tipo: type, motivo: reason, status: rawStatus }); };
+      btnHist.onclick = () => { closeModal(); showPage('historico', { nome: name, iniciais: initials }); };
     }
 
     document.getElementById('modalOverlay').classList.add('active');
@@ -3030,7 +3040,8 @@
     const titles = {
       agenda: 'VitaCare — Agenda do Médico',
       prontuario: 'VitaCare — Prontuário Médico',
-      'lista-prontuarios': 'VitaCare — Prontuários'
+      'lista-prontuarios': 'VitaCare — Prontuários',
+      historico: 'VitaCare — Histórico do Paciente'
     };
     document.title = titles[name] || 'VitaCare';
     // Atualiza nav ativo em todas as sidebars
@@ -3039,11 +3050,14 @@
       document.querySelectorAll('.nav-agenda').forEach(i => i.classList.add('active'));
     } else if (name === 'prontuario' || name === 'lista-prontuarios') {
       document.querySelectorAll('.nav-prontuarios').forEach(i => i.classList.add('active'));
+    } else if (name === 'historico') {
+      document.querySelectorAll('.nav-historico').forEach(i => i.classList.add('active'));
     }
     // Re-inicializa a página ao mostrar
     if (name === 'agenda') initAgenda();
     if (name === 'prontuario') initProntuario(patientData);
     if (name === 'lista-prontuarios') initListaProntuarios();
+    if (name === 'historico') initHistorico(patientData);
   }
 </script>
 
@@ -3906,6 +3920,712 @@
 </script>
 
 </div><!-- /page-lista-prontuarios -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     PÁGINA: HISTÓRICO DO PACIENTE — US11
+═══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-historico">
+
+<!-- ── HEADER ───────────────────────────────────────────────── -->
+<header class="header">
+  <button class="btn-hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+  <a href="#" class="header-logo">
+    <div class="header-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <span class="header-logo-name">Vita<span>Care</span></span>
+  </a>
+  <div class="header-divider"></div>
+  <span class="header-page-title">Histórico do Paciente</span>
+  <div class="header-right">
+    <div class="header-user">
+      <div class="header-avatar">CM</div>
+      <div class="header-user-info">
+        <span class="header-user-name">Dr. Carlos Menezes</span>
+        <span class="header-user-badge">Médico · CRM 123456</span>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="localStorage.removeItem('vitacare_session'); window.location.href='index.html'">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
+      </svg>
+      Sair
+    </button>
+  </div>
+</header>
+
+<style>
+  /* ══ HISTÓRICO STYLES ══ */
+  #page-historico .hs-main {
+    margin-top: var(--header-h, 64px);
+    min-height: calc(100vh - 64px);
+    padding: 32px 40px;
+    max-width: 1100px;
+    margin-left: auto; margin-right: auto;
+  }
+
+  /* Seletor de paciente */
+  .hs-selector-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(10,37,64,0.07);
+    margin-bottom: 24px;
+    animation: fadeSlideUp 0.35s ease both;
+  }
+  .hs-selector-label {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
+  }
+  .hs-selector-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .hs-search-wrap { flex: 1; min-width: 200px; position: relative; }
+  .hs-search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted); pointer-events: none; }
+  .hs-search-input {
+    width: 100%; padding: 10px 12px 10px 38px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+    color: var(--text-main); background: var(--white); outline: none;
+    transition: border-color 0.2s;
+  }
+  .hs-search-input:focus { border-color: var(--cyan); }
+  .hs-patient-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .hs-patient-pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 14px; border-radius: 20px;
+    border: 1.5px solid var(--border); background: var(--surface);
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.8rem; font-weight: 500; color: var(--text-sub);
+  }
+  .hs-patient-pill:hover { border-color: var(--cyan); color: var(--navy); }
+  .hs-patient-pill.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+  .hs-patient-pill-av {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(0,180,216,0.15); color: var(--cyan);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif; font-size: 0.6rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .hs-patient-pill.active .hs-patient-pill-av { background: rgba(255,255,255,0.2); color: var(--white); }
+
+  /* Card do paciente selecionado */
+  .hs-patient-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(10,37,64,0.07);
+    margin-bottom: 24px;
+    animation: fadeSlideUp 0.35s ease both;
+    display: none;
+  }
+  .hs-patient-card.visible { display: block; }
+  .hs-patient-banner {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding: 24px 28px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .hs-patient-av-big {
+    width: 58px; height: 58px; border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(0,180,216,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700;
+    color: var(--white); flex-shrink: 0;
+  }
+  .hs-patient-banner-info { flex: 1; }
+  .hs-patient-banner-name {
+    font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700;
+    color: var(--white); margin-bottom: 4px;
+  }
+  .hs-patient-banner-meta { font-size: 0.78rem; color: rgba(255,255,255,0.55); }
+  .hs-patient-banner-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .hs-banner-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 0.7rem; font-weight: 600;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .hs-patient-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--border);
+  }
+  .hs-stat-item {
+    padding: 14px 20px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+  .hs-stat-item:last-child { border-right: none; }
+  .hs-stat-val {
+    font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 700;
+    color: var(--text-main); line-height: 1; margin-bottom: 3px;
+  }
+  .hs-stat-lbl { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; }
+
+  /* Timeline de histórico */
+  .hs-timeline-wrap {
+    display: none;
+    animation: fadeSlideUp 0.4s ease both;
+  }
+  .hs-timeline-wrap.visible { display: block; }
+
+  .hs-timeline-controls {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+  }
+  .hs-timeline-title {
+    font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700;
+    color: var(--text-main);
+  }
+  .hs-timeline-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .hs-tf-btn {
+    padding: 6px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
+    color: var(--text-sub); cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .hs-tf-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .hs-tf-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+  .hs-tf-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* Linha do tempo */
+  .hs-timeline { position: relative; padding-left: 32px; }
+  .hs-timeline::before {
+    content: '';
+    position: absolute; left: 11px; top: 0; bottom: 0;
+    width: 2px; background: var(--border); border-radius: 2px;
+  }
+
+  .hs-event {
+    position: relative; margin-bottom: 20px;
+    animation: fadeSlideUp 0.35s ease both;
+  }
+  .hs-event::before {
+    content: '';
+    position: absolute; left: -25px; top: 18px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--border); border: 2px solid var(--white);
+    box-shadow: 0 0 0 2px var(--border);
+    z-index: 1;
+  }
+  .hs-event.concluido::before { background: var(--status-concluido); box-shadow: 0 0 0 2px var(--status-concluido-bd); }
+  .hs-event.andamento::before { background: var(--status-andamento); box-shadow: 0 0 0 2px var(--status-andamento-bd); }
+  .hs-event.agendado::before  { background: var(--status-agendado);  box-shadow: 0 0 0 2px var(--status-agendado-bd); }
+  .hs-event.cancelado::before { background: var(--status-cancelado); box-shadow: 0 0 0 2px var(--status-cancelado-bd); }
+  .hs-event.presente::before  { background: var(--status-presente);  box-shadow: 0 0 0 2px var(--status-presente-bd); }
+
+  .hs-event-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(10,37,64,0.06);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .hs-event-card:hover { box-shadow: 0 6px 20px rgba(10,37,64,0.1); transform: translateY(-1px); }
+
+  .hs-event-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--surface);
+  }
+  .hs-event-date-badge {
+    display: flex; flex-direction: column; align-items: center;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; padding: 6px 10px; flex-shrink: 0; min-width: 46px;
+  }
+  .hs-event-date-day { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--navy); line-height: 1; }
+  .hs-event-date-month { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+  .hs-event-date-year { font-size: 0.6rem; color: var(--text-muted); }
+  .hs-event-meta { flex: 1; }
+  .hs-event-title {
+    font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 700;
+    color: var(--text-main); margin-bottom: 3px;
+  }
+  .hs-event-sub { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .hs-event-badges { display: flex; gap: 6px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+  .hs-ebadge {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.3px;
+    padding: 3px 9px; border-radius: 20px; white-space: nowrap;
+  }
+  .hs-ebadge.concluido { background: var(--status-concluido-bg); color: var(--status-concluido); border: 1px solid var(--status-concluido-bd); }
+  .hs-ebadge.andamento { background: var(--status-andamento-bg); color: var(--status-andamento); border: 1px solid var(--status-andamento-bd); }
+  .hs-ebadge.agendado  { background: var(--status-agendado-bg);  color: var(--status-agendado);  border: 1px solid var(--status-agendado-bd); }
+  .hs-ebadge.cancelado { background: var(--status-cancelado-bg); color: var(--status-cancelado); border: 1px solid var(--status-cancelado-bd); }
+  .hs-ebadge.presente  { background: var(--status-presente-bg);  color: var(--status-presente);  border: 1px solid var(--status-presente-bd); }
+  .hs-ebadge.tipo-retorno   { background: rgba(45,184,111,0.1); color: var(--status-concluido); border: 1px solid var(--status-concluido-bd); }
+  .hs-ebadge.tipo-primeira  { background: rgba(59,130,246,0.1); color: var(--status-agendado); border: 1px solid var(--status-agendado-bd); }
+  .hs-ebadge.tipo-urgencia  { background: rgba(230,57,70,0.1); color: var(--status-cancelado); border: 1px solid var(--status-cancelado-bd); }
+  .hs-ebadge.tipo-exame     { background: rgba(139,92,246,0.1); color: var(--status-andamento); border: 1px solid var(--status-andamento-bd); }
+
+  .hs-expand-btn {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; cursor: pointer; transition: all 0.2s; color: var(--text-muted);
+  }
+  .hs-expand-btn svg { width: 14px; height: 14px; transition: transform 0.25s; }
+  .hs-event-card.expanded .hs-expand-btn svg { transform: rotate(180deg); }
+  .hs-expand-btn:hover { background: var(--navy); border-color: var(--navy); color: var(--white); }
+
+  /* Corpo expandido do evento */
+  .hs-event-body {
+    display: none; padding: 18px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .hs-event-card.expanded .hs-event-body { display: block; }
+
+  .hs-detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .hs-detail-item {}
+  .hs-detail-label {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;
+  }
+  .hs-detail-value { font-size: 0.85rem; font-weight: 500; color: var(--text-main); }
+
+  .hs-note-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 0.82rem; color: var(--text-sub); line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  /* Botão abrir prontuário dentro do histórico — só para médico */
+  .hs-open-pront-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 9px; border: none;
+    background: var(--navy); color: var(--white);
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .hs-open-pront-btn:hover { background: var(--navy-mid); }
+  .hs-open-pront-btn svg { width: 14px; height: 14px; }
+  .hs-open-pront-btn.no-pront {
+    background: var(--surface-2); color: var(--text-muted);
+    border: 1px solid var(--border); cursor: default;
+  }
+
+  /* Aviso LGPD */
+  .hs-lgpd-note {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 0.7rem; color: var(--text-muted);
+    padding: 10px 14px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    margin-top: 14px;
+  }
+  .hs-lgpd-note svg { width: 13px; height: 13px; color: var(--cyan); flex-shrink: 0; }
+
+  /* Estado vazio */
+  .hs-empty {
+    text-align: center; padding: 60px 24px;
+    color: var(--text-muted);
+  }
+  .hs-empty svg { width: 48px; height: 48px; color: var(--border); margin-bottom: 14px; }
+  .hs-empty-title { font-weight: 700; color: var(--text-sub); font-size: 0.9rem; margin-bottom: 4px; }
+
+  /* Estado inicial (nenhum paciente selecionado) */
+  .hs-idle {
+    text-align: center; padding: 56px 24px;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; box-shadow: 0 4px 24px rgba(10,37,64,0.07);
+    animation: fadeSlideUp 0.35s ease both;
+  }
+  .hs-idle svg { width: 52px; height: 52px; color: var(--border); margin-bottom: 16px; }
+  .hs-idle-title { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-sub); margin-bottom: 6px; }
+  .hs-idle-sub { font-size: 0.82rem; color: var(--text-muted); }
+
+  @media (max-width: 768px) {
+    #page-historico .hs-main { padding: 20px 16px; }
+    .hs-patient-stats { grid-template-columns: repeat(2,1fr); }
+    .hs-detail-grid { grid-template-columns: 1fr; }
+    .hs-event-badges { display: none; }
+  }
+</style>
+
+<main class="hs-main">
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    <span>Médico</span>
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:10px;height:10px"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg>
+    <span class="current">Histórico do Paciente</span>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-eyebrow">US11 — Médico</div>
+      <h1 class="page-title">Histórico do Paciente</h1>
+      <p class="page-desc">Visualize o histórico cronológico de consultas e prontuários de cada paciente.</p>
+    </div>
+  </div>
+
+  <!-- Seletor de paciente -->
+  <div class="hs-selector-card">
+    <div class="hs-selector-label">Selecionar Paciente</div>
+    <div class="hs-selector-row">
+      <div class="hs-search-wrap">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
+        <input class="hs-search-input" id="hsPatientSearch" type="text" placeholder="Buscar paciente por nome..." oninput="hsFilterPatients(this.value)">
+      </div>
+    </div>
+    <div class="hs-patient-pills" id="hsPatientPills"></div>
+  </div>
+
+  <!-- Estado inicial -->
+  <div class="hs-idle" id="hsIdle">
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    <div class="hs-idle-title">Nenhum paciente selecionado</div>
+    <div class="hs-idle-sub">Selecione um paciente acima para visualizar seu histórico de consultas.</div>
+  </div>
+
+  <!-- Card do paciente selecionado -->
+  <div class="hs-patient-card" id="hsPatientCard">
+    <div class="hs-patient-banner">
+      <div class="hs-patient-av-big" id="hsPatAv">--</div>
+      <div class="hs-patient-banner-info">
+        <div class="hs-patient-banner-name" id="hsPatName">—</div>
+        <div class="hs-patient-banner-meta" id="hsPatMeta">—</div>
+        <div class="hs-patient-banner-badges" id="hsPatBadges"></div>
+      </div>
+    </div>
+    <div class="hs-patient-stats">
+      <div class="hs-stat-item">
+        <div class="hs-stat-val" id="hsStatTotal">0</div>
+        <div class="hs-stat-lbl">Total de consultas</div>
+      </div>
+      <div class="hs-stat-item">
+        <div class="hs-stat-val" id="hsStatConcluido">0</div>
+        <div class="hs-stat-lbl">Concluídas</div>
+      </div>
+      <div class="hs-stat-item">
+        <div class="hs-stat-val" id="hsStatPront">0</div>
+        <div class="hs-stat-lbl">Com prontuário</div>
+      </div>
+      <div class="hs-stat-item">
+        <div class="hs-stat-val" id="hsStatProxima">—</div>
+        <div class="hs-stat-lbl">Próxima consulta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="hs-timeline-wrap" id="hsTimelineWrap">
+    <div class="hs-timeline-controls">
+      <div class="hs-timeline-title" id="hsTimelineTitle">Histórico de Consultas</div>
+      <div class="hs-timeline-filters">
+        <button class="hs-tf-btn active" data-hs-filter="todos" onclick="hsSetFilter(this)">Todos</button>
+        <button class="hs-tf-btn" data-hs-filter="concluido" onclick="hsSetFilter(this)">
+          <span class="hs-tf-dot" style="background:var(--status-concluido)"></span>Concluído
+        </button>
+        <button class="hs-tf-btn" data-hs-filter="andamento" onclick="hsSetFilter(this)">
+          <span class="hs-tf-dot" style="background:var(--status-andamento)"></span>Em andamento
+        </button>
+        <button class="hs-tf-btn" data-hs-filter="agendado" onclick="hsSetFilter(this)">
+          <span class="hs-tf-dot" style="background:var(--status-agendado)"></span>Agendado
+        </button>
+        <button class="hs-tf-btn" data-hs-filter="cancelado" onclick="hsSetFilter(this)">
+          <span class="hs-tf-dot" style="background:var(--status-cancelado)"></span>Cancelado
+        </button>
+      </div>
+    </div>
+
+    <div class="hs-timeline" id="hsTimeline"></div>
+
+    <div class="hs-empty" id="hsEmpty" style="display:none;">
+      <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      <div class="hs-empty-title">Nenhuma consulta encontrada</div>
+      <div>Tente ajustar o filtro selecionado.</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  /* ═══════════════════════════════════════════════════
+     US11 — HISTÓRICO DO PACIENTE
+  ═══════════════════════════════════════════════════ */
+
+  // Dataset histórico simulado para cada paciente
+  // Datas relativas a hoje para simular realismo
+  function hsRelDate(offsetDays) {
+    const d = new Date();
+    d.setDate(d.getDate() + offsetDays);
+    return d;
+  }
+  function hsFmtDate(d) {
+    const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    return {
+      dd:    String(d.getDate()).padStart(2,'0'),
+      mm:    ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][d.getMonth()],
+      yyyy:  d.getFullYear(),
+      label: `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`,
+      short: `${dias[d.getDay()]}, ${String(d.getDate()).padStart(2,'0')} de ${['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'][d.getMonth()]}`,
+    };
+  }
+
+  // Histórico completo por paciente — coletado de todas as consultas
+  const HS_HISTORICO = {
+    'Ana Beatriz Souza': [
+      { data: hsRelDate(-180), hora:'08:00', tipo:'1ª Consulta', tipoRaw:'primeira', status:'concluido', motivo:'Avaliação inicial — HAS', nota:'Diagnóstico de hipertensão arterial sistêmica. Iniciado Losartana 25mg.', prontuario: true },
+      { data: hsRelDate(-120), hora:'08:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'concluido', motivo:'Controle HAS — 2 meses', nota:'PA 145/90. Ajuste da dose para 50mg. Solicitado perfil lipídico.', prontuario: true },
+      { data: hsRelDate(-60),  hora:'08:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'concluido', motivo:'Resultado de exames', nota:'Perfil lipídico com LDL elevado. Iniciado Atorvastatina 20mg.', prontuario: true },
+      { data: hsRelDate(0),    hora:'08:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'concluido', motivo:'Hipertensão arterial', nota:'PA 128/82 — melhora significativa. Manter medicação atual.', prontuario: true },
+      { data: hsRelDate(30),   hora:'09:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'agendado',  motivo:'Controle semestral', nota:'', prontuario: false },
+    ],
+    'Roberto Alves Lima': [
+      { data: hsRelDate(-90),  hora:'08:30', tipo:'1ª Consulta', tipoRaw:'primeira', status:'concluido', motivo:'Avaliação cardiológica inicial', nota:'Queixa de palpitações. ECG solicitado. Sem alterações agudas.', prontuario: true },
+      { data: hsRelDate(-45),  hora:'09:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'concluido', motivo:'Resultado de ECG e Holter', nota:'Holter com extrassístoles ventriculares isoladas. Sem risco aumentado.', prontuario: true },
+      { data: hsRelDate(0),    hora:'08:30', tipo:'1ª Consulta', tipoRaw:'primeira', status:'concluido', motivo:'Avaliação cardiológica', nota:'Encaminhado para ECG. Aguardar resultado em 5 dias.', prontuario: true },
+      { data: hsRelDate(60),   hora:'10:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'agendado',  motivo:'Controle cardiológico', nota:'', prontuario: false },
+    ],
+    'Mariana Costa': [
+      { data: hsRelDate(-30),  hora:'09:15', tipo:'Exame',       tipoRaw:'exame',    status:'concluido', motivo:'Resultado de exame laboratorial', nota:'Resultados dentro da normalidade. Manter medicação.', prontuario: true },
+      { data: hsRelDate(45),   hora:'09:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'agendado',  motivo:'Controle anual', nota:'', prontuario: false },
+    ],
+    'Fernando Gomes': [
+      { data: hsRelDate(-365), hora:'10:00', tipo:'1ª Consulta', tipoRaw:'primeira', status:'concluido', motivo:'Diagnóstico DM2', nota:'DM2 confirmada. Iniciado metformina 500mg. Encaminhado nutricionista.', prontuario: true },
+      { data: hsRelDate(-270), hora:'10:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'concluido', motivo:'Controle glicêmico — 3 meses', nota:'HbA1c 9,2%. Ajuste dose metformina para 850mg. Incluído sitagliptina.', prontuario: true },
+      { data: hsRelDate(-180), hora:'10:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'concluido', motivo:'Controle HbA1c', nota:'HbA1c 8,5%. Adesão parcial ao tratamento dietético. Reforço de orientações.', prontuario: true },
+      { data: hsRelDate(-90),  hora:'10:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'concluido', motivo:'Controle semestral', nota:'HbA1c 8,1%. Paciente aderiu melhor à dieta. Manter esquema atual.', prontuario: true },
+      { data: hsRelDate(-3),   hora:'10:00', tipo:'Exame',       tipoRaw:'exame',    status:'concluido', motivo:'Resultado de exames — glicemia', nota:'Glicemia jejum 198mg/dL. Ajuste terapêutico necessário.', prontuario: true },
+      { data: hsRelDate(0),    hora:'10:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'andamento', motivo:'Diabetes tipo 2 — controle glicêmico', nota:'Em andamento. Revisão dos exames de hemoglobina glicada.', prontuario: false },
+    ],
+    'Cláudia Mendes': [
+      { data: hsRelDate(0),    hora:'11:00', tipo:'Urgência',    tipoRaw:'urgencia', status:'presente',  motivo:'Dor abdominal aguda', nota:'Paciente em triagem. Aguardando atendimento.', prontuario: false },
+    ],
+    'Juliana Ferreira': [
+      { data: hsRelDate(0),    hora:'13:00', tipo:'1ª Consulta', tipoRaw:'primeira', status:'agendado',  motivo:'Avaliação clínica geral', nota:'', prontuario: false },
+    ],
+    'Sebastião Nunes': [
+      { data: hsRelDate(-120), hora:'14:00', tipo:'1ª Consulta', tipoRaw:'primeira', status:'concluido', motivo:'HAS — diagnóstico inicial', nota:'PA 165/100. Iniciado anti-hipertensivo. Retorno em 30 dias.', prontuario: true },
+      { data: hsRelDate(-90),  hora:'14:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'concluido', motivo:'Controle PA', nota:'PA 148/95. Ajuste de medicação.', prontuario: true },
+      { data: hsRelDate(0),    hora:'14:00', tipo:'Retorno',     tipoRaw:'retorno',  status:'agendado',  motivo:'Controle de pressão arterial', nota:'', prontuario: false },
+    ],
+    'Tatiana Oliveira': [
+      { data: hsRelDate(0),    hora:'15:00', tipo:'1ª Consulta', tipoRaw:'primeira', status:'agendado',  motivo:'Consulta dermatológica', nota:'', prontuario: false },
+    ],
+  };
+
+  // Pacientes únicos para seleção (vindos do LP_RECORDS)
+  let _hsCurrentPatient = null;
+  let _hsCurrentFilter  = 'todos';
+
+  function initHistorico(patientData) {
+    _hsCurrentFilter = 'todos';
+    document.querySelectorAll('.hs-tf-btn').forEach(b => b.classList.toggle('active', b.dataset.hsFilter === 'todos'));
+
+    // Limpa busca
+    const searchEl = document.getElementById('hsPatientSearch');
+    if (searchEl) searchEl.value = '';
+
+    // Renderiza pills de pacientes
+    hsRenderPatientPills('');
+
+    // Se veio um paciente direto (ex: do modal), seleciona automaticamente
+    if (patientData && patientData.nome) {
+      hsSelectPatient(patientData.nome, patientData.iniciais);
+    } else {
+      _hsCurrentPatient = null;
+      document.getElementById('hsPatientCard').classList.remove('visible');
+      document.getElementById('hsTimelineWrap').classList.remove('visible');
+      document.getElementById('hsIdle').style.display = '';
+    }
+  }
+
+  function hsRenderPatientPills(query) {
+    const container = document.getElementById('hsPatientPills');
+    // Usa LP_RECORDS como fonte de pacientes únicos
+    const patients = (typeof LP_RECORDS !== 'undefined' ? LP_RECORDS : [])
+      .filter((r,i,a) => a.findIndex(x => x.nome === r.nome) === i) // únicos
+      .filter(r => !query || r.nome.toLowerCase().includes(query.toLowerCase()))
+      .slice(0, 12); // máx 12 pills visíveis
+
+    container.innerHTML = patients.map(p => `
+      <div class="hs-patient-pill ${_hsCurrentPatient === p.nome ? 'active' : ''}"
+           onclick="hsSelectPatient('${p.nome}', '${p.iniciais}')">
+        <div class="hs-patient-pill-av">${p.iniciais}</div>
+        ${p.nome.split(' ').slice(0,2).join(' ')}
+      </div>
+    `).join('');
+  }
+
+  function hsFilterPatients(query) {
+    hsRenderPatientPills(query);
+  }
+
+  function hsSelectPatient(nome, iniciais) {
+    _hsCurrentPatient = nome;
+    _hsCurrentFilter  = 'todos';
+    document.querySelectorAll('.hs-tf-btn').forEach(b => b.classList.toggle('active', b.dataset.hsFilter === 'todos'));
+
+    // Atualiza pills
+    hsRenderPatientPills(document.getElementById('hsPatientSearch').value);
+
+    // Busca dados do paciente no LP_RECORDS
+    const rec = typeof LP_RECORDS !== 'undefined' ? LP_RECORDS.find(r => r.nome === nome) : null;
+
+    // Atualiza card do paciente
+    document.getElementById('hsPatAv').textContent   = iniciais || nome.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    document.getElementById('hsPatName').textContent = nome;
+    document.getElementById('hsPatMeta').textContent = rec ? `${rec.especialidade} · Consulta: ${rec.data} ${rec.hora}` : 'Clínica VitaCare';
+
+    // Badges do paciente
+    const badgesEl = document.getElementById('hsPatBadges');
+    if (rec) {
+      const prontMap = { concluido: '✓ Prontuário concluído', andamento: '✎ Prontuário em andamento', sem: '+ Sem prontuário' };
+      badgesEl.innerHTML = `
+        <span class="hs-banner-badge">${rec.tipo}</span>
+        <span class="hs-banner-badge">${prontMap[rec.prontuario] || ''}</span>
+      `;
+    }
+
+    // Estatísticas
+    const eventos = HS_HISTORICO[nome] || [];
+    const total     = eventos.length;
+    const concluidos= eventos.filter(e => e.status === 'concluido').length;
+    const comPront  = eventos.filter(e => e.prontuario).length;
+    const futuros   = eventos.filter(e => hsRelDate(0) <= e.data && e.status === 'agendado');
+    const proxima   = futuros.length > 0 ? hsFmtDate(futuros[0].data).label : '—';
+
+    document.getElementById('hsStatTotal').textContent    = total;
+    document.getElementById('hsStatConcluido').textContent = concluidos;
+    document.getElementById('hsStatPront').textContent    = comPront;
+    document.getElementById('hsStatProxima').textContent  = proxima;
+
+    // Mostra card e timeline
+    document.getElementById('hsIdle').style.display = 'none';
+    document.getElementById('hsPatientCard').classList.add('visible');
+    document.getElementById('hsTimelineWrap').classList.add('visible');
+
+    hsRenderTimeline(nome);
+  }
+
+  function hsSetFilter(btn) {
+    _hsCurrentFilter = btn.dataset.hsFilter;
+    document.querySelectorAll('.hs-tf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (_hsCurrentPatient) hsRenderTimeline(_hsCurrentPatient);
+  }
+
+  function hsToggleEvent(card) {
+    card.classList.toggle('expanded');
+  }
+
+  function hsRenderTimeline(nome) {
+    const container = document.getElementById('hsTimeline');
+    const emptyEl   = document.getElementById('hsEmpty');
+
+    let eventos = (HS_HISTORICO[nome] || []).slice().reverse(); // mais recente primeiro
+
+    if (_hsCurrentFilter !== 'todos') {
+      eventos = eventos.filter(e => e.status === _hsCurrentFilter);
+    }
+
+    if (eventos.length === 0) {
+      container.innerHTML = '';
+      emptyEl.style.display = '';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    const statusLabels = {
+      concluido: 'Concluído', andamento: 'Em andamento',
+      agendado: 'Agendado', cancelado: 'Cancelado', presente: 'Aguardando'
+    };
+    const tipoClass = { retorno:'tipo-retorno', primeira:'tipo-primeira', urgencia:'tipo-urgencia', exame:'tipo-exame' };
+
+    container.innerHTML = eventos.map((e, idx) => {
+      const d = hsFmtDate(e.data);
+      const hasPront = e.prontuario;
+      // Busca dados do paciente para o botão de prontuário
+      const rec = typeof LP_RECORDS !== 'undefined' ? LP_RECORDS.find(r => r.nome === nome) : null;
+      const prontBtnHtml = hasPront
+        ? `<button class="hs-open-pront-btn" onclick="showPage('prontuario',{nome:'${nome}',iniciais:'${rec?rec.iniciais:'??'}',hora:'${e.hora}',tipo:'${e.tipo}',motivo:'${e.motivo.replace(/'/g,'&apos;')}',status:'${e.status}'})">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            Ver Prontuário
+           </button>`
+        : `<button class="hs-open-pront-btn no-pront" disabled>
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Sem prontuário
+           </button>`;
+
+      const noteHtml = e.nota ? `<div class="hs-note-box">${e.nota}</div>` : '';
+
+      return `
+      <div class="hs-event ${e.status}" style="animation-delay:${idx * 0.04}s">
+        <div class="hs-event-card" id="hsCard_${idx}">
+          <div class="hs-event-header" onclick="hsToggleEvent(document.getElementById('hsCard_${idx}'))">
+            <div class="hs-event-date-badge">
+              <div class="hs-event-date-day">${d.dd}</div>
+              <div class="hs-event-date-month">${d.mm}</div>
+              <div class="hs-event-date-year">${d.yyyy}</div>
+            </div>
+            <div class="hs-event-meta">
+              <div class="hs-event-title">${e.motivo}</div>
+              <div class="hs-event-sub">
+                <span>${e.hora}</span>
+                <span>·</span>
+                <span>${e.tipo}</span>
+                ${e.prontuario ? '<span>· <strong style="color:var(--status-concluido)">Prontuário registrado</strong></span>' : ''}
+              </div>
+            </div>
+            <div class="hs-event-badges">
+              <span class="hs-ebadge ${tipoClass[e.tipoRaw] || ''}">${e.tipo}</span>
+              <span class="hs-ebadge ${e.status}">${statusLabels[e.status] || e.status}</span>
+            </div>
+            <div class="hs-expand-btn">
+              <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+          <div class="hs-event-body">
+            <div class="hs-detail-grid">
+              <div class="hs-detail-item">
+                <div class="hs-detail-label">Data</div>
+                <div class="hs-detail-value">${d.short}</div>
+              </div>
+              <div class="hs-detail-item">
+                <div class="hs-detail-label">Horário</div>
+                <div class="hs-detail-value">${e.hora}</div>
+              </div>
+              <div class="hs-detail-item">
+                <div class="hs-detail-label">Tipo de Consulta</div>
+                <div class="hs-detail-value">${e.tipo}</div>
+              </div>
+              <div class="hs-detail-item">
+                <div class="hs-detail-label">Status</div>
+                <div class="hs-detail-value">${statusLabels[e.status] || e.status}</div>
+              </div>
+            </div>
+            ${noteHtml}
+            ${prontBtnHtml}
+            <div class="hs-lgpd-note">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Dados protegidos — LGPD · Acesso restrito ao médico responsável · Dr. Carlos Menezes
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+</script>
+
+</div><!-- /page-historico -->
 
 </body>
 </html>
