@@ -721,6 +721,148 @@
     .fila-empty-title { font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
     .fila-empty-desc { font-size: 0.8rem; color: var(--text-muted); max-width: 200px; line-height: 1.5; }
 
+    /* ══════════════════════════════════════════
+       US21 — BUSCAR PACIENTE
+    ══════════════════════════════════════════ */
+    .busca-hero { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: 0 2px 12px rgba(10,37,64,0.06); margin-bottom: 24px; }
+    .busca-hero-title { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+    .busca-hero-desc { font-size: 0.83rem; color: var(--text-sub); margin-bottom: 20px; }
+    .busca-input-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+    .busca-input-wrap { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 6px; }
+    .busca-input-wrap label { font-size: 0.78rem; font-weight: 600; color: var(--text-sub); }
+    .busca-input-wrap .input-wrap input { font-size: 0.9rem; padding: 12px 14px 12px 42px; border-radius: 10px; }
+
+    .busca-resultados { display: none; margin-top: 20px; }
+    .busca-resultados.visible { display: block; animation: fadeSlideUp 0.3s ease both; }
+    .busca-resultados-header { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; }
+    .busca-lista { display: flex; flex-direction: column; gap: 8px; }
+    .busca-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px; background: var(--surface);
+      border: 1.5px solid var(--border); border-radius: 12px;
+      cursor: pointer; transition: all var(--transition);
+    }
+    .busca-item:hover { border-color: var(--cyan-light); background: rgba(0,180,216,0.03); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(10,37,64,0.08); }
+    .busca-item-avatar { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--navy-mid), var(--navy-light)); border: 2px solid rgba(0,180,216,0.25); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--cyan); }
+    .busca-item-info { flex: 1; min-width: 0; }
+    .busca-item-nome { font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 3px; }
+    .busca-item-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+    .busca-item-meta-pill { display: flex; align-items: center; gap: 5px; font-size: 0.74rem; color: var(--text-sub); }
+    .busca-item-meta-pill svg { width: 12px; height: 12px; color: var(--text-muted); }
+    .busca-item-arrow { color: var(--text-muted); flex-shrink: 0; transition: color var(--transition), transform var(--transition); }
+    .busca-item:hover .busca-item-arrow { color: var(--cyan); transform: translateX(3px); }
+    .busca-item-arrow svg { width: 16px; height: 16px; }
+    .busca-prontuario-tag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: rgba(0,180,216,0.08); border: 1px solid rgba(0,180,216,0.2); border-radius: 20px; font-size: 0.68rem; font-weight: 700; color: #0086A8; }
+
+    /* Perfil do paciente */
+    .perfil-overlay { position: fixed; inset: 0; background: rgba(10,37,64,0.6); backdrop-filter: blur(4px); z-index: 400; display: flex; align-items: flex-start; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .perfil-overlay.active { opacity: 1; pointer-events: all; }
+    .perfil-panel {
+      width: 100%; max-width: 600px; height: 100vh;
+      background: var(--white); display: flex; flex-direction: column;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.2);
+      transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      overflow: hidden;
+    }
+    .perfil-overlay.active .perfil-panel { transform: translateX(0); }
+
+    .perfil-header { background: var(--navy); padding: 24px 28px; flex-shrink: 0; }
+    .perfil-header-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+    .btn-perfil-close { width: 34px; height: 34px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background var(--transition); flex-shrink: 0; }
+    .btn-perfil-close:hover { background: rgba(230,57,70,0.25); }
+    .btn-perfil-close svg { width: 16px; height: 16px; color: rgba(255,255,255,0.7); }
+    .perfil-avatar-wrap { display: flex; align-items: center; gap: 16px; }
+    .perfil-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, rgba(0,180,216,0.3), rgba(72,202,228,0.2)); border: 2px solid rgba(0,180,216,0.5); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--cyan-light); flex-shrink: 0; }
+    .perfil-nome { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+    .perfil-prontuario { font-size: 0.75rem; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 6px; }
+    .perfil-prontuario svg { width: 12px; height: 12px; }
+
+    .perfil-body { flex: 1; overflow-y: auto; }
+    .perfil-body::-webkit-scrollbar { width: 5px; }
+    .perfil-body::-webkit-scrollbar-track { background: transparent; }
+    .perfil-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Tabs */
+    .perfil-tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
+    .perfil-tab { flex: 1; padding: 14px 8px; text-align: center; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all var(--transition); }
+    .perfil-tab:hover { color: var(--text-sub); }
+    .perfil-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+    .perfil-tab-icon { display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .perfil-tab-icon svg { width: 13px; height: 13px; }
+
+    .perfil-tab-content { display: none; padding: 24px 28px; }
+    .perfil-tab-content.active { display: block; animation: fadeSlideUp 0.25s ease both; }
+
+    /* Seção de dados */
+    .perfil-section-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .btn-editar-secao { display: flex; align-items: center; gap: 5px; padding: 4px 10px; background: rgba(0,180,216,0.08); border: 1px solid rgba(0,180,216,0.2); border-radius: 7px; font-size: 0.72rem; font-weight: 600; color: #0086A8; cursor: pointer; transition: all var(--transition); text-transform: none; letter-spacing: 0; }
+    .btn-editar-secao:hover { background: rgba(0,180,216,0.15); }
+    .btn-editar-secao svg { width: 12px; height: 12px; }
+
+    .dados-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+    .dado-item { display: flex; flex-direction: column; gap: 3px; }
+    .dado-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); }
+    .dado-value { font-size: 0.88rem; font-weight: 500; color: var(--text-main); }
+    .dado-value.masked { font-family: monospace; color: var(--text-sub); }
+
+    /* Form de edição inline */
+    .edit-form { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; display: none; animation: fadeSlideDown 0.25s ease both; }
+    .edit-form.visible { display: block; }
+    .edit-form-title { font-family: 'Sora', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+    .edit-form-desc { font-size: 0.78rem; color: var(--text-sub); margin-bottom: 18px; }
+    .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .edit-grid .col-span-2 { grid-column: span 2; }
+    .edit-field { display: flex; flex-direction: column; gap: 5px; }
+    .edit-field label { font-size: 0.75rem; font-weight: 600; color: var(--text-sub); }
+    .edit-field input, .edit-field select {
+      padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-main);
+      background: var(--white); outline: none; appearance: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .edit-field input:focus, .edit-field select:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-glow); }
+    .edit-field.has-error input { border-color: var(--error); box-shadow: 0 0 0 3px rgba(230,57,70,0.1); background: var(--error-bg); }
+    .edit-field-err { font-size: 0.72rem; color: var(--error); font-weight: 500; display: none; margin-top: 2px; }
+    .edit-field.has-error .edit-field-err { display: block; }
+    .edit-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+    /* Alerta CPF sensível */
+    .alert-cpf-sensivel { display: none; align-items: flex-start; gap: 10px; padding: 12px 14px; background: rgba(244,162,97,0.1); border: 1px solid rgba(244,162,97,0.3); border-radius: 9px; margin-bottom: 16px; font-size: 0.8rem; color: #8a4500; font-weight: 500; }
+    .alert-cpf-sensivel.visible { display: flex; }
+    .alert-cpf-sensivel svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; color: var(--warn); }
+
+    /* Consultas no perfil */
+    .consulta-perfil-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; background: var(--white); transition: background var(--transition); }
+    .consulta-perfil-item:hover { background: var(--surface); }
+    .consulta-perfil-date { background: linear-gradient(135deg, var(--navy-mid), var(--navy-light)); color: var(--white); border-radius: 10px; padding: 8px 12px; text-align: center; min-width: 50px; flex-shrink: 0; }
+    .consulta-perfil-day { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; line-height: 1; }
+    .consulta-perfil-month { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; opacity: 0.7; margin-top: 2px; }
+    .consulta-perfil-info { flex: 1; min-width: 0; }
+    .consulta-perfil-medico { font-size: 0.87rem; font-weight: 600; color: var(--text-main); margin-bottom: 3px; }
+    .consulta-perfil-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .consulta-perfil-meta-item { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--text-sub); }
+    .consulta-perfil-meta-item svg { width: 11px; height: 11px; color: var(--text-muted); }
+    .status-tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2px; flex-shrink: 0; }
+    .status-tag.pendente { background: rgba(0,180,216,0.1); border: 1px solid rgba(0,180,216,0.2); color: #0086A8; }
+    .status-tag.concluida { background: rgba(45,184,111,0.1); border: 1px solid rgba(45,184,111,0.2); color: #1a7a48; }
+    .status-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+    /* Exames no perfil */
+    .exame-item { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; background: var(--white); }
+    .exame-icon-wrap { width: 38px; height: 38px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .exame-icon-wrap svg { width: 18px; height: 18px; color: var(--text-muted); }
+    .exame-info { flex: 1; }
+    .exame-nome { font-size: 0.87rem; font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
+    .exame-meta { font-size: 0.75rem; color: var(--text-sub); }
+    .exame-status { font-size: 0.7rem; font-weight: 700; padding: 3px 9px; border-radius: 20px; flex-shrink: 0; }
+    .exame-status.solicitado { background: rgba(244,162,97,0.1); border: 1px solid rgba(244,162,97,0.25); color: #8a4500; }
+    .exame-status.recebido   { background: rgba(45,184,111,0.1); border: 1px solid rgba(45,184,111,0.2); color: #1a7a48; }
+
+    .empty-perfil { text-align: center; padding: 36px 20px; }
+    .empty-perfil-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+    .empty-perfil-icon svg { width: 22px; height: 22px; color: var(--text-muted); }
+    .empty-perfil p { font-size: 0.83rem; color: var(--text-muted); }
+
     @keyframes fadeSlideUp   { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
     @keyframes fadeSlideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
     @keyframes spin          { to { transform:rotate(360deg); } }
@@ -786,7 +928,7 @@
         <span class="nav-item-sub">US10</span>
       </div>
     </div>
-    <div class="nav-item">
+    <div class="nav-item" id="navBuscar" data-view="viewBuscar">
       <div class="nav-item-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </div>
@@ -794,7 +936,6 @@
         <span class="nav-item-label">Buscar Paciente</span>
         <span class="nav-item-sub">US21</span>
       </div>
-      <span class="badge-soon">Em breve</span>
     </div>
   </nav>
   <div class="sidebar-footer">
@@ -857,6 +998,8 @@
       <span class="breadcrumb-link" onclick="showView('viewAgendamento')" title="Ir para Agendamento">Agendamento</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
       <span class="breadcrumb-link" onclick="showView('viewCheckin')" title="Ir para Check-in">Check-in</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="breadcrumb-link" onclick="showView('viewBuscar')" title="Ir para Buscar Paciente">Buscar Paciente</span>
     </div>
 
     <div class="page-header">
@@ -1012,6 +1155,8 @@
       <span class="current">Agendamento de Consulta</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
       <span class="breadcrumb-link" onclick="showView('viewCheckin')" title="Ir para Check-in">Check-in</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="breadcrumb-link" onclick="showView('viewBuscar')" title="Ir para Buscar Paciente">Buscar Paciente</span>
     </div>
 
     <div class="page-header">
@@ -1092,6 +1237,8 @@
       <span class="breadcrumb-link" onclick="showView('viewAgendamento')" title="Ir para Agendamento">Agendamento</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       <span class="current">Check-in</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="breadcrumb-link" onclick="showView('viewBuscar')" title="Ir para Buscar Paciente">Buscar Paciente</span>
     </div>
 
     <div class="page-header">
@@ -1226,7 +1373,200 @@
     </div>
   </div>
 
+  <!-- ════════════════════════════════════════
+       VIEW: BUSCAR PACIENTE — US21
+  ════════════════════════════════════════ -->
+  <div class="view" id="viewBuscar">
+
+    <div class="breadcrumb">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="breadcrumb-link" onclick="showView('viewCadastro')" title="Ir para Cadastro de Paciente">Recepção</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="breadcrumb-link" onclick="showView('viewCadastro')" title="Ir para Cadastro de Paciente">Cadastro</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="breadcrumb-link" onclick="showView('viewAgendamento')" title="Ir para Agendamento">Agendamento</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="breadcrumb-link" onclick="showView('viewCheckin')" title="Ir para Check-in">Check-in</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="current">Buscar Paciente</span>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <p class="page-eyebrow">Recepção</p>
+        <h1 class="page-title">Buscar Paciente</h1>
+        <p class="page-desc">Pesquise por nome, CPF ou número de prontuário para acessar o perfil completo.</p>
+      </div>
+      <div class="page-header-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Dados protegidos — LGPD
+      </div>
+    </div>
+
+    <div class="busca-hero">
+      <div class="busca-hero-title">Pesquisar Paciente</div>
+      <div class="busca-hero-desc">Digite o nome, CPF ou número de prontuário do paciente</div>
+      <div class="busca-input-row">
+        <div class="busca-input-wrap">
+          <label for="inputBuscaGeral">Nome, CPF ou Prontuário</label>
+          <div class="input-wrap">
+            <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" id="inputBuscaGeral" placeholder="Ex: Ana Paula, 529.982.247-25 ou MED-0001" autocomplete="off"/>
+          </div>
+        </div>
+        <button class="btn-buscar" id="btnBuscarGeral" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Buscar
+        </button>
+      </div>
+
+      <div class="busca-resultados" id="buscaResultados">
+        <div class="busca-resultados-header" id="buscaResultadosHeader">Resultados encontrados</div>
+        <div class="busca-lista" id="buscaLista"></div>
+      </div>
+    </div>
+
+  </div>
+
 </main>
+
+<!-- ══════════════════════════════════════════
+     PAINEL DE PERFIL DO PACIENTE (slide-in)
+══════════════════════════════════════════ -->
+<div class="perfil-overlay" id="perfilOverlay">
+  <div class="perfil-panel" id="perfilPanel">
+
+    <div class="perfil-header">
+      <div class="perfil-header-top">
+        <div class="perfil-avatar-wrap">
+          <div class="perfil-avatar" id="perfilAvatar">--</div>
+          <div>
+            <div class="perfil-nome" id="perfilNome">—</div>
+            <div class="perfil-prontuario">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span id="perfilProntuario">MED-0000</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-perfil-close" id="btnPerfilClose">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="perfil-tabs">
+      <div class="perfil-tab active" data-tab="dados">
+        <div class="perfil-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Dados</div>
+      </div>
+      <div class="perfil-tab" data-tab="consultas">
+        <div class="perfil-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Consultas</div>
+      </div>
+      <div class="perfil-tab" data-tab="exames">
+        <div class="perfil-tab-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2m-10 0V9"/></svg>Exames</div>
+      </div>
+    </div>
+
+    <div class="perfil-body">
+
+      <!-- Tab: Dados Cadastrais -->
+      <div class="perfil-tab-content active" id="tabDados">
+
+        <!-- Alerta CPF sensível -->
+        <div class="alert-cpf-sensivel" id="alertCpfSensivel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Atenção: a alteração de CPF é uma operação sensível e irreversível. Certifique-se de que o novo CPF pertence ao paciente correto antes de salvar.</span>
+        </div>
+
+        <!-- Form de edição -->
+        <div class="edit-form" id="editForm">
+          <div class="edit-form-title">Editar Dados Cadastrais</div>
+          <div class="edit-form-desc">Todos os campos obrigatórios devem ser preenchidos. As mesmas validações do cadastro se aplicam.</div>
+          <div class="edit-grid">
+            <div class="edit-field col-span-2" id="efNome">
+              <label>Nome do paciente *</label>
+              <input type="text" id="editNome" placeholder="Nome do paciente"/>
+              <span class="edit-field-err" id="efNomeErr">Informe o nome completo</span>
+            </div>
+            <div class="edit-field" id="efCpf">
+              <label>CPF *</label>
+              <input type="text" id="editCpf" placeholder="000.000.000-00" maxlength="14"/>
+              <span class="edit-field-err" id="efCpfErr">CPF inválido</span>
+            </div>
+            <div class="edit-field" id="efNasc">
+              <label>Data de nascimento *</label>
+              <input type="date" id="editNasc"/>
+              <span class="edit-field-err" id="efNascErr">Informe a data</span>
+            </div>
+            <div class="edit-field" id="efSexo">
+              <label>Sexo *</label>
+              <select id="editSexo">
+                <option value="">Selecione</option>
+                <option value="M">Masculino</option>
+                <option value="F">Feminino</option>
+                <option value="O">Outro / Prefiro não informar</option>
+              </select>
+              <span class="edit-field-err">Selecione o sexo</span>
+            </div>
+            <div class="edit-field" id="efTel">
+              <label>Telefone *</label>
+              <input type="text" id="editTel" placeholder="(00) 00000-0000" maxlength="15"/>
+              <span class="edit-field-err">Informe um telefone válido</span>
+            </div>
+            <div class="edit-field col-span-2" id="efEmail">
+              <label>E-mail *</label>
+              <input type="email" id="editEmail" placeholder="paciente@email.com"/>
+              <span class="edit-field-err">E-mail inválido</span>
+            </div>
+            <div class="edit-field col-span-2" id="efLogr">
+              <label>Logradouro *</label>
+              <input type="text" id="editLogr" placeholder="Rua, Avenida..."/>
+              <span class="edit-field-err">Informe o logradouro</span>
+            </div>
+            <div class="edit-field" id="efBairro">
+              <label>Bairro *</label>
+              <input type="text" id="editBairro" placeholder="Bairro"/>
+              <span class="edit-field-err">Informe o bairro</span>
+            </div>
+          </div>
+          <div class="edit-actions">
+            <button class="btn-secondary" id="btnCancelarEdit">Cancelar</button>
+            <button class="btn-primary" id="btnSalvarEdit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span class="btn-label">Salvar alterações</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Visualização dos dados -->
+        <div id="dadosView" style="padding:24px 28px;">
+          <div class="perfil-section-title">
+            Dados Pessoais
+            <button class="btn-editar-secao" id="btnAbrirEdit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Editar dados
+            </button>
+          </div>
+          <div class="dados-grid" id="dadosGrid"></div>
+        </div>
+
+      </div>
+
+      <!-- Tab: Consultas -->
+      <div class="perfil-tab-content" id="tabConsultas" style="padding:24px 28px;">
+        <div class="perfil-section-title">Histórico de Consultas</div>
+        <div id="consultasPerfilLista"></div>
+      </div>
+
+      <!-- Tab: Exames -->
+      <div class="perfil-tab-content" id="tabExames" style="padding:24px 28px;">
+        <div class="perfil-section-title">Exames Solicitados</div>
+        <div id="examesPerfilLista"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════
      MODAL DE AGENDAMENTO
@@ -1405,11 +1745,11 @@
      DADOS SIMULADOS — compartilhados entre views
   ══════════════════════════════════════════ */
   const PACIENTES = [
-    { nome: 'Ana Paula Ferreira',   cpf: '529.982.247-25', nascimento: '1985-03-12', sexo: 'F' },
-    { nome: 'Roberto Almeida',      cpf: '871.263.580-77', nascimento: '1972-07-28', sexo: 'M' },
-    { nome: 'Carla Souza Mendes',   cpf: '046.915.723-60', nascimento: '1990-11-05', sexo: 'F' },
-    { nome: 'Marcos Vinicius Reis', cpf: '314.578.290-81', nascimento: '1988-06-20', sexo: 'M' },
-    { nome: 'Patrícia Oliveira',    cpf: '753.410.862-34', nascimento: '1995-09-14', sexo: 'F' },
+    { prontuario: 'MED-0001', nome: 'Ana Paula Ferreira',   cpf: '529.982.247-25', nascimento: '1985-03-12', sexo: 'F', telefone: '(11) 98765-4321', email: 'ana.paula@email.com',   logradouro: 'Rua das Flores, 142', bairro: 'Jardim Paulista' },
+    { prontuario: 'MED-0002', nome: 'Roberto Almeida',      cpf: '871.263.580-77', nascimento: '1972-07-28', sexo: 'M', telefone: '(11) 97654-3210', email: 'roberto.a@email.com',    logradouro: 'Av. Paulista, 900',   bairro: 'Bela Vista'    },
+    { prontuario: 'MED-0003', nome: 'Carla Souza Mendes',   cpf: '046.915.723-60', nascimento: '1990-11-05', sexo: 'F', telefone: '(11) 96543-2109', email: 'carla.sm@email.com',     logradouro: 'Rua Augusta, 55',     bairro: 'Consolação'    },
+    { prontuario: 'MED-0004', nome: 'Marcos Vinicius Reis', cpf: '314.578.290-81', nascimento: '1988-06-20', sexo: 'M', telefone: '(11) 95432-1098', email: 'marcos.reis@email.com',  logradouro: 'Rua Liberdade, 310',  bairro: 'Liberdade'     },
+    { prontuario: 'MED-0005', nome: 'Patrícia Oliveira',    cpf: '753.410.862-34', nascimento: '1995-09-14', sexo: 'F', telefone: '(11) 94321-0987', email: 'patricia.o@email.com',   logradouro: 'Av. Brasil, 77',      bairro: 'Centro'        },
   ];
 
   function gerarDataFutura(dias) {
@@ -1427,6 +1767,28 @@
   const OCUPADOS = {};
   CONSULTAS.forEach(c => { if (!OCUPADOS[c.data]) OCUPADOS[c.data] = []; OCUPADOS[c.data].push(c.horario); });
 
+  /* Consultas históricas (passadas) para o perfil */
+  function gerarDataPassada(dias) {
+    const d = new Date(); d.setDate(d.getDate() - dias);
+    return d.toISOString().split('T')[0];
+  }
+  const CONSULTAS_HISTORICO = [
+    { pacienteCpf: '529.982.247-25', medico: 'Dr. Carlos Menezes',  especialidade: 'Clínica Geral',  data: gerarDataPassada(30), horario: '09:00', status: 'Concluída' },
+    { pacienteCpf: '529.982.247-25', medico: 'Dra. Beatriz Fontes', especialidade: 'Cardiologia',    data: gerarDataPassada(90), horario: '14:00', status: 'Concluída' },
+    { pacienteCpf: '871.263.580-77', medico: 'Dr. Carlos Menezes',  especialidade: 'Clínica Geral',  data: gerarDataPassada(15), horario: '10:00', status: 'Concluída' },
+    { pacienteCpf: '046.915.723-60', medico: 'Dra. Camila Torres',  especialidade: 'Dermatologia',   data: gerarDataPassada(45), horario: '11:30', status: 'Concluída' },
+    { pacienteCpf: '314.578.290-81', medico: 'Dr. André Lopes',     especialidade: 'Ortopedia',      data: gerarDataPassada(60), horario: '08:30', status: 'Concluída' },
+  ];
+
+  const EXAMES = [
+    { pacienteCpf: '529.982.247-25', nome: 'Hemograma Completo',   data: gerarDataFutura(3),   status: 'solicitado', lab: 'Lab MedPlus' },
+    { pacienteCpf: '529.982.247-25', nome: 'Glicemia em Jejum',    data: gerarDataPassada(20), status: 'recebido',   lab: 'Lab MedPlus' },
+    { pacienteCpf: '871.263.580-77', nome: 'Eletrocardiograma',    data: gerarDataFutura(7),   status: 'solicitado', lab: 'Lab Cardio'  },
+    { pacienteCpf: '046.915.723-60', nome: 'Biópsia de Pele',      data: gerarDataPassada(10), status: 'recebido',   lab: 'Lab Dermo'   },
+    { pacienteCpf: '314.578.290-81', nome: 'Raio-X Coluna Lombar', data: gerarDataPassada(55), status: 'recebido',   lab: 'Lab Imagem'  },
+    { pacienteCpf: '753.410.862-34', nome: 'TSH / T4 Livre',       data: gerarDataFutura(5),   status: 'solicitado', lab: 'Lab MedPlus' },
+  ];
+
   function gerarSlots() {
     const slots = []; let h = 8, m = 0;
     while (h < 18) { slots.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`); m += 45; if (m >= 60) { m -= 60; h++; } }
@@ -1442,17 +1804,20 @@
     cadastro:    document.getElementById('navCadastro'),
     agendamento: document.getElementById('navAgendamento'),
     checkin:     document.getElementById('navCheckin'),
+    buscar:      document.getElementById('navBuscar'),
   };
   const views = {
     viewCadastro:    document.getElementById('viewCadastro'),
     viewAgendamento: document.getElementById('viewAgendamento'),
     viewCheckin:     document.getElementById('viewCheckin'),
+    viewBuscar:      document.getElementById('viewBuscar'),
   };
 
   const PAGE_TITLES = {
     viewCadastro:    'Cadastro de Paciente',
     viewAgendamento: 'Agendamento de Consulta',
     viewCheckin:     'Check-in',
+    viewBuscar:      'Buscar Paciente',
   };
 
   function showView(viewId) {
@@ -1462,6 +1827,7 @@
     if (viewId === 'viewCadastro')    navItems.cadastro.classList.add('active');
     if (viewId === 'viewAgendamento') navItems.agendamento.classList.add('active');
     if (viewId === 'viewCheckin')     navItems.checkin.classList.add('active');
+    if (viewId === 'viewBuscar')      navItems.buscar.classList.add('active');
     headerPageTitle.textContent = PAGE_TITLES[viewId] || '';
     closeSidebar();
   }
@@ -1469,6 +1835,7 @@
   navItems.cadastro.addEventListener('click',    () => showView('viewCadastro'));
   navItems.agendamento.addEventListener('click', () => showView('viewAgendamento'));
   navItems.checkin.addEventListener('click',     () => showView('viewCheckin'));
+  navItems.buscar.addEventListener('click',      () => showView('viewBuscar'));
   document.getElementById('linkCadastro').addEventListener('click',       () => showView('viewCadastro'));
   document.getElementById('linkCadastroCheckin').addEventListener('click',() => showView('viewCadastro'));
 
@@ -2023,6 +2390,303 @@
         </div>`;
     }).join('');
   }
+
+  /* ══════════════════════════════════════════
+     US21 — BUSCAR PACIENTE
+  ══════════════════════════════════════════ */
+  const inputBuscaGeral  = document.getElementById('inputBuscaGeral');
+  const btnBuscarGeral   = document.getElementById('btnBuscarGeral');
+  const buscaResultados  = document.getElementById('buscaResultados');
+  const buscaLista       = document.getElementById('buscaLista');
+  const buscaHeader      = document.getElementById('buscaResultadosHeader');
+  const perfilOverlay    = document.getElementById('perfilOverlay');
+  const btnPerfilClose   = document.getElementById('btnPerfilClose');
+  const alertCpfSensivel = document.getElementById('alertCpfSensivel');
+  const editForm         = document.getElementById('editForm');
+  const btnAbrirEdit     = document.getElementById('btnAbrirEdit');
+  const btnCancelarEdit  = document.getElementById('btnCancelarEdit');
+  const btnSalvarEdit    = document.getElementById('btnSalvarEdit');
+  let pacienteAtualPerfil = null;
+
+  /* ── Busca ──────────────────────────────── */
+  inputBuscaGeral.addEventListener('input', () => {
+    let v = inputBuscaGeral.value;
+
+    /* Se o conteúdo for só dígitos, aplica máscara de CPF automaticamente */
+    const soDig = v.replace(/\D/g,'');
+    if (soDig.length > 0 && v.replace(/[\d.\-]/g,'').length === 0) {
+      const d = soDig.slice(0,11);
+      if (d.length > 9)      v = d.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');
+      else if (d.length > 6) v = d.replace(/(\d{3})(\d{3})(\d{1,3})/,'$1.$2.$3');
+      else if (d.length > 3) v = d.replace(/(\d{3})(\d{1,3})/,'$1.$2');
+      else                   v = d;
+      inputBuscaGeral.value = v;
+    }
+
+    btnBuscarGeral.disabled = !v.trim();
+    if (!v.trim()) buscaResultados.classList.remove('visible');
+  });
+  inputBuscaGeral.addEventListener('keydown', e => { if (e.key === 'Enter' && !btnBuscarGeral.disabled) btnBuscarGeral.click(); });
+
+  btnBuscarGeral.addEventListener('click', () => {
+    const raw = inputBuscaGeral.value.trim();
+    const q   = raw.toLowerCase();
+
+    /* Exige mínimo de 2 caracteres para busca por nome */
+    if (q.length < 2) {
+      buscaHeader.textContent = 'Digite ao menos 2 caracteres';
+      buscaLista.innerHTML = `<div style="text-align:center;padding:20px;font-size:0.83rem;color:var(--text-muted);">Informe ao menos 2 caracteres para buscar.</div>`;
+      buscaResultados.classList.add('visible');
+      return;
+    }
+
+    const soDig = q.replace(/\D/g,'');
+    const isCpf      = soDig.length >= 3 && raw.replace(/[\d.\-\s]/g,'').length === 0;
+    const isPront    = q.startsWith('med-');
+
+    const resultados = PACIENTES.filter(p => {
+      if (isCpf) {
+        /* Busca por CPF — compara só dígitos */
+        return p.cpf.replace(/\D/g,'').startsWith(soDig);
+      }
+      if (isPront) {
+        /* Busca por prontuário — já funciona bem */
+        return p.prontuario.toLowerCase().includes(q);
+      }
+      /* Busca por nome — exige que ALGUMA palavra do nome comece com o termo digitado */
+      const palavrasNome  = p.nome.toLowerCase().split(' ');
+      const palavrasBusca = q.split(' ').filter(Boolean);
+      return palavrasBusca.every(pb => palavrasNome.some(pn => pn.startsWith(pb)));
+    });
+
+    buscaLista.innerHTML = '';
+    if (resultados.length === 0) {
+      buscaHeader.textContent = 'Nenhum paciente encontrado';
+      buscaLista.innerHTML = `<div style="text-align:center;padding:24px;font-size:0.83rem;color:var(--text-muted);">Nenhum resultado para "<strong>${inputBuscaGeral.value.trim()}</strong>". Verifique o termo ou <span class="alert-link" onclick="showView('viewCadastro')" style="cursor:pointer;">cadastre o paciente</span>.</div>`;
+    } else {
+      buscaHeader.textContent = `${resultados.length} resultado${resultados.length > 1 ? 's' : ''} encontrado${resultados.length > 1 ? 's' : ''}`;
+      resultados.forEach(p => {
+        const initials = p.nome.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+        const item = document.createElement('div');
+        item.className = 'busca-item';
+        item.innerHTML = `
+          <div class="busca-item-avatar">${initials}</div>
+          <div class="busca-item-info">
+            <div class="busca-item-nome">${p.nome}</div>
+            <div class="busca-item-meta">
+              <div class="busca-item-meta-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="13" y2="13"/></svg>
+                ${maskCpf(p.cpf)}
+              </div>
+              <div class="busca-item-meta-pill">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                ${formatDate(p.nascimento)}
+              </div>
+              <span class="busca-prontuario-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                ${p.prontuario}
+              </span>
+            </div>
+          </div>
+          <div class="busca-item-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>`;
+        item.addEventListener('click', () => abrirPerfil(p));
+        buscaLista.appendChild(item);
+      });
+    }
+    buscaResultados.classList.add('visible');
+  });
+
+  /* ── Abrir perfil ───────────────────────── */
+  function abrirPerfil(p) {
+    pacienteAtualPerfil = p;
+    const initials = p.nome.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+    document.getElementById('perfilAvatar').textContent    = initials;
+    document.getElementById('perfilNome').textContent      = p.nome;
+    document.getElementById('perfilProntuario').textContent= p.prontuario;
+
+    alertCpfSensivel.classList.remove('visible');
+    editForm.classList.remove('visible');
+
+    renderDadosView(p);
+    renderConsultasPerfil(p.cpf);
+    renderExamesPerfil(p.cpf);
+
+    /* Reset tabs */
+    document.querySelectorAll('.perfil-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.perfil-tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelector('.perfil-tab[data-tab="dados"]').classList.add('active');
+    document.getElementById('tabDados').classList.add('active');
+
+    perfilOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharPerfil() {
+    perfilOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  btnPerfilClose.addEventListener('click', fecharPerfil);
+  perfilOverlay.addEventListener('click', e => { if (e.target === perfilOverlay) fecharPerfil(); });
+
+  /* ── Tabs do perfil ─────────────────────── */
+  document.querySelectorAll('.perfil-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.perfil-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.perfil-tab-content').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab' + tab.dataset.tab.charAt(0).toUpperCase() + tab.dataset.tab.slice(1)).classList.add('active');
+    });
+  });
+
+  /* ── Renderizar dados ───────────────────── */
+  const SEXO_LABEL = { M: 'Masculino', F: 'Feminino', O: 'Outro / Prefiro não informar' };
+  function renderDadosView(p) {
+    document.getElementById('dadosGrid').innerHTML = `
+      <div class="dado-item"><div class="dado-label">Nome</div><div class="dado-value">${p.nome}</div></div>
+      <div class="dado-item"><div class="dado-label">CPF</div><div class="dado-value masked">${maskCpf(p.cpf)}</div></div>
+      <div class="dado-item"><div class="dado-label">Nascimento</div><div class="dado-value">${formatDate(p.nascimento)}</div></div>
+      <div class="dado-item"><div class="dado-label">Sexo</div><div class="dado-value">${SEXO_LABEL[p.sexo] || '—'}</div></div>
+      <div class="dado-item"><div class="dado-label">Telefone</div><div class="dado-value">${p.telefone || '—'}</div></div>
+      <div class="dado-item"><div class="dado-label">E-mail</div><div class="dado-value">${p.email || '—'}</div></div>
+      <div class="dado-item col-span-2" style="grid-column:span 2"><div class="dado-label">Endereço</div><div class="dado-value">${p.logradouro ? p.logradouro + ', ' + p.bairro : '—'}</div></div>`;
+  }
+
+  /* ── Renderizar consultas no perfil ─────── */
+  function renderConsultasPerfil(cpf) {
+    const lista = document.getElementById('consultasPerfilLista');
+    const todas = [
+      ...CONSULTAS.filter(c => c.pacienteCpf === cpf).map(c => ({ ...c, status: 'Pendente' })),
+      ...CONSULTAS_HISTORICO.filter(c => c.pacienteCpf === cpf),
+    ].sort((a,b) => new Date(b.data) - new Date(a.data));
+
+    if (todas.length === 0) {
+      lista.innerHTML = `<div class="empty-perfil"><div class="empty-perfil-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><p>Nenhuma consulta registrada</p></div>`; return;
+    }
+    lista.innerHTML = todas.map(c => {
+      const d = new Date(c.data + 'T12:00:00');
+      const dia = d.getDate(); const mes = d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.','');
+      const isPendente = c.status === 'Pendente' || c.status === 'Agendada';
+      const tagClass = isPendente ? 'pendente' : 'concluida';
+      const tagLabel = isPendente ? 'Pendente' : 'Concluída';
+      return `<div class="consulta-perfil-item">
+        <div class="consulta-perfil-date"><div class="consulta-perfil-day">${dia}</div><div class="consulta-perfil-month">${mes}</div></div>
+        <div class="consulta-perfil-info">
+          <div class="consulta-perfil-medico">${c.medico}</div>
+          <div class="consulta-perfil-meta">
+            <div class="consulta-perfil-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${c.horario}</div>
+            <div class="consulta-perfil-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>${c.especialidade}</div>
+          </div>
+        </div>
+        <span class="status-tag ${tagClass}"><span class="status-tag-dot"></span>${tagLabel}</span>
+      </div>`;
+    }).join('');
+  }
+
+  /* ── Renderizar exames no perfil ─────────── */
+  function renderExamesPerfil(cpf) {
+    const lista = document.getElementById('examesPerfilLista');
+    const exames = EXAMES.filter(e => e.pacienteCpf === cpf);
+    if (exames.length === 0) {
+      lista.innerHTML = `<div class="empty-perfil"><div class="empty-perfil-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2m-10 0V9"/></svg></div><p>Nenhum exame solicitado</p></div>`; return;
+    }
+    lista.innerHTML = exames.map(e => `
+      <div class="exame-item">
+        <div class="exame-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2m-10 0V9"/></svg></div>
+        <div class="exame-info">
+          <div class="exame-nome">${e.nome}</div>
+          <div class="exame-meta">${e.lab} • ${formatDate(e.data)}</div>
+        </div>
+        <span class="exame-status ${e.status}">${e.status === 'solicitado' ? 'Solicitado' : 'Recebido'}</span>
+      </div>`).join('');
+  }
+
+  /* ── Abrir form de edição ────────────────── */
+  btnAbrirEdit.addEventListener('click', () => {
+    const p = pacienteAtualPerfil;
+    document.getElementById('editNome').value  = p.nome        || '';
+    document.getElementById('editCpf').value   = p.cpf         || '';
+    document.getElementById('editNasc').value  = p.nascimento  || '';
+    document.getElementById('editSexo').value  = p.sexo        || '';
+    document.getElementById('editTel').value   = p.telefone    || '';
+    document.getElementById('editEmail').value = p.email       || '';
+    document.getElementById('editLogr').value  = p.logradouro  || '';
+    document.getElementById('editBairro').value= p.bairro      || '';
+    alertCpfSensivel.classList.add('visible');
+    editForm.classList.add('visible');
+    editForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    /* Máscara CPF no campo de edição */
+    document.getElementById('editCpf').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,11);
+      if (v.length > 9)      v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');
+      else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/,'$1.$2.$3');
+      else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/,'$1.$2');
+      this.value = v;
+    }, { once: false });
+
+    /* Máscara telefone no campo de edição */
+    document.getElementById('editTel').addEventListener('input', function() {
+      let v = this.value.replace(/\D/g,'').slice(0,11);
+      if (v.length > 10)     v = v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+      else if (v.length > 6) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+      else if (v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+      this.value = v;
+    }, { once: false });
+  });
+
+  btnCancelarEdit.addEventListener('click', () => {
+    editForm.classList.remove('visible');
+    alertCpfSensivel.classList.remove('visible');
+    ['efNome','efCpf','efNasc','efSexo','efTel','efEmail','efLogr','efBairro'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.classList.remove('has-error');
+    });
+  });
+
+  /* ── Salvar edição ───────────────────────── */
+  btnSalvarEdit.addEventListener('click', () => {
+    const p     = pacienteAtualPerfil;
+    const nome  = document.getElementById('editNome').value.trim();
+    const cpf   = document.getElementById('editCpf').value;
+    const nasc  = document.getElementById('editNasc').value;
+    const sexo  = document.getElementById('editSexo').value;
+    const tel   = document.getElementById('editTel').value;
+    const email = document.getElementById('editEmail').value.trim();
+    const logr  = document.getElementById('editLogr').value.trim();
+    const bairro= document.getElementById('editBairro').value.trim();
+    const cpfN  = normalizarCpf(cpf);
+
+    let err = false;
+    const setEF = (id, on) => { const el = document.getElementById(id); if (el) el.classList.toggle('has-error', on); };
+
+    if (nome.length < 3)                            { setEF('efNome', true);   err = true; }
+    if (!validarCpf(cpf))                           { setEF('efCpf', true);    err = true; }
+    if (!nasc)                                      { setEF('efNasc', true);   err = true; }
+    if (!sexo)                                      { setEF('efSexo', true);   err = true; }
+    if (tel.replace(/\D/g,'').length < 10)          { setEF('efTel', true);    err = true; }
+    if (!isValidEmail(email))                       { setEF('efEmail', true);  err = true; }
+    if (!logr)                                      { setEF('efLogr', true);   err = true; }
+    if (!bairro)                                    { setEF('efBairro', true); err = true; }
+
+    /* Verifica duplicidade de CPF apenas se o CPF foi alterado */
+    if (!err && cpfN !== p.cpf) {
+      const duplicado = PACIENTES.find(x => x.cpf === cpfN && x !== p);
+      if (duplicado) { setEF('efCpf', true); document.getElementById('efCpfErr').textContent = 'CPF já cadastrado para outro paciente'; err = true; }
+    }
+    if (err) return;
+
+    /* Aplica alterações no objeto original */
+    p.nome = nome; p.cpf = cpfN; p.nascimento = nasc; p.sexo = sexo;
+    p.telefone = tel; p.email = email; p.logradouro = logr; p.bairro = bairro;
+
+    editForm.classList.remove('visible');
+    alertCpfSensivel.classList.remove('visible');
+    renderDadosView(p);
+
+    /* Atualiza nome e avatar no header do painel */
+    const initials = p.nome.split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+    document.getElementById('perfilAvatar').textContent = initials;
+    document.getElementById('perfilNome').textContent   = p.nome;
+  });
 
   /* Init */
   showView('viewCadastro');
