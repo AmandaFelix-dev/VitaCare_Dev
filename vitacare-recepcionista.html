@@ -879,7 +879,158 @@
       .date-horario-grid { grid-template-columns: 1fr; }
       .mini-cal { width: 100%; }
     }
-  </style>
+  
+    /* ══ US07 — NOTIFICAÇÃO ════════════════════════════════ */
+    .notif-modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,37,64,0.55);
+      backdrop-filter: blur(4px);
+      z-index: 600;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .notif-modal-overlay.active { opacity: 1; pointer-events: all; }
+    .notif-modal {
+      background: var(--white);
+      border-radius: 20px;
+      width: 100%; max-width: 480px;
+      box-shadow: 0 24px 80px rgba(10,37,64,0.25);
+      overflow: hidden;
+      transform: translateY(16px) scale(0.98);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .notif-modal-overlay.active .notif-modal { transform: translateY(0) scale(1); }
+
+    .notif-modal-header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      padding: 22px 24px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .notif-modal-icon {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(0,180,216,0.2);
+      border: 2px solid rgba(0,180,216,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .notif-modal-icon svg { width: 22px; height: 22px; color: var(--cyan); }
+    .notif-modal-title { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+    .notif-modal-sub { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+
+    .notif-modal-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+
+    .notif-channel {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      transition: all 0.2s;
+    }
+    .notif-channel.sent { border-color: var(--success); background: var(--success-bg); }
+    .notif-channel-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .notif-channel-icon svg { width: 18px; height: 18px; }
+    .notif-channel-icon.sms   { background: rgba(0,180,216,0.12); }
+    .notif-channel-icon.sms svg { color: var(--cyan); }
+    .notif-channel-icon.email { background: rgba(139,92,246,0.12); }
+    .notif-channel-icon.email svg { color: #7C3AED; }
+    .notif-channel.sent .notif-channel-icon.sms   { background: rgba(45,184,111,0.15); }
+    .notif-channel.sent .notif-channel-icon.sms svg { color: var(--success); }
+    .notif-channel.sent .notif-channel-icon.email { background: rgba(45,184,111,0.15); }
+    .notif-channel.sent .notif-channel-icon.email svg { color: var(--success); }
+
+    .notif-channel-info { flex: 1; }
+    .notif-channel-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; }
+    .notif-channel-value { font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
+    .notif-channel-msg { font-size: 0.75rem; color: var(--text-sub); line-height: 1.5; }
+    .notif-channel-status {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.3px;
+      padding: 3px 9px; border-radius: 20px; white-space: nowrap; align-self: center;
+      background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
+    }
+    .notif-channel.sent .notif-channel-status {
+      background: var(--success-bg); color: var(--success); border-color: var(--success-border);
+    }
+    .notif-sending-bar {
+      height: 3px; background: var(--surface-2); border-radius: 2px; margin-top: 6px; overflow: hidden;
+    }
+    .notif-sending-bar-fill {
+      height: 100%; width: 0%; background: var(--cyan);
+      border-radius: 2px; transition: width 0.8s ease;
+    }
+    .notif-channel.sent .notif-sending-bar-fill { width: 100%; background: var(--success); }
+
+    .notif-modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: flex-end;
+    }
+    .btn-notif-close {
+      padding: 9px 22px; border-radius: 9px;
+      background: var(--navy); color: var(--white);
+      border: none; font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-notif-close:hover { opacity: 0.88; }
+
+    /* ── Log de notificações ── */
+    .notif-log-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(10,37,64,0.07);
+      overflow: hidden;
+      margin-top: 24px;
+      animation: fadeSlideUp 0.4s ease 0.2s both;
+    }
+    .notif-log-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .notif-log-title { font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .notif-log-title svg { width: 16px; height: 16px; color: var(--cyan); }
+    .notif-log-count { font-size: 0.7rem; font-weight: 700; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-sub); padding: 2px 9px; border-radius: 20px; }
+    .notif-log-body { max-height: 340px; overflow-y: auto; }
+    .notif-log-body::-webkit-scrollbar { width: 4px; }
+    .notif-log-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .notif-log-empty { padding: 32px 24px; text-align: center; color: var(--text-muted); font-size: 0.82rem; }
+    .notif-log-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 22px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeSlideUp 0.3s ease both;
+    }
+    .notif-log-item:last-child { border-bottom: none; }
+    .notif-log-av {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--surface-2); color: var(--navy-mid);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-size: 0.7rem; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .notif-log-info { flex: 1; }
+    .notif-log-name { font-size: 0.83rem; font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
+    .notif-log-detail { font-size: 0.74rem; color: var(--text-sub); margin-bottom: 4px; line-height: 1.4; }
+    .notif-log-channels { display: flex; gap: 6px; flex-wrap: wrap; }
+    .notif-log-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.65rem; font-weight: 700; padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .notif-log-chip.sms   { background: rgba(0,180,216,0.1); color: var(--cyan); border: 1px solid rgba(0,180,216,0.2); }
+    .notif-log-chip.email { background: rgba(139,92,246,0.1); color: #7C3AED; border: 1px solid rgba(139,92,246,0.2); }
+    .notif-log-chip svg   { width: 10px; height: 10px; }
+    .notif-log-time { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+</style>
 </head>
 <body>
 
@@ -1720,6 +1871,24 @@
   </div>
 </div>
 
+<!-- ── Log de Notificações — US07 ── -->
+<div style="max-width:860px;margin:24px auto 0;padding:0 40px;">
+  <div class="notif-log-card" id="notifLogCard" style="display:none;">
+    <div class="notif-log-header">
+      <div class="notif-log-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        Log de Notificações — US07
+      </div>
+      <span class="notif-log-count" id="notifLogCount">0</span>
+    </div>
+    <div class="notif-log-body" id="notifLogBody">
+      <div class="notif-log-empty">Nenhuma notificação registrada ainda.</div>
+    </div>
+  </div>
+</div>
+
 <script>
   /* ══════════════════════════════════════════
      GUARD DE AUTENTICAÇÃO
@@ -2247,9 +2416,14 @@
       OCUPADOS[selectedDate].push(selectedSlot);
       btnConfirmar.classList.remove('loading'); closeModal();
       const d = new Date(selectedDate + 'T12:00:00');
-      successDescAgend.textContent = `${selectedPatient.nome} • ${selectedDoctor} • ${d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })} às ${selectedSlot}`;
+      const dataFormatada = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+      successDescAgend.textContent = `${selectedPatient.nome} • ${selectedDoctor} • ${dataFormatada} às ${selectedSlot}`;
       successBannerAgend.classList.add('visible');
       successBannerAgend.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // US07 — dispara notificação simulada
+      us07Notificar(selectedPatient, selectedDoctor, selectedSpecialty, dataFormatada, selectedSlot);
+
       inputBusca.value = ''; btnBuscar.disabled = true;
       resultFound.classList.remove('visible'); selectedPatient = null;
     }, 1400);
@@ -2691,5 +2865,189 @@
   /* Init */
   showView('viewCadastro');
 </script>
+
+<!-- ══ US07 — MODAL DE NOTIFICAÇÃO ══════════════════════════ -->
+<div class="notif-modal-overlay" id="notifModalOverlay">
+  <div class="notif-modal">
+    <div class="notif-modal-header">
+      <div class="notif-modal-icon">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+        </svg>
+      </div>
+      <div>
+        <div class="notif-modal-title">Notificação Enviada — US07</div>
+        <div class="notif-modal-sub">Alerta de agendamento gerado e registrado</div>
+      </div>
+    </div>
+
+    <div class="notif-modal-body">
+      <!-- Canal SMS -->
+      <div class="notif-channel" id="notifChannelSms">
+        <div class="notif-channel-icon sms">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+          </svg>
+        </div>
+        <div class="notif-channel-info">
+          <div class="notif-channel-label">SMS</div>
+          <div class="notif-channel-value" id="notifSmsDest">—</div>
+          <div class="notif-channel-msg" id="notifSmsMsg">—</div>
+          <div class="notif-sending-bar"><div class="notif-sending-bar-fill" id="notifSmsBar"></div></div>
+        </div>
+        <div class="notif-channel-status" id="notifSmsStatus">Enviando…</div>
+      </div>
+
+      <!-- Canal E-mail -->
+      <div class="notif-channel" id="notifChannelEmail">
+        <div class="notif-channel-icon email">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="notif-channel-info">
+          <div class="notif-channel-label">E-mail</div>
+          <div class="notif-channel-value" id="notifEmailDest">—</div>
+          <div class="notif-channel-msg" id="notifEmailMsg">—</div>
+          <div class="notif-sending-bar"><div class="notif-sending-bar-fill" id="notifEmailBar"></div></div>
+        </div>
+        <div class="notif-channel-status" id="notifEmailStatus">Enviando…</div>
+      </div>
+
+      <!-- Nota LGPD -->
+      <div style="display:flex;align-items:center;gap:7px;font-size:0.71rem;color:var(--text-muted);background:var(--surface-2);border:1px solid var(--border);padding:10px 14px;border-radius:9px;">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:13px;height:13px;color:var(--cyan);flex-shrink:0;"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Envio simulado — dados protegidos conforme LGPD. Nenhuma mensagem real é transmitida.
+      </div>
+    </div>
+
+    <div class="notif-modal-footer">
+      <button class="btn-notif-close" id="btnNotifClose">Concluído</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   US07 — NOTIFICAÇÃO DE CONSULTA (SMS/E-MAIL SIMULADO)
+══════════════════════════════════════════════════════════ */
+
+const notifOverlay    = document.getElementById('notifModalOverlay');
+const notifSmsChannel = document.getElementById('notifChannelSms');
+const notifEmailChannel = document.getElementById('notifChannelEmail');
+const notifSmsDest    = document.getElementById('notifSmsDest');
+const notifSmsMsg     = document.getElementById('notifSmsMsg');
+const notifSmsBar     = document.getElementById('notifSmsBar');
+const notifSmsStatus  = document.getElementById('notifSmsStatus');
+const notifEmailDest  = document.getElementById('notifEmailDest');
+const notifEmailMsg   = document.getElementById('notifEmailMsg');
+const notifEmailBar   = document.getElementById('notifEmailBar');
+const notifEmailStatus= document.getElementById('notifEmailStatus');
+const notifLogCard    = document.getElementById('notifLogCard');
+const notifLogBody    = document.getElementById('notifLogBody');
+const notifLogCount   = document.getElementById('notifLogCount');
+const btnNotifClose   = document.getElementById('btnNotifClose');
+
+let _notifLog = [];
+
+function us07Notificar(paciente, medico, especialidade, dataFmt, horario) {
+  // Texto das mensagens simuladas
+  const smsText = `VitaCare: Sua consulta foi agendada! ${especialidade} com ${medico} em ${dataFmt} às ${horario}. Dúvidas: (11) 3000-0000.`;
+  const emailText = `Confirmação de agendamento — ${especialidade} com ${medico} em ${dataFmt} às ${horario}. Clínica VitaCare. Compareça com 15 min de antecedência.`;
+
+  // Preenche modal
+  notifSmsDest.textContent   = paciente.telefone || '(—) —————-————';
+  notifSmsMsg.textContent    = smsText;
+  notifEmailDest.textContent = paciente.email || 'email@não.cadastrado';
+  notifEmailMsg.textContent  = emailText;
+
+  // Reset estado visual
+  [notifSmsChannel, notifEmailChannel].forEach(ch => ch.classList.remove('sent'));
+  notifSmsBar.style.width = '0%';
+  notifEmailBar.style.width = '0%';
+  notifSmsStatus.textContent   = 'Enviando…';
+  notifEmailStatus.textContent = 'Enviando…';
+
+  // Abre modal
+  notifOverlay.classList.add('active');
+
+  // Simula envio sequencial: SMS primeiro (800ms), depois email (1600ms)
+  setTimeout(() => {
+    notifSmsBar.style.width = '100%';
+    setTimeout(() => {
+      notifSmsChannel.classList.add('sent');
+      notifSmsStatus.textContent = 'Enviado ✓';
+    }, 800);
+  }, 50);
+
+  setTimeout(() => {
+    notifEmailBar.style.width = '100%';
+    setTimeout(() => {
+      notifEmailChannel.classList.add('sent');
+      notifEmailStatus.textContent = 'Enviado ✓';
+    }, 800);
+  }, 1200);
+
+  // Registra no log após ambos enviados
+  setTimeout(() => {
+    const now = new Date();
+    const hora = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    const iniciais = paciente.nome.split(' ').slice(0,2).map(n => n[0]).join('').toUpperCase();
+
+    _notifLog.unshift({
+      iniciais,
+      nome: paciente.nome,
+      medico,
+      especialidade,
+      data: dataFmt,
+      horario,
+      telefone: paciente.telefone,
+      email: paciente.email,
+      hora,
+    });
+
+    us07RenderLog();
+  }, 2500);
+}
+
+function us07RenderLog() {
+  notifLogCard.style.display = '';
+  notifLogCount.textContent = _notifLog.length;
+
+  notifLogBody.innerHTML = _notifLog.map((entry, i) => `
+    <div class="notif-log-item" style="animation-delay:${i * 0.04}s">
+      <div class="notif-log-av">${entry.iniciais}</div>
+      <div class="notif-log-info">
+        <div class="notif-log-name">${entry.nome}</div>
+        <div class="notif-log-detail">
+          ${entry.especialidade} com ${entry.medico} · ${entry.data} às ${entry.horario}
+        </div>
+        <div class="notif-channels">
+          <span class="notif-log-chip sms">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+            SMS · ${entry.telefone}
+          </span>
+          <span class="notif-log-chip email">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            E-mail · ${entry.email}
+          </span>
+        </div>
+      </div>
+      <div class="notif-log-time">Hoje · ${entry.hora}</div>
+    </div>
+  `).join('');
+}
+
+btnNotifClose.addEventListener('click', () => {
+  notifOverlay.classList.remove('active');
+});
+
+// Fecha ao clicar fora
+notifOverlay.addEventListener('click', (e) => {
+  if (e.target === notifOverlay) notifOverlay.classList.remove('active');
+});
+</script>
+
 </body>
 </html>
