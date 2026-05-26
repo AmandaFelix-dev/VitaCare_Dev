@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VitaCare — Dashboard</title>
+  <title>VitaCare — Administrador</title>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,21 +38,11 @@
     /* ══════════════════════════
        HEADER
     ══════════════════════════ */
-    .header {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: var(--header-h); background: var(--navy);
-      display: flex; align-items: center; padding: 0 24px; gap: 16px;
-      z-index: 100; box-shadow: 0 2px 16px rgba(0,0,0,0.2);
-    }
-    .btn-hamburger {
-      width: 38px; height: 38px; background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; flex-shrink: 0; transition: background var(--transition);
-    }
+    .header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: var(--navy); display: flex; align-items: center; padding: 0 24px; gap: 16px; z-index: 100; box-shadow: 0 2px 16px rgba(0,0,0,0.2); }
+    .btn-hamburger { width: 38px; height: 38px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: background var(--transition); }
     .btn-hamburger:hover { background: rgba(255,255,255,0.13); }
     .btn-hamburger svg { width: 18px; height: 18px; color: rgba(255,255,255,0.8); }
-    .header-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .header-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
     .header-logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--cyan), var(--cyan-light)); border-radius: 9px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,180,216,0.3); flex-shrink: 0; }
     .header-logo-icon svg { width: 20px; height: 20px; }
     .header-logo-name { font-family: 'Sora', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--white); letter-spacing: -0.2px; }
@@ -109,14 +99,22 @@
     .sidebar-user-role { font-size: 0.7rem; color: var(--cyan); font-weight: 500; }
 
     /* ══════════════════════════
+       VIEWS (página única com abas)
+    ══════════════════════════ */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ══════════════════════════
        MAIN
     ══════════════════════════ */
     .main { margin-top: var(--header-h); min-height: calc(100vh - var(--header-h)); padding: 36px 40px; max-width: 1100px; margin-left: auto; margin-right: auto; }
 
     /* Breadcrumb */
     .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 0.78rem; color: var(--text-muted); }
-    .breadcrumb svg { width: 20px; height: 20px; } .breadcrumb img { display: inline-block; }
+    .breadcrumb svg { width: 13px; height: 13px; }
     .breadcrumb span { font-weight: 500; }
+    .breadcrumb button { background: none; border: none; padding: 0; color: inherit; font: inherit; cursor: pointer; font-weight: 500; transition: color var(--transition); }
+    .breadcrumb button:hover { color: var(--cyan); }
     .breadcrumb .current { color: var(--text-sub); font-weight: 600; }
 
     /* Page header */
@@ -131,43 +129,29 @@
     .page-header-badge svg { width: 13px; height: 13px; color: var(--cyan); }
 
     /* ══════════════════════════
-       METRIC CARDS
+       METRIC CARDS (compartilhado)
     ══════════════════════════ */
     .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
-    .metric-card {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 14px; padding: 22px 24px;
-      box-shadow: 0 2px 12px rgba(10,37,64,0.05);
-      display: flex; align-items: flex-start; gap: 16px;
-      transition: transform var(--transition), box-shadow var(--transition);
-      animation: fadeSlideUp 0.5s ease both;
-    }
+    .metric-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; box-shadow: 0 2px 12px rgba(10,37,64,0.05); display: flex; align-items: flex-start; gap: 16px; transition: transform var(--transition), box-shadow var(--transition); animation: fadeSlideUp 0.5s ease both; }
     .metric-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(10,37,64,0.1); }
-    .metric-card:nth-child(1) { animation-delay: 0.05s; }
-    .metric-card:nth-child(2) { animation-delay: 0.1s; }
-    .metric-card:nth-child(3) { animation-delay: 0.15s; }
-    .metric-card:nth-child(4) { animation-delay: 0.2s; }
-    .metric-card:nth-child(5) { animation-delay: 0.25s; }
-    .metric-card:nth-child(6) { animation-delay: 0.3s; }
-
+    .metric-card:nth-child(1) { animation-delay: 0.05s; } .metric-card:nth-child(2) { animation-delay: 0.10s; }
+    .metric-card:nth-child(3) { animation-delay: 0.15s; } .metric-card:nth-child(4) { animation-delay: 0.20s; }
+    .metric-card:nth-child(5) { animation-delay: 0.25s; } .metric-card:nth-child(6) { animation-delay: 0.30s; }
     .metric-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .metric-icon svg { width: 22px; height: 22px; }
-    .metric-icon.blue   { background: rgba(0,180,216,0.1);  }
-    .metric-icon.blue   svg { color: var(--cyan); }
-    .metric-icon.navy   { background: rgba(14,52,96,0.1);   }
-    .metric-icon.navy   svg { color: var(--navy-light); }
-    .metric-icon.green  { background: rgba(45,184,111,0.1); }
-    .metric-icon.green  svg { color: var(--success); }
-    .metric-icon.red    { background: rgba(230,57,70,0.1);  }
-    .metric-icon.red    svg { color: var(--error); }
-    .metric-icon.orange { background: rgba(244,162,97,0.1); }
-    .metric-icon.orange svg { color: var(--warn); }
-    .metric-icon.purple { background: rgba(124,58,237,0.1); }
-    .metric-icon.purple svg { color: #7c3aed; }
-
+    .metric-icon.blue   { background: rgba(0,180,216,0.1);   } .metric-icon.blue   svg { color: var(--cyan); }
+    .metric-icon.navy   { background: rgba(14,52,96,0.1);    } .metric-icon.navy   svg { color: var(--navy-light); }
+    .metric-icon.green  { background: rgba(45,184,111,0.1);  } .metric-icon.green  svg { color: var(--success); }
+    .metric-icon.red    { background: rgba(230,57,70,0.1);   } .metric-icon.red    svg { color: var(--error); }
+    .metric-icon.orange { background: rgba(244,162,97,0.1);  } .metric-icon.orange svg { color: var(--warn); }
+    .metric-icon.purple { background: rgba(124,58,237,0.1);  } .metric-icon.purple svg { color: #7c3aed; }
     .metric-body { flex: 1; }
     .metric-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
-    .metric-value { font-family: 'Sora', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 6px; letter-spacing: -1px; }
+    .metric-value { font-family: 'Sora', sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 6px; letter-spacing: -1px; white-space: nowrap; }
+    .metric-value.green-val { color: var(--success); }
+    .metric-value.red-val   { color: var(--error); }
+    /* Financeiro: 4 colunas = espaço menor, reduz fonte para caber em linha */
+    #view-financeiro .metric-value { font-size: 1.45rem; letter-spacing: -0.5px; }
     .metric-sub { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
     .metric-sub svg { width: 12px; height: 12px; }
     .metric-trend-up   { color: var(--success); }
@@ -177,10 +161,8 @@
     /* ══════════════════════════
        SECTION CARDS
     ══════════════════════════ */
-    .section-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
     .section-grid-3 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; margin-bottom: 20px; }
-
-    .section-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(10,37,64,0.05); animation: fadeSlideUp 0.5s ease 0.3s both; }
+    .section-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(10,37,64,0.05); animation: fadeSlideUp 0.5s ease 0.3s both; margin-bottom: 20px; }
     .section-card-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); }
     .section-card-header-left { display: flex; align-items: center; gap: 12px; }
     .section-card-icon { width: 36px; height: 36px; border-radius: 9px; background: linear-gradient(135deg, var(--cyan-glow), rgba(0,180,216,0.08)); border: 1.5px solid rgba(0,180,216,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -190,7 +172,7 @@
     .section-card-body { padding: 0; }
 
     /* ══════════════════════════
-       TABELA MÉDICOS
+       DASHBOARD — TABELA MÉDICOS
     ══════════════════════════ */
     .doctors-table { width: 100%; border-collapse: collapse; }
     .doctors-table th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); padding: 12px 20px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface); }
@@ -198,7 +180,6 @@
     .doctors-table tbody tr:last-child td { border-bottom: none; }
     .doctors-table tbody tr { transition: background var(--transition); }
     .doctors-table tbody tr:hover { background: var(--surface); }
-
     .doctor-cell { display: flex; align-items: center; gap: 12px; }
     .doctor-table-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-mid), var(--navy-light)); border: 2px solid rgba(0,180,216,0.2); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--cyan); flex-shrink: 0; }
     .doctor-table-name { font-weight: 600; color: var(--text-main); font-size: 0.87rem; }
@@ -206,9 +187,9 @@
     .especialidade-tag { display: inline-flex; padding: 3px 9px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; font-size: 0.7rem; font-weight: 600; color: var(--text-sub); }
     .faltas-cell { display: flex; align-items: center; gap: 6px; }
     .faltas-warn { color: var(--error); font-weight: 700; }
-    .faltas-ok   { color: var(--text-sub); }
+    .faltas-ok { color: var(--text-sub); }
 
-    /* Status badge */
+    /* Status pill (compartilhado) */
     .status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.3px; white-space: nowrap; }
     .status-pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
     .status-pill.ativo   { background: rgba(45,184,111,0.1);  border: 1px solid rgba(45,184,111,0.25);  color: #1a7a48; }
@@ -217,16 +198,20 @@
     .status-pill.ausente .status-pill-dot { background: var(--error); }
     .status-pill.ferias  { background: rgba(244,162,97,0.1);  border: 1px solid rgba(244,162,97,0.25);  color: #b85c00; }
     .status-pill.ferias  .status-pill-dot { background: var(--warn); }
+    .status-pill.pago    { background: rgba(45,184,111,0.1);  border: 1px solid rgba(45,184,111,0.25);  color: #1a7a48; }
+    .status-pill.pago    .status-pill-dot { background: var(--success); box-shadow: 0 0 5px rgba(45,184,111,0.4); }
+    .status-pill.pendente { background: rgba(244,162,97,0.1); border: 1px solid rgba(244,162,97,0.3);   color: #b85c00; }
+    .status-pill.pendente .status-pill-dot { background: var(--warn); animation: pulse-dot 2s ease infinite; }
 
     /* ══════════════════════════
-       RANKING MÉDICOS
+       DASHBOARD — RANKING
     ══════════════════════════ */
     .ranking-list { padding: 8px 0; }
     .ranking-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border); transition: background var(--transition); }
     .ranking-item:last-child { border-bottom: none; }
     .ranking-item:hover { background: var(--surface); }
     .ranking-pos { width: 24px; height: 24px; border-radius: 7px; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 0.72rem; font-weight: 700; color: var(--text-sub); flex-shrink: 0; }
-    .ranking-pos.top1 { background: rgba(255,196,0,0.12); border-color: rgba(255,196,0,0.3); color: #a07800; }
+    .ranking-pos.top1 { background: rgba(255,196,0,0.12); border-color: rgba(255,196,0,0.3);   color: #a07800; }
     .ranking-pos.top2 { background: rgba(138,155,175,0.1); border-color: rgba(138,155,175,0.25); color: #5a6e85; }
     .ranking-pos.top3 { background: rgba(180,100,50,0.1);  border-color: rgba(180,100,50,0.2);   color: #8a4a20; }
     .ranking-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-mid), var(--navy-light)); border: 2px solid rgba(0,180,216,0.2); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 0.7rem; font-weight: 700; color: var(--cyan); flex-shrink: 0; }
@@ -238,7 +223,7 @@
     .ranking-value span { font-size: 0.68rem; color: var(--text-muted); font-weight: 400; margin-left: 2px; }
 
     /* ══════════════════════════
-       LISTA RECEPCIONISTAS
+       DASHBOARD — RECEPCIONISTAS
     ══════════════════════════ */
     .recep-list { padding: 8px 0; }
     .recep-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border); transition: background var(--transition); }
@@ -251,7 +236,7 @@
     .recep-turno svg { width: 11px; height: 11px; }
 
     /* ══════════════════════════
-       WAVE CHART — Consultas semana
+       DASHBOARD — WAVE CHART
     ══════════════════════════ */
     .week-chart { padding: 20px 24px 16px; }
     .week-chart-svg-wrap { position: relative; width: 100%; }
@@ -261,26 +246,116 @@
     .week-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
 
     /* ══════════════════════════
+       FINANCEIRO — TOOLBAR
+    ══════════════════════════ */
+    .toolbar { display: flex; align-items: center; gap: 10px; padding: 14px 24px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+    .search-wrap { flex: 1; min-width: 220px; position: relative; display: flex; align-items: center; }
+    .search-wrap svg { position: absolute; left: 11px; width: 15px; height: 15px; color: var(--text-muted); pointer-events: none; }
+    .search-wrap input { width: 100%; padding: 8px 12px 8px 34px; border: 1.5px solid var(--border); border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; color: var(--text-main); background: var(--white); outline: none; transition: border-color var(--transition); }
+    .search-wrap input:focus { border-color: var(--cyan); }
+    .search-wrap input::placeholder { color: var(--text-muted); }
+    .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn { display: flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.73rem; font-weight: 600; color: var(--text-sub); cursor: pointer; transition: all var(--transition); }
+    .filter-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .filter-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+    .filter-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .record-count { margin-left: auto; font-size: 0.73rem; font-weight: 600; color: var(--text-muted); background: var(--surface-2); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+
+    /* ══════════════════════════
+       FINANCEIRO — TABELA
+    ══════════════════════════ */
+    .finance-table { width: 100%; border-collapse: collapse; }
+    .finance-table th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); padding: 12px 20px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface); white-space: nowrap; }
+    .finance-table td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 0.85rem; vertical-align: middle; }
+    .finance-table tbody tr:last-child td { border-bottom: none; }
+    .finance-table tbody tr { transition: background var(--transition); cursor: pointer; }
+    .finance-table tbody tr:hover { background: var(--surface); }
+    .finance-table tbody tr.hidden { display: none; }
+    .patient-cell { display: flex; align-items: center; gap: 10px; }
+    .patient-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--navy-mid), var(--navy-light)); border: 2px solid rgba(0,180,216,0.2); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 0.68rem; font-weight: 700; color: var(--cyan); flex-shrink: 0; }
+    .patient-name { font-weight: 600; color: var(--text-main); font-size: 0.87rem; }
+    .patient-id { font-size: 0.7rem; color: var(--text-muted); margin-top: 1px; }
+    .doctor-cell-sm { display: flex; align-items: center; gap: 8px; }
+    .doctor-avatar-sm { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #1a4a7a, #2563a8); border: 1.5px solid rgba(0,180,216,0.2); display: flex; align-items: center; justify-content: center; font-family: 'Sora', sans-serif; font-size: 0.6rem; font-weight: 700; color: var(--cyan-light); flex-shrink: 0; }
+    .convenio-tag { display: inline-flex; padding: 3px 9px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; font-size: 0.7rem; font-weight: 600; color: var(--text-sub); }
+    .valor-cell { font-family: 'Sora', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--text-main); white-space: nowrap; }
+    .valor-cell.pago     { color: var(--success); }
+    .valor-cell.pendente { color: var(--text-main); }
+    .action-btn { width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition); color: var(--text-muted); }
+    .action-btn:hover { background: var(--navy); border-color: var(--navy); color: var(--white); }
+    .action-btn svg { width: 13px; height: 13px; }
+
+    /* ══════════════════════════
+       FINANCEIRO — MODAL
+    ══════════════════════════ */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(10,37,64,0.55); backdrop-filter: blur(4px); z-index: 400; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; padding: 24px; }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal { background: var(--white); border-radius: 18px; width: 100%; max-width: 520px; box-shadow: 0 24px 80px rgba(10,37,64,0.22); overflow: hidden; transform: translateY(14px) scale(0.98); transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); }
+    .modal-overlay.active .modal { transform: translateY(0) scale(1); }
+    .modal-header { padding: 22px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface); }
+    .modal-header-left { display: flex; align-items: center; gap: 12px; }
+    .modal-header-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .modal-header-icon.pago     { background: rgba(45,184,111,0.12); }
+    .modal-header-icon.pago svg { color: var(--success); }
+    .modal-header-icon.pendente { background: rgba(244,162,97,0.12); }
+    .modal-header-icon.pendente svg { color: var(--warn); }
+    .modal-header-icon svg { width: 20px; height: 20px; }
+    .modal-title { font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text-main); }
+    .modal-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+    .btn-modal-close { width: 30px; height: 30px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition); color: var(--text-muted); }
+    .btn-modal-close:hover { background: var(--error-bg); border-color: var(--error); color: var(--error); }
+    .btn-modal-close svg { width: 14px; height: 14px; }
+    .modal-body { padding: 22px 24px; }
+    .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .modal-field-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .modal-field-value { font-size: 0.88rem; font-weight: 600; color: var(--text-main); }
+    .modal-field-value.big { font-family: 'Sora', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+    .modal-field-value.big.pago     { color: var(--success); }
+    .modal-field-value.big.pendente { color: var(--warn); }
+    .modal-divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .modal-status-change { display: flex; gap: 8px; margin-bottom: 4px; }
+    .status-change-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px; border-radius: 9px; border: 1.5px solid var(--border); font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: all var(--transition); color: var(--text-sub); background: var(--white); }
+    .status-change-btn svg { width: 15px; height: 15px; }
+    .status-change-btn.pago-btn:hover, .status-change-btn.pago-btn.selected { background: rgba(45,184,111,0.08); border-color: var(--success); color: #1a7a48; }
+    .status-change-btn.pendente-btn:hover, .status-change-btn.pendente-btn.selected { background: rgba(244,162,97,0.08); border-color: var(--warn); color: #b85c00; }
+    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+    .btn-secondary { padding: 9px 18px; border-radius: 9px; border: 1px solid var(--border); background: var(--surface); color: var(--text-sub); font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+    .btn-secondary:hover { border-color: var(--text-muted); }
+    .btn-primary { display: flex; align-items: center; gap: 7px; padding: 9px 20px; border-radius: 9px; border: none; background: var(--navy); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+    .btn-primary:hover { background: var(--navy-mid); }
+    .btn-primary svg { width: 14px; height: 14px; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 28px; right: 28px; display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: var(--navy); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.22); z-index: 500; opacity: 0; transform: translateY(14px); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; min-width: 260px; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .toast-icon.success { background: rgba(45,184,111,0.2); }
+    .toast-icon.success svg { width: 15px; height: 15px; color: var(--success); }
+    .toast-title { font-size: 0.83rem; font-weight: 700; color: var(--white); margin-bottom: 1px; }
+    .toast-desc  { font-size: 0.72rem; color: rgba(255,255,255,0.5); }
+
+    /* ══════════════════════════
        ANIMAÇÕES
     ══════════════════════════ */
     @keyframes fadeSlideUp   { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeSlideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
     @keyframes spin          { to { transform: rotate(360deg); } }
+    @keyframes pulse-dot     { 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }
 
     /* ══════════════════════════
        RESPONSIVO
     ══════════════════════════ */
     @media (max-width: 960px) {
       .metrics-grid { grid-template-columns: repeat(2, 1fr); }
-      .section-grid-2, .section-grid-3 { grid-template-columns: 1fr; }
+      .section-grid-3 { grid-template-columns: 1fr; }
     }
     @media (max-width: 600px) {
       .main { padding: 24px 16px; }
       .metrics-grid { grid-template-columns: 1fr 1fr; }
       .header-user-info { display: none; }
       .page-header { flex-direction: column; }
-      .doctors-table th:nth-child(3),
-      .doctors-table td:nth-child(3) { display: none; }
+      .doctors-table th:nth-child(3), .doctors-table td:nth-child(3) { display: none; }
+      .finance-table th:nth-child(4), .finance-table td:nth-child(4),
+      .finance-table th:nth-child(5), .finance-table td:nth-child(5) { display: none; }
     }
   </style>
 </head>
@@ -301,9 +376,13 @@
   </div>
   <div class="sidebar-section-label">Administração</div>
   <nav class="sidebar-nav">
-    <div class="nav-item active">
+    <div class="nav-item active" id="navDashboard" onclick="navigateTo('dashboard')">
       <div class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
       <span class="nav-item-label">Dashboard</span>
+    </div>
+    <div class="nav-item" id="navFinanceiro" onclick="navigateTo('financeiro')">
+      <div class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+      <span class="nav-item-label">Financeiro</span>
     </div>
     <div class="nav-item">
       <div class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
@@ -337,12 +416,12 @@
   <button class="btn-hamburger" id="btnHamburger">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
-  <a class="header-logo" href="#">
+  <div class="header-logo" onclick="navigateTo('dashboard')">
     <div class="header-logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
     <div class="header-logo-name">Vita<span>Care</span></div>
-  </a>
+  </div>
   <div class="header-divider"></div>
-  <span class="header-page-title">Dashboard Gerencial</span>
+  <span class="header-page-title" id="headerPageTitle">Dashboard Gerencial</span>
   <div class="header-right">
     <div class="header-user">
       <div class="header-avatar">AD</div>
@@ -358,242 +437,369 @@
   </div>
 </header>
 
-<!-- MAIN -->
-<main class="main">
+<!-- ══════════════════════════════
+     VIEW: DASHBOARD
+══════════════════════════════ -->
+<div id="view-dashboard" class="view active">
+  <main class="main">
 
-  <!-- Breadcrumb -->
-  <div class="breadcrumb">
-    <img src="data:image/webp;base64,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" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;"/>
-    <span>Administração</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-    <span class="current">Dashboard</span>
-  </div>
-
-  <!-- Page header -->
-  <div class="page-header">
-    <div>
-      <p class="page-eyebrow">Gestão Clínica</p>
-      <h1 class="page-title" id="saudacaoTitle">Bom dia, Administrador</h1>
-      <p class="page-desc">Visão consolidada da operação da Clínica MedPlus.</p>
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <span>Administração</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="current">Dashboard</span>
     </div>
-    <div class="page-header-right">
-      <div class="date-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <span id="dataAtual">—</span>
-      </div>
-      <div class="page-header-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Dados protegidos — LGPD
-      </div>
-    </div>
-  </div>
 
-  <!-- MÉTRICAS PRINCIPAIS -->
-  <div class="metrics-grid">
-
-    <div class="metric-card">
-      <div class="metric-icon blue">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <!-- Page header -->
+    <div class="page-header">
+      <div>
+        <p class="page-eyebrow">Gestão Clínica</p>
+        <h1 class="page-title" id="saudacaoTitle">Bom dia, Administrador</h1>
+        <p class="page-desc">Visão consolidada da operação da Clínica MedPlus.</p>
       </div>
-      <div class="metric-body">
-        <div class="metric-label">Consultas Hoje</div>
-        <div class="metric-value" data-target="12">0</div>
-        <div class="metric-sub metric-trend-up">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-          +3 em relação a ontem
+      <div class="page-header-right">
+        <div class="date-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dataAtualDash">—</span>
+        </div>
+        <div class="page-header-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Dados protegidos — LGPD
         </div>
       </div>
     </div>
 
-    <div class="metric-card">
-      <div class="metric-icon navy">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <!-- MÉTRICAS DASHBOARD -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Consultas Hoje</div>
+          <div class="metric-value" data-target="12">0</div>
+          <div class="metric-sub metric-trend-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>+3 em relação a ontem</div>
+        </div>
       </div>
-      <div class="metric-body">
-        <div class="metric-label">Consultas na Semana</div>
-        <div class="metric-value" data-target="47">0</div>
-        <div class="metric-sub metric-trend-neutral">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Seg a Dom — semana atual
+      <div class="metric-card">
+        <div class="metric-icon navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Consultas na Semana</div>
+          <div class="metric-value" data-target="47">0</div>
+          <div class="metric-sub metric-trend-neutral"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>Seg a Dom — semana atual</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="18.5 8 13 13.5 8.5 9 3 14.5"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Consultas no Mês</div>
+          <div class="metric-value" data-target="183">0</div>
+          <div class="metric-sub metric-trend-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>+12% vs mês anterior</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Pacientes Cadastrados</div>
+          <div class="metric-value" data-target="248">0</div>
+          <div class="metric-sub metric-trend-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>+8 novos este mês</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Cancelamentos no Mês</div>
+          <div class="metric-value" data-target="14">0</div>
+          <div class="metric-sub metric-trend-down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 9 12 15 6 9"/></svg>Taxa de 7,6% do total</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Faltas de Médicos</div>
+          <div class="metric-value" data-target="6">0</div>
+          <div class="metric-sub metric-trend-down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 9 12 15 6 9"/></svg>Requer atenção este mês</div>
         </div>
       </div>
     </div>
 
-    <div class="metric-card">
-      <div class="metric-icon blue">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><polyline points="18.5 8 13 13.5 8.5 9 3 14.5"/></svg>
+    <!-- GRÁFICO + RANKING -->
+    <div class="section-grid-3">
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-header-left">
+            <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+            <div><div class="section-card-title">Consultas por Dia</div><div class="section-card-subtitle">Semana atual</div></div>
+          </div>
+        </div>
+        <div class="section-card-body">
+          <div class="week-chart">
+            <div class="week-chart-svg-wrap" id="weekChartWrap"></div>
+            <div class="week-chart-legend">
+              <div class="week-legend-item"><div class="week-legend-dot" style="background:var(--navy-mid)"></div>Hoje</div>
+              <div class="week-legend-item"><div class="week-legend-dot" style="background:var(--cyan)"></div>Outros dias</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="metric-body">
-        <div class="metric-label">Consultas no Mês</div>
-        <div class="metric-value" data-target="183">0</div>
-        <div class="metric-sub metric-trend-up">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-          +12% vs mês anterior
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-header-left">
+            <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/><line x1="12" y1="3" x2="12" y2="9"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
+            <div><div class="section-card-title">Ranking de Atendimentos</div><div class="section-card-subtitle">Por médico — mês atual</div></div>
+          </div>
+        </div>
+        <div class="section-card-body">
+          <div class="ranking-list" id="rankingList"></div>
         </div>
       </div>
     </div>
 
-    <div class="metric-card">
-      <div class="metric-icon green">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <!-- TABELA MÉDICOS + RECEPCIONISTAS -->
+    <div class="section-grid-3">
+      <div class="section-card" style="margin-bottom:0">
+        <div class="section-card-header">
+          <div class="section-card-header-left">
+            <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div><div class="section-card-title">Médicos da Clínica</div><div class="section-card-subtitle">5 profissionais ativos</div></div>
+          </div>
+        </div>
+        <div class="section-card-body">
+          <table class="doctors-table">
+            <thead><tr><th>Profissional</th><th>Especialidade</th><th>Consultas</th><th>Faltas</th><th>Status</th></tr></thead>
+            <tbody id="doctorsTableBody"></tbody>
+          </table>
+        </div>
       </div>
-      <div class="metric-body">
-        <div class="metric-label">Pacientes Cadastrados</div>
-        <div class="metric-value" data-target="248">0</div>
-        <div class="metric-sub metric-trend-up">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-          +8 novos este mês
+      <div class="section-card" style="margin-bottom:0">
+        <div class="section-card-header">
+          <div class="section-card-header-left">
+            <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+            <div><div class="section-card-title">Recepcionistas</div><div class="section-card-subtitle">Equipe de recepção</div></div>
+          </div>
+        </div>
+        <div class="section-card-body">
+          <div class="recep-list" id="recepList"></div>
         </div>
       </div>
     </div>
 
-    <div class="metric-card">
-      <div class="metric-icon red">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+  </main>
+</div><!-- /view-dashboard -->
+
+<!-- ══════════════════════════════
+     VIEW: FINANCEIRO
+══════════════════════════════ -->
+<div id="view-financeiro" class="view">
+  <main class="main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <button onclick="navigateTo('dashboard')"><span>Administração</span></button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px"><path d="M9 18l6-6-6-6"/></svg>
+      <span class="current">Financeiro</span>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <p class="page-eyebrow">US26 — Administrador</p>
+        <h1 class="page-title">Módulo Financeiro</h1>
+        <p class="page-desc">Faturamento de consultas e convênios — valor cobrado por consulta com status pago/pendente.</p>
       </div>
-      <div class="metric-body">
-        <div class="metric-label">Cancelamentos no Mês</div>
-        <div class="metric-value" data-target="14">0</div>
-        <div class="metric-sub metric-trend-down">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 9 12 15 6 9"/></svg>
-          Taxa de 7,6% do total
+      <div class="page-header-right">
+        <div class="date-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dataAtualFin">—</span>
+        </div>
+        <div class="page-header-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Dados protegidos — LGPD
         </div>
       </div>
     </div>
 
-    <div class="metric-card">
-      <div class="metric-icon orange">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <!-- Métricas Financeiro -->
+    <div class="metrics-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="metric-card">
+        <div class="metric-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Receita Total — Mês</div>
+          <div class="metric-value green-val" id="metricaTotal">R$ 0</div>
+          <div class="metric-sub metric-trend-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>+14% vs mês anterior</div>
+        </div>
       </div>
-      <div class="metric-body">
-        <div class="metric-label">Faltas de Médicos</div>
-        <div class="metric-value" data-target="6">0</div>
-        <div class="metric-sub metric-trend-down">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 9 12 15 6 9"/></svg>
-          Requer atenção este mês
+      <div class="metric-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Total Recebido</div>
+          <div class="metric-value" id="metricaPago">R$ 0</div>
+          <div class="metric-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg><span id="metricaPagoCount">0</span> consultas pagas</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Total Pendente</div>
+          <div class="metric-value red-val" id="metricaPendente">R$ 0</div>
+          <div class="metric-sub metric-trend-down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 9 12 15 6 9"/></svg><span id="metricaPendenteCount">0</span> consultas em aberto</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Consultas Faturadas</div>
+          <div class="metric-value" id="metricaConsultas">0</div>
+          <div class="metric-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>No mês atual</div>
         </div>
       </div>
     </div>
 
-  </div>
-
-  <!-- CONSULTAS POR DIA + RANKING -->
-  <div class="section-grid-3" style="margin-bottom:20px;">
-
-    <!-- Mini gráfico semanal -->
+    <!-- Tabela de faturamento -->
     <div class="section-card">
       <div class="section-card-header">
         <div class="section-card-header-left">
-          <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-          <div>
-            <div class="section-card-title">Consultas por Dia</div>
-            <div class="section-card-subtitle">Semana atual</div>
-          </div>
+          <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+          <div><div class="section-card-title">Faturamento por Consulta</div><div class="section-card-subtitle">Valor cobrado registrado por consulta — clique para alterar status</div></div>
         </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Buscar por paciente, médico ou convênio…" oninput="filterTable()">
+        </div>
+        <div class="filter-group">
+          <button class="filter-btn active" onclick="setFilter(this,'todos')">Todos</button>
+          <button class="filter-btn" onclick="setFilter(this,'pago')"><span class="filter-dot" style="background:var(--success)"></span>Pago</button>
+          <button class="filter-btn" onclick="setFilter(this,'pendente')"><span class="filter-dot" style="background:var(--warn)"></span>Pendente</button>
+        </div>
+        <div class="record-count" id="recordCount">12 registros</div>
       </div>
       <div class="section-card-body">
-        <div class="week-chart">
-          <div class="week-chart-svg-wrap" id="weekChartWrap"></div>
-          <div class="week-chart-legend">
-            <div class="week-legend-item"><div class="week-legend-dot" style="background:var(--navy-mid)"></div>Hoje</div>
-            <div class="week-legend-item"><div class="week-legend-dot" style="background:var(--cyan)"></div>Outros dias</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Ranking médicos -->
-    <div class="section-card">
-      <div class="section-card-header">
-        <div class="section-card-header-left">
-          <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/><line x1="12" y1="3" x2="12" y2="9"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
-          <div>
-            <div class="section-card-title">Ranking de Atendimentos</div>
-            <div class="section-card-subtitle">Por médico — mês atual</div>
-          </div>
-        </div>
-      </div>
-      <div class="section-card-body">
-        <div class="ranking-list" id="rankingList"></div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- TABELA MÉDICOS + RECEPCIONISTAS -->
-  <div class="section-grid-3">
-
-    <!-- Tabela médicos -->
-    <div class="section-card">
-      <div class="section-card-header">
-        <div class="section-card-header-left">
-          <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-          <div>
-            <div class="section-card-title">Médicos da Clínica</div>
-            <div class="section-card-subtitle">5 profissionais ativos</div>
-          </div>
-        </div>
-      </div>
-      <div class="section-card-body">
-        <table class="doctors-table">
+        <table class="finance-table">
           <thead>
-            <tr>
-              <th>Profissional</th>
-              <th>Especialidade</th>
-              <th>Consultas</th>
-              <th>Faltas</th>
-              <th>Status</th>
-            </tr>
+            <tr><th>Paciente</th><th>Médico</th><th>Data</th><th>Convênio</th><th>Tipo</th><th>Valor</th><th>Status</th><th></th></tr>
           </thead>
-          <tbody id="doctorsTableBody"></tbody>
+          <tbody id="financeTableBody"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Recepcionistas -->
-    <div class="section-card">
-      <div class="section-card-header">
-        <div class="section-card-header-left">
-          <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
-          <div>
-            <div class="section-card-title">Recepcionistas</div>
-            <div class="section-card-subtitle">Equipe de recepção</div>
-          </div>
+  </main>
+</div><!-- /view-financeiro -->
+
+<!-- MODAL FINANCEIRO -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-header-icon" id="modalIcon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div>
+          <div class="modal-title" id="modalTitle">—</div>
+          <div class="modal-subtitle" id="modalSubtitle">—</div>
         </div>
       </div>
-      <div class="section-card-body">
-        <div class="recep-list" id="recepList"></div>
+      <button class="btn-modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center;padding:16px 0 20px;">
+        <div class="modal-field-label" style="margin-bottom:6px;">Valor da Consulta</div>
+        <div class="modal-field-value big" id="modalValor">—</div>
+      </div>
+      <hr class="modal-divider">
+      <div class="modal-grid">
+        <div><div class="modal-field-label">Paciente</div><div class="modal-field-value" id="modalPaciente">—</div></div>
+        <div><div class="modal-field-label">Médico</div><div class="modal-field-value" id="modalMedico">—</div></div>
+        <div><div class="modal-field-label">Data</div><div class="modal-field-value" id="modalData">—</div></div>
+        <div><div class="modal-field-label">Tipo</div><div class="modal-field-value" id="modalTipo">—</div></div>
+        <div><div class="modal-field-label">Convênio</div><div class="modal-field-value" id="modalConvenio">—</div></div>
+        <div><div class="modal-field-label">Nº Consulta</div><div class="modal-field-value" id="modalId">—</div></div>
+      </div>
+      <hr class="modal-divider">
+      <div class="modal-field-label" style="margin-bottom:10px;">Alterar status do pagamento</div>
+      <div class="modal-status-change">
+        <button class="status-change-btn pago-btn" id="btnPago" onclick="selectStatus('pago')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Marcar como Pago
+        </button>
+        <button class="status-change-btn pendente-btn" id="btnPendente" onclick="selectStatus('pendente')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Marcar como Pendente
+        </button>
       </div>
     </div>
-
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveStatus()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Salvar alteração
+      </button>
+    </div>
   </div>
+</div>
 
-</main>
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon success">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div>
+    <div class="toast-title" id="toastTitle">Status atualizado</div>
+    <div class="toast-desc" id="toastDesc">—</div>
+  </div>
+</div>
 
 <script>
   /* ══════════════════════════════════════════
-     GUARD DE AUTENTICAÇÃO
+     AUTH GUARD
   ══════════════════════════════════════════ */
   (function authGuard() {
     try {
       const raw = localStorage.getItem('vitacare_session');
       if (!raw) { window.location.replace('index.html'); return; }
       const session = JSON.parse(raw);
-      if (!session || session.perfil !== 'administrador') {
-        window.location.replace('index.html'); return;
-      }
-      // Sessão expira em 8 horas
+      if (!session || session.perfil !== 'administrador') { window.location.replace('index.html'); return; }
       if (Date.now() - session.loginAt > 8 * 60 * 60 * 1000) {
         localStorage.removeItem('vitacare_session');
         window.location.replace('index.html'); return;
       }
-    } catch(e) {
-      window.location.replace('index.html');
-    }
+    } catch(e) { window.location.replace('index.html'); }
   })();
 
   /* ══════════════════════════════════════════
-     DADOS SIMULADOS
+     ROTEADOR DE VIEWS
+  ══════════════════════════════════════════ */
+  const PAGE_TITLES = {
+    dashboard:  'Dashboard Gerencial',
+    financeiro: 'Módulo Financeiro'
+  };
+
+  function navigateTo(view) {
+    // Atualiza views
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active');
+
+    // Atualiza nav
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach(n => n.classList.remove('active'));
+    const navEl = document.getElementById('nav' + view.charAt(0).toUpperCase() + view.slice(1));
+    if (navEl) navEl.classList.add('active');
+
+    // Atualiza header title
+    document.getElementById('headerPageTitle').textContent = PAGE_TITLES[view] || '';
+
+    // Fecha sidebar se aberta
+    closeSidebar();
+
+    // Init da view se necessário
+    if (view === 'financeiro') initFinanceiro();
+  }
+
+  /* ══════════════════════════════════════════
+     DADOS SIMULADOS — DASHBOARD
   ══════════════════════════════════════════ */
   const MEDICOS = [
     { nome: 'Dr. Carlos Menezes',  iniciais: 'CM', crm: 'CRM-SP 45.821', especialidade: 'Clínica Geral',  consultas: 52, faltas: 0, status: 'ativo'   },
@@ -604,9 +810,9 @@
   ];
 
   const RECEPCIONISTAS = [
-    { nome: 'Juliane Lima',    iniciais: 'JL', turno: 'Manhã',  status: 'ativo'   },
-    { nome: 'Marcos Pereira',  iniciais: 'MP', turno: 'Tarde',  status: 'ativo'   },
-    { nome: 'Sandra Rocha',    iniciais: 'SR', turno: 'Manhã',  status: 'ausente' },
+    { nome: 'Juliane Lima',   iniciais: 'JL', turno: 'Manhã',  status: 'ativo'   },
+    { nome: 'Marcos Pereira', iniciais: 'MP', turno: 'Tarde',  status: 'ativo'   },
+    { nome: 'Sandra Rocha',   iniciais: 'SR', turno: 'Manhã',  status: 'ausente' },
   ];
 
   const SEMANA = [
@@ -620,16 +826,82 @@
   ];
 
   /* ══════════════════════════════════════════
-     SAUDAÇÃO E DATA DINÂMICAS
+     INIT DASHBOARD
   ══════════════════════════════════════════ */
-  const hora = new Date().getHours();
-  const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
-  document.getElementById('saudacaoTitle').textContent = `${saudacao}, Administrador`;
-  document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  (function initDashboard() {
+    // Saudação e data
+    const hora = new Date().getHours();
+    const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    document.getElementById('saudacaoTitle').textContent = `${saudacao}, Administrador`;
+    document.getElementById('dataAtualDash').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
-  /* ══════════════════════════════════════════
-     CONTADOR ANIMADO NOS CARDS
-  ══════════════════════════════════════════ */
+    // Contadores animados
+    document.querySelectorAll('#view-dashboard .metric-value[data-target]').forEach(el => {
+      animateCounter(el, parseInt(el.dataset.target));
+    });
+
+    // Wave chart
+    buildWaveChart();
+
+    // Ranking
+    const maxConsultas = Math.max(...MEDICOS.map(m => m.consultas));
+    const rankingList = document.getElementById('rankingList');
+    const posClasses = ['top1','top2','top3','',''];
+    [...MEDICOS].sort((a,b) => b.consultas - a.consultas).forEach((m, i) => {
+      const pct = Math.round((m.consultas / maxConsultas) * 100);
+      rankingList.innerHTML += `
+        <div class="ranking-item">
+          <div class="ranking-pos ${posClasses[i]}">${i+1}</div>
+          <div class="ranking-avatar">${m.iniciais}</div>
+          <div class="ranking-info">
+            <div class="ranking-name">${m.nome}</div>
+            <div class="ranking-bar-wrap"><div class="ranking-bar-fill" style="width:0%" data-pct="${pct}"></div></div>
+          </div>
+          <div class="ranking-value">${m.consultas}<span>cons.</span></div>
+        </div>`;
+    });
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.ranking-bar-fill').forEach(bar => { bar.style.width = bar.dataset.pct + '%'; });
+    });
+
+    // Tabela médicos
+    const tbody = document.getElementById('doctorsTableBody');
+    MEDICOS.forEach(m => {
+      const statusMap = { ativo: ['ativo','Ativo'], ausente: ['ausente','Ausente'], ferias: ['ferias','Férias'] };
+      const [cls, label] = statusMap[m.status];
+      const faltasClass = m.faltas >= 3 ? 'faltas-warn' : 'faltas-ok';
+      const faltasIcon = m.faltas >= 3
+        ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>` : '';
+      tbody.innerHTML += `
+        <tr>
+          <td><div class="doctor-cell"><div class="doctor-table-avatar">${m.iniciais}</div><div><div class="doctor-table-name">${m.nome}</div><div class="doctor-table-crm">${m.crm}</div></div></div></td>
+          <td><span class="especialidade-tag">${m.especialidade}</span></td>
+          <td><strong>${m.consultas}</strong></td>
+          <td><div class="faltas-cell ${faltasClass}">${faltasIcon}${m.faltas}</div></td>
+          <td><span class="status-pill ${cls}"><span class="status-pill-dot"></span>${label}</span></td>
+        </tr>`;
+    });
+
+    // Recepcionistas
+    const recepList = document.getElementById('recepList');
+    RECEPCIONISTAS.forEach(r => {
+      const statusMap = { ativo: ['ativo','Ativo'], ausente: ['ausente','Ausente'] };
+      const [cls, label] = statusMap[r.status];
+      recepList.innerHTML += `
+        <div class="recep-item">
+          <div class="recep-avatar">${r.iniciais}</div>
+          <div class="recep-info">
+            <div class="recep-name">${r.nome}</div>
+            <div class="recep-turno">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Turno da ${r.turno}
+            </div>
+          </div>
+          <span class="status-pill ${cls}"><span class="status-pill-dot"></span>${label}</span>
+        </div>`;
+    });
+  })();
+
   function animateCounter(el, target, duration = 900) {
     let start = 0; const step = target / (duration / 16);
     const timer = setInterval(() => {
@@ -638,77 +910,46 @@
       if (start >= target) clearInterval(timer);
     }, 16);
   }
-  document.querySelectorAll('.metric-value[data-target]').forEach(el => {
-    animateCounter(el, parseInt(el.dataset.target));
-  });
 
-  /* ══════════════════════════════════════════
-     GRÁFICO SEMANAL — WAVE SVG
-  ══════════════════════════════════════════ */
-  (function buildWaveChart() {
+  function buildWaveChart() {
     const wrap = document.getElementById('weekChartWrap');
     const W = 560, H = 150, PAD_L = 10, PAD_R = 10, PAD_T = 36, PAD_B = 50;
-    const chartW = W - PAD_L - PAD_R;
-    const chartH = H - PAD_T - PAD_B;
+    const chartW = W - PAD_L - PAD_R, chartH = H - PAD_T - PAD_B;
     const maxV = Math.max(...SEMANA.map(s => s.valor), 1);
     const n = SEMANA.length;
     const xs = SEMANA.map((_, i) => PAD_L + (i / (n - 1)) * chartW);
     const ys = SEMANA.map(s => PAD_T + chartH - (s.valor / maxV) * chartH);
-
-    // Catmull-Rom → cubic bezier spline
     function catmullPath(pts) {
       let d = `M ${pts[0][0]},${pts[0][1]}`;
       for (let i = 0; i < pts.length - 1; i++) {
-        const p0 = pts[Math.max(i - 1, 0)];
-        const p1 = pts[i];
-        const p2 = pts[i + 1];
-        const p3 = pts[Math.min(i + 2, pts.length - 1)];
-        const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
-        const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
-        const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
-        const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+        const p0 = pts[Math.max(i-1,0)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(i+2,pts.length-1)];
+        const cp1x = p1[0]+(p2[0]-p0[0])/6, cp1y = p1[1]+(p2[1]-p0[1])/6;
+        const cp2x = p2[0]-(p3[0]-p1[0])/6, cp2y = p2[1]-(p3[1]-p1[1])/6;
         d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${p2[0]},${p2[1]}`;
       }
       return d;
     }
-
     const pts = xs.map((x, i) => [x, ys[i]]);
     const linePath = catmullPath(pts);
-    const areaPath = linePath + ` L ${xs[n-1]},${PAD_T + chartH} L ${xs[0]},${PAD_T + chartH} Z`;
-
-    // Grid lines
-    const gridLines = [0.25, 0.5, 0.75, 1].map(frac => {
-      const y = PAD_T + chartH - frac * chartH;
-      const val = Math.round(frac * maxV);
-      return `<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="#D6E4F0" stroke-width="1" stroke-dasharray="4 3"/>
-              <text x="${PAD_L - 4}" y="${y + 4}" text-anchor="end" font-size="8" fill="#8BA7C2" font-family="DM Sans,sans-serif">${val}</text>`;
+    const areaPath = linePath + ` L ${xs[n-1]},${PAD_T+chartH} L ${xs[0]},${PAD_T+chartH} Z`;
+    const gridLines = [0.25,0.5,0.75,1].map(frac => {
+      const y = PAD_T + chartH - frac * chartH, val = Math.round(frac * maxV);
+      return `<line x1="${PAD_L}" y1="${y}" x2="${W-PAD_R}" y2="${y}" stroke="#D6E4F0" stroke-width="1" stroke-dasharray="4 3"/>
+              <text x="${PAD_L-4}" y="${y+4}" text-anchor="end" font-size="8" fill="#8BA7C2" font-family="DM Sans,sans-serif">${val}</text>`;
     }).join('');
-
-    // Vertical bar markers + dots + labels
     let markers = '';
     SEMANA.forEach((s, i) => {
-      const x = xs[i], y = ys[i];
-      const bottom = PAD_T + chartH;
-      const isToday = s.hoje;
-      const barColor = isToday ? '#0E3460' : '#00B4D8';
-      const dotColor = isToday ? '#0E3460' : '#00B4D8';
-      const labelColor = isToday ? '#0A2540' : '#8BA7C2';
-      const labelWeight = isToday ? '700' : '600';
-      // thin vertical marker line
-      markers += `<line x1="${x}" y1="${y}" x2="${x}" y2="${bottom}" stroke="${barColor}" stroke-width="${isToday ? 2 : 1.5}" stroke-dasharray="${isToday ? 'none' : '3 3'}" opacity="${isToday ? 0.55 : 0.35}"/>`;
-      // dot on curve
-      markers += `<circle cx="${x}" cy="${y}" r="${isToday ? 5 : 3.5}" fill="${dotColor}" stroke="white" stroke-width="2"/>`;
-      // value label above dot
-      if (s.valor > 0) {
-        markers += `<text x="${x}" y="${y - 9}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${dotColor}" font-family="Sora,sans-serif">${s.valor}</text>`;
-      }
-      // day label below
-      markers += `<text x="${x}" y="${bottom + 14}" text-anchor="middle" font-size="9.5" font-weight="${labelWeight}" fill="${labelColor}" font-family="DM Sans,sans-serif" letter-spacing="0.5">${s.dia}</text>`;
-      markers += `<text x="${x}" y="${bottom + 26}" text-anchor="middle" font-size="8.5" font-weight="500" fill="#A8C0D6" font-family="DM Sans,sans-serif">${s.data}</text>`;
+      const x = xs[i], y = ys[i], bottom = PAD_T+chartH, isToday = s.hoje;
+      const barColor = isToday ? '#0E3460' : '#00B4D8', dotColor = isToday ? '#0E3460' : '#00B4D8';
+      const labelColor = isToday ? '#0A2540' : '#8BA7C2', labelWeight = isToday ? '700' : '600';
+      markers += `<line x1="${x}" y1="${y}" x2="${x}" y2="${bottom}" stroke="${barColor}" stroke-width="${isToday?2:1.5}" stroke-dasharray="${isToday?'none':'3 3'}" opacity="${isToday?0.55:0.35}"/>`;
+      markers += `<circle cx="${x}" cy="${y}" r="${isToday?5:3.5}" fill="${dotColor}" stroke="white" stroke-width="2"/>`;
+      if (s.valor > 0) markers += `<text x="${x}" y="${y-9}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${dotColor}" font-family="Sora,sans-serif">${s.valor}</text>`;
+      markers += `<text x="${x}" y="${bottom+14}" text-anchor="middle" font-size="9.5" font-weight="${labelWeight}" fill="${labelColor}" font-family="DM Sans,sans-serif" letter-spacing="0.5">${s.dia}</text>`;
+      markers += `<text x="${x}" y="${bottom+26}" text-anchor="middle" font-size="8.5" font-weight="500" fill="#A8C0D6" font-family="DM Sans,sans-serif">${s.data}</text>`;
     });
-
     wrap.innerHTML = `
-      <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="height:${H}px; margin-top: 4px;">
+      <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="height:${H}px;margin-top:4px;">
         <defs>
           <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#00B4D8" stop-opacity="0.18"/>
@@ -723,93 +964,175 @@
         <path d="${linePath}" fill="none" stroke="#00B4D8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#waveShadow)"/>
         ${markers}
       </svg>`;
-  })();
+  }
 
   /* ══════════════════════════════════════════
-     RANKING MÉDICOS
+     DADOS SIMULADOS — FINANCEIRO
   ══════════════════════════════════════════ */
-  const maxConsultas = Math.max(...MEDICOS.map(m => m.consultas));
-  const rankingList = document.getElementById('rankingList');
-  const posClasses = ['top1','top2','top3','',''];
-  [...MEDICOS].sort((a,b) => b.consultas - a.consultas).forEach((m, i) => {
-    const pct = Math.round((m.consultas / maxConsultas) * 100);
-    rankingList.innerHTML += `
-      <div class="ranking-item">
-        <div class="ranking-pos ${posClasses[i]}">${i+1}</div>
-        <div class="ranking-avatar">${m.iniciais}</div>
-        <div class="ranking-info">
-          <div class="ranking-name">${m.nome}</div>
-          <div class="ranking-bar-wrap"><div class="ranking-bar-fill" style="width:0%" data-pct="${pct}"></div></div>
-        </div>
-        <div class="ranking-value">${m.consultas}<span>cons.</span></div>
-      </div>`;
-  });
-  // Anima barras após render
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.ranking-bar-fill').forEach(bar => {
-      bar.style.width = bar.dataset.pct + '%';
-    });
-  });
+  const CONSULTAS = [
+    { id:'#FAT-001', paciente:'Ana Beatriz Souza',   iniciais:'AB', medico:'Dr. Carlos Menezes',  medInic:'CM', data:'17/05/2026', tipo:'Retorno',     convenio:'Unimed',     valor:180, status:'pago'     },
+    { id:'#FAT-002', paciente:'Roberto Alves Lima',  iniciais:'RL', medico:'Dra. Beatriz Fontes', medInic:'BF', data:'17/05/2026', tipo:'1ª Consulta', convenio:'Bradesco',   valor:250, status:'pendente' },
+    { id:'#FAT-003', paciente:'Mariana Costa',       iniciais:'MC', medico:'Dr. Carlos Menezes',  medInic:'CM', data:'17/05/2026', tipo:'Exame',        convenio:'SulAmérica', valor:120, status:'pago'     },
+    { id:'#FAT-004', paciente:'Fernando Gomes',      iniciais:'FG', medico:'Dr. Carlos Menezes',  medInic:'CM', data:'17/05/2026', tipo:'Retorno',      convenio:'Unimed',     valor:180, status:'pendente' },
+    { id:'#FAT-005', paciente:'Cláudia Mendes',      iniciais:'CM', medico:'Dr. Carlos Menezes',  medInic:'CM', data:'17/05/2026', tipo:'Urgência',     convenio:'Particular', valor:350, status:'pendente' },
+    { id:'#FAT-006', paciente:'Juliana Ferreira',    iniciais:'JF', medico:'Dr. Carlos Menezes',  medInic:'CM', data:'14/05/2026', tipo:'1ª Consulta', convenio:'Hapvida',    valor:200, status:'pago'     },
+    { id:'#FAT-007', paciente:'Sebastião Nunes',     iniciais:'SN', medico:'Dra. Beatriz Fontes', medInic:'BF', data:'12/05/2026', tipo:'Retorno',      convenio:'Unimed',     valor:180, status:'pago'     },
+    { id:'#FAT-008', paciente:'Tatiana Oliveira',    iniciais:'TO', medico:'Dra. Camila Torres',  medInic:'CT', data:'10/05/2026', tipo:'1ª Consulta', convenio:'Particular', valor:300, status:'pago'     },
+    { id:'#FAT-009', paciente:'Ricardo Pinto',       iniciais:'RP', medico:'Dr. Carlos Menezes',  medInic:'CM', data:'08/05/2026', tipo:'Retorno',      convenio:'SulAmérica', valor:160, status:'pago'     },
+    { id:'#FAT-010', paciente:'Luciana Matos',       iniciais:'LM', medico:'Dra. Beatriz Fontes', medInic:'BF', data:'05/05/2026', tipo:'1ª Consulta', convenio:'Bradesco',   valor:250, status:'pendente' },
+    { id:'#FAT-011', paciente:'Eduardo Santos',      iniciais:'ES', medico:'Dr. Carlos Menezes',  medInic:'CM', data:'03/05/2026', tipo:'Retorno',      convenio:'Unimed',     valor:180, status:'pago'     },
+    { id:'#FAT-012', paciente:'Patrícia Lima',       iniciais:'PL', medico:'Dra. Camila Torres',  medInic:'CT', data:'01/05/2026', tipo:'Exame',        convenio:'Hapvida',    valor:140, status:'pago'     },
+  ];
 
-  /* ══════════════════════════════════════════
-     TABELA MÉDICOS
-  ══════════════════════════════════════════ */
-  const tbody = document.getElementById('doctorsTableBody');
-  MEDICOS.forEach(m => {
-    const statusMap = { ativo: ['ativo','Ativo'], ausente: ['ausente','Ausente'], ferias: ['ferias','Férias'] };
-    const [cls, label] = statusMap[m.status];
-    const faltasClass = m.faltas >= 3 ? 'faltas-warn' : 'faltas-ok';
-    const faltasIcon = m.faltas >= 3
-      ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
-      : '';
-    tbody.innerHTML += `
-      <tr>
-        <td>
-          <div class="doctor-cell">
-            <div class="doctor-table-avatar">${m.iniciais}</div>
-            <div>
-              <div class="doctor-table-name">${m.nome}</div>
-              <div class="doctor-table-crm">${m.crm}</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="especialidade-tag">${m.especialidade}</span></td>
-        <td><strong>${m.consultas}</strong></td>
-        <td><div class="faltas-cell ${faltasClass}">${faltasIcon}${m.faltas}</div></td>
-        <td><span class="status-pill ${cls}"><span class="status-pill-dot"></span>${label}</span></td>
+  let financeiroInitialized = false;
+
+  function initFinanceiro() {
+    if (financeiroInitialized) return;
+    financeiroInitialized = true;
+
+    // Data
+    const now = new Date();
+    const dias = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+    const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    document.getElementById('dataAtualFin').textContent =
+      dias[now.getDay()] + ', ' + now.getDate() + ' de ' + meses[now.getMonth()] + '. de ' + now.getFullYear();
+
+    renderTable();
+  }
+
+  function fmtValor(v) { return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+  function renderTable() {
+    const tbody = document.getElementById('financeTableBody');
+    tbody.innerHTML = '';
+    CONSULTAS.forEach((c, i) => {
+      const statusLabel = c.status === 'pago' ? 'Pago' : 'Pendente';
+      tbody.innerHTML += `
+      <tr data-idx="${i}" data-status="${c.status}" data-search="${c.paciente.toLowerCase()} ${c.medico.toLowerCase()} ${c.convenio.toLowerCase()}" onclick="openModal(${i})">
+        <td><div class="patient-cell"><div class="patient-avatar">${c.iniciais}</div><div><div class="patient-name">${c.paciente}</div><div class="patient-id">${c.id}</div></div></div></td>
+        <td><div class="doctor-cell-sm"><div class="doctor-avatar-sm">${c.medInic}</div><span style="font-size:0.83rem;color:var(--text-sub);font-weight:500">${c.medico}</span></div></td>
+        <td style="color:var(--text-sub);font-size:0.83rem">${c.data}</td>
+        <td><span class="convenio-tag">${c.convenio}</span></td>
+        <td style="color:var(--text-sub);font-size:0.83rem">${c.tipo}</td>
+        <td><span class="valor-cell ${c.status}">${fmtValor(c.valor)}</span></td>
+        <td><span class="status-pill ${c.status}"><span class="status-pill-dot"></span>${statusLabel}</span></td>
+        <td><button class="action-btn" onclick="event.stopPropagation();openModal(${i})" title="Ver detalhes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></td>
       </tr>`;
-  });
+    });
+    updateMetricas();
+    filterTable();
+  }
 
-  /* ══════════════════════════════════════════
-     LISTA RECEPCIONISTAS
-  ══════════════════════════════════════════ */
-  const recepList = document.getElementById('recepList');
-  RECEPCIONISTAS.forEach(r => {
-    const statusMap = { ativo: ['ativo','Ativo'], ausente: ['ausente','Ausente'] };
-    const [cls, label] = statusMap[r.status];
-    recepList.innerHTML += `
-      <div class="recep-item">
-        <div class="recep-avatar">${r.iniciais}</div>
-        <div class="recep-info">
-          <div class="recep-name">${r.nome}</div>
-          <div class="recep-turno">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Turno da ${r.turno}
-          </div>
-        </div>
-        <span class="status-pill ${cls}"><span class="status-pill-dot"></span>${label}</span>
-      </div>`;
+  function updateMetricas() {
+    const total     = CONSULTAS.reduce((a,c) => a+c.valor, 0);
+    const pagoVal   = CONSULTAS.filter(c=>c.status==='pago').reduce((a,c)=>a+c.valor,0);
+    const pendVal   = CONSULTAS.filter(c=>c.status==='pendente').reduce((a,c)=>a+c.valor,0);
+    const pagoCount = CONSULTAS.filter(c=>c.status==='pago').length;
+    const pendCount = CONSULTAS.filter(c=>c.status==='pendente').length;
+    animCount('metricaTotal', total, true);
+    animCount('metricaPago', pagoVal, true);
+    animCount('metricaPendente', pendVal, true);
+    animCount('metricaConsultas', CONSULTAS.length, false);
+    document.getElementById('metricaPagoCount').textContent = pagoCount;
+    document.getElementById('metricaPendenteCount').textContent = pendCount;
+  }
+
+  function animCount(id, target, isMoney) {
+    const el = document.getElementById(id);
+    let start = 0;
+    const duration = 800;
+    const step = (timestamp) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const val = Math.floor(progress * target);
+      el.textContent = isMoney ? fmtValor(val) : val;
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = isMoney ? fmtValor(target) : target;
+    };
+    requestAnimationFrame(step);
+  }
+
+  let activeFilter = 'todos';
+  function setFilter(btn, filter) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = filter;
+    filterTable();
+  }
+  function filterTable() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#financeTableBody tr');
+    let visible = 0;
+    rows.forEach(row => {
+      const matchFilter = activeFilter === 'todos' || row.dataset.status === activeFilter;
+      const matchSearch = !q || row.dataset.search.includes(q);
+      const show = matchFilter && matchSearch;
+      row.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    document.getElementById('recordCount').textContent = visible + ' registro' + (visible !== 1 ? 's' : '');
+  }
+
+  let currentIdx = null, pendingStatus = null;
+  function openModal(idx) {
+    const c = CONSULTAS[idx]; currentIdx = idx; pendingStatus = c.status;
+    document.getElementById('modalTitle').textContent    = c.paciente;
+    document.getElementById('modalSubtitle').textContent = c.id + ' · ' + c.data;
+    document.getElementById('modalValor').textContent    = fmtValor(c.valor);
+    document.getElementById('modalValor').className      = 'modal-field-value big ' + c.status;
+    document.getElementById('modalPaciente').textContent = c.paciente;
+    document.getElementById('modalMedico').textContent   = c.medico;
+    document.getElementById('modalData').textContent     = c.data;
+    document.getElementById('modalTipo').textContent     = c.tipo;
+    document.getElementById('modalConvenio').textContent = c.convenio;
+    document.getElementById('modalId').textContent       = c.id;
+    document.getElementById('modalIcon').className       = 'modal-header-icon ' + c.status;
+    highlightStatusBtn(c.status);
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function highlightStatusBtn(status) {
+    document.getElementById('btnPago').classList.toggle('selected', status==='pago');
+    document.getElementById('btnPendente').classList.toggle('selected', status==='pendente');
+    document.getElementById('modalValor').className = 'modal-field-value big ' + status;
+    document.getElementById('modalIcon').className  = 'modal-header-icon ' + status;
+  }
+  function selectStatus(status) { pendingStatus = status; highlightStatusBtn(status); }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    currentIdx = null; pendingStatus = null;
+  }
+  function saveStatus() {
+    if (currentIdx === null || pendingStatus === null) return;
+    const c = CONSULTAS[currentIdx];
+    c.status = pendingStatus;
+    closeModal(); renderTable();
+    const label = pendingStatus === 'pago' ? 'Pago' : 'Pendente';
+    document.getElementById('toastTitle').textContent = 'Status atualizado — ' + label;
+    document.getElementById('toastDesc').textContent  = c.paciente + ' · ' + fmtValor(c.valor);
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
   });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   /* ══════════════════════════════════════════
      SIDEBAR & LOGOUT
   ══════════════════════════════════════════ */
   const sidebar        = document.getElementById('sidebar');
   const sidebarOverlay = document.getElementById('sidebarOverlay');
-  document.getElementById('btnHamburger').addEventListener('click', () => { sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; });
+  document.getElementById('btnHamburger').addEventListener('click', () => {
+    sidebar.classList.add('open'); sidebarOverlay.classList.add('active'); document.body.style.overflow = 'hidden';
+  });
   document.getElementById('btnSidebarClose').addEventListener('click', closeSidebar);
   sidebarOverlay.addEventListener('click', closeSidebar);
-  function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); document.body.style.overflow = ''; }
+  function closeSidebar() {
+    sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); document.body.style.overflow = '';
+  }
   document.getElementById('btnLogout').addEventListener('click', () => {
     localStorage.removeItem('vitacare_session');
     window.location.href = 'index.html';
