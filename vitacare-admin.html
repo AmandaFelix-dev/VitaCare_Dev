@@ -325,6 +325,106 @@
     .btn-primary:hover { background: var(--navy-mid); }
     .btn-primary svg { width: 14px; height: 14px; }
 
+    /* ══════════════════════════
+       CONVÊNIOS — layout vertical
+    ══════════════════════════ */
+    /* Form card */
+    .form-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(10,37,64,0.05); animation: fadeSlideUp 0.4s ease both; margin-bottom: 20px; }
+    .form-card-header { padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; gap: 12px; }
+    .form-card-icon { width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, var(--cyan-glow), rgba(0,180,216,0.08)); border: 1.5px solid rgba(0,180,216,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .form-card-icon svg { width: 16px; height: 16px; color: var(--cyan); }
+    .form-card-title { font-family: 'Sora', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+    .form-card-subtitle { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+    /* Form body — 4-column fluid grid (like Notion / Linear form panels) */
+    .form-card-body { padding: 22px 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 18px; align-items: start; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group.span1 { grid-column: span 1; }
+    .form-group.span2 { grid-column: span 2; }
+    .form-group.span3 { grid-column: span 3; }
+    .form-group.span4 { grid-column: span 4; }
+    .form-group.span-full { grid-column: 1 / -1; }
+    .form-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); }
+    .form-label span.req { color: var(--error); margin-left: 2px; }
+    .form-input, .form-select, .form-textarea { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text-main); background: var(--white); border: 1.5px solid var(--border); border-radius: 9px; padding: 9px 12px; outline: none; transition: border-color var(--transition), box-shadow var(--transition); width: 100%; box-sizing: border-box; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0,180,216,0.1); }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+    .form-input.error, .form-select.error { border-color: var(--error); box-shadow: 0 0 0 3px rgba(230,57,70,0.08); }
+    .form-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+    .form-hint.error-msg { color: var(--error); display: none; }
+    .form-hint.error-msg.visible { display: block; }
+    .form-textarea { resize: vertical; min-height: 76px; }
+    .form-select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238BA7C2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px; }
+    /* Toggle */
+    .toggle-wrap { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 9px; height: 40px; }
+    .toggle-info .toggle-label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); line-height: 1.2; }
+    .toggle-switch { position: relative; width: 42px; height: 24px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 24px; cursor: pointer; transition: background var(--transition); }
+    .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform var(--transition); box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+    .toggle-switch input:checked + .toggle-slider { background: var(--cyan); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+    /* Color picker */
+    .color-picker-row { display: flex; align-items: center; gap: 8px; }
+    .color-picker-row input[type=color] { width: 36px; height: 36px; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; padding: 2px; background: var(--white); flex-shrink: 0; }
+    .color-preview { display: flex; gap: 5px; flex-wrap: wrap; }
+    .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s; }
+    .color-dot:hover, .color-dot.selected { transform: scale(1.18); border-color: var(--navy); }
+    /* Form actions row */
+    .form-actions-row { grid-column: 1 / -1; display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding-top: 4px; border-top: 1px solid var(--border); }
+    /* Tabela convênios */
+    .conv-table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(10,37,64,0.05); animation: fadeSlideUp 0.4s ease 0.12s both; }
+    .conv-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .conv-table th { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); padding: 12px 18px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface); white-space: nowrap; overflow: hidden; }
+    .conv-table td { padding: 13px 18px; border-bottom: 1px solid var(--border); font-size: 0.84rem; vertical-align: middle; overflow: hidden; }
+    /* Fixed column widths so nothing gets cut */
+    .conv-table th:nth-child(1), .conv-table td:nth-child(1) { width: 24%; }
+    .conv-table th:nth-child(2), .conv-table td:nth-child(2) { width: 14%; }
+    .conv-table th:nth-child(3), .conv-table td:nth-child(3) { width: 26%; }
+    .conv-table th:nth-child(4), .conv-table td:nth-child(4) { width: 10%; white-space: nowrap; }
+    .conv-table th:nth-child(5), .conv-table td:nth-child(5) { width: 11%; }
+    .conv-table th:nth-child(6), .conv-table td:nth-child(6) { width: 15%; }
+    .conv-table tbody tr:last-child td { border-bottom: none; }
+    .conv-table tbody tr { transition: background var(--transition); }
+    .conv-table tbody tr:hover { background: var(--surface); }
+    .conv-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.73rem; font-weight: 700; border: 1.5px solid; white-space: nowrap; max-width: 100%; }
+    .conv-color-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .conv-table-actions { display: flex; gap: 5px; }
+    .conv-empty { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+    .conv-empty svg { width: 36px; height: 36px; margin: 0 auto 10px; display: block; color: var(--border); }
+    .conv-empty p { font-size: 0.83rem; line-height: 1.6; }
+    .coverage-tags { display: flex; flex-wrap: wrap; gap: 3px; }
+    .coverage-tag { font-size: 0.67rem; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-sub); white-space: nowrap; }
+
+    /* ── Seletor de especialidades (padrão agendamento) ── */
+    .cobertura-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .cobertura-card { border: 2px solid var(--border); border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: all var(--transition); background: var(--white); display: flex; align-items: center; gap: 10px; user-select: none; }
+    .cobertura-card:hover { border-color: var(--cyan-light); background: rgba(0,180,216,0.03); }
+    .cobertura-card.selected { border-color: var(--cyan); background: rgba(0,180,216,0.06); }
+    .cobertura-check { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); background: var(--surface-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all var(--transition); }
+    .cobertura-card.selected .cobertura-check { background: var(--cyan); border-color: var(--cyan); }
+    .cobertura-check svg { width: 11px; height: 11px; color: white; opacity: 0; transition: opacity 0.15s ease; }
+    .cobertura-card.selected .cobertura-check svg { opacity: 1; }
+    .cobertura-label { font-size: 0.82rem; font-weight: 600; color: var(--text-main); line-height: 1.2; }
+    .cobertura-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+    @media (max-width: 900px) { .cobertura-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 580px) { .cobertura-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ══════════════════════════
+       RESPONSIVO CONVÊNIOS
+    ══════════════════════════ */
+    @media (max-width: 900px) {
+      .form-card-body { grid-template-columns: repeat(2, 1fr); }
+      .form-group.span3 { grid-column: span 2; }
+      .form-group.span1 { grid-column: span 1; }
+      .conv-table { table-layout: auto; }
+      .conv-table th:nth-child(3), .conv-table td:nth-child(3) { display: none; }
+    }
+    @media (max-width: 580px) {
+      .form-card-body { grid-template-columns: 1fr; }
+      .form-group.span2, .form-group.span3, .form-group.span4 { grid-column: span 1; }
+      .conv-table th:nth-child(2), .conv-table td:nth-child(2) { display: none; }
+    }
+
     /* Toast */
     .toast { position: fixed; bottom: 28px; right: 28px; display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: var(--navy); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.22); z-index: 500; opacity: 0; transform: translateY(14px); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; min-width: 260px; }
     .toast.show { opacity: 1; transform: translateY(0); }
@@ -383,6 +483,10 @@
     <div class="nav-item" id="navFinanceiro" onclick="navigateTo('financeiro')">
       <div class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
       <span class="nav-item-label">Financeiro</span>
+    </div>
+    <div class="nav-item" id="navConvenios" onclick="navigateTo('convenios')">
+      <div class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+      <span class="nav-item-label">Convênios</span>
     </div>
     <div class="nav-item">
       <div class="nav-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
@@ -687,6 +791,224 @@
 
   </main>
 </div><!-- /view-financeiro -->
+<!-- ══════════════════════════════
+     VIEW: CONVÊNIOS
+══════════════════════════════ -->
+<div id="view-convenios" class="view">
+  <main class="main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <button onclick="navigateTo('dashboard')"><span>Administração</span></button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px"><path d="M9 18l6-6-6-6"/></svg>
+      <span class="current">Convênios</span>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <p class="page-eyebrow">US20 — Administrador</p>
+        <h1 class="page-title">Cadastro de Convênios</h1>
+        <p class="page-desc">Gerencie os convênios aceitos pela clínica — disponíveis na seleção durante o agendamento.</p>
+      </div>
+      <div class="page-header-right">
+        <div class="date-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span id="dataAtualConv">—</span>
+        </div>
+        <div class="page-header-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Dados protegidos — LGPD
+        </div>
+      </div>
+    </div>
+
+    <!-- MÉTRICAS CONVÊNIOS -->
+    <div class="metrics-grid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="metric-card">
+        <div class="metric-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Total de Convênios</div>
+          <div class="metric-value" id="convMetricaTotal">0</div>
+          <div class="metric-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><line x1="5" y1="12" x2="19" y2="12"/></svg>Cadastrados no sistema</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Ativos</div>
+          <div class="metric-value" id="convMetricaAtivos">0</div>
+          <div class="metric-sub metric-trend-up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><polyline points="18 15 12 9 6 15"/></svg>Disponíveis no agendamento</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Inativos</div>
+          <div class="metric-value" id="convMetricaInativos">0</div>
+          <div class="metric-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><line x1="5" y1="12" x2="19" y2="12"/></svg>Fora do agendamento</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="metric-body">
+          <div class="metric-label">Reemb. Médio</div>
+          <div class="metric-value" id="convMetricaReemb" style="white-space:nowrap">R$ 0</div>
+          <div class="metric-sub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><line x1="5" y1="12" x2="19" y2="12"/></svg>Por consulta cadastrada</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULÁRIO -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <div class="form-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+        <div>
+          <div class="form-card-title" id="formCardTitle">Novo Convênio</div>
+          <div class="form-card-subtitle" id="formCardSubtitle">Preencha os dados e salve para disponibilizar no agendamento</div>
+        </div>
+      </div>
+      <div class="form-card-body">
+
+        <!-- Linha 1: Nome (span2) + ANS (span2) -->
+        <div class="form-group span2">
+          <label class="form-label">Nome do Convênio <span class="req">*</span></label>
+          <input type="text" class="form-input" id="convNome" placeholder="Ex.: Unimed Nacional" maxlength="60">
+          <span class="form-hint error-msg" id="errNome">Campo obrigatório</span>
+        </div>
+        <div class="form-group span2">
+          <label class="form-label">Registro / Código ANS <span class="req">*</span></label>
+          <input type="text" class="form-input" id="convAns" placeholder="Ex.: 123456" maxlength="20">
+          <span class="form-hint error-msg" id="errAns">Campo obrigatório</span>
+        </div>
+
+        <!-- Linha 2: Tipo (span2) + Reembolso (span1) + Prazo (span1) -->
+        <div class="form-group span2">
+          <label class="form-label">Tipo</label>
+          <select class="form-select" id="convTipo">
+            <option value="Plano de Saúde">Plano de Saúde</option>
+            <option value="Odontológico">Odontológico</option>
+            <option value="Empresarial">Empresarial</option>
+            <option value="Cooperativa">Cooperativa</option>
+            <option value="Particular">Particular</option>
+          </select>
+        </div>
+        <div class="form-group span1">
+          <label class="form-label">Reembolso (R$)</label>
+          <input type="number" class="form-input" id="convReembolso" placeholder="0,00" min="0" step="0.01">
+        </div>
+        <div class="form-group span1">
+          <label class="form-label">Prazo repasse (dias)</label>
+          <input type="number" class="form-input" id="convPrazo" placeholder="30" min="1" max="365">
+        </div>
+
+        <!-- Linha 3: Cobertura (span3) + E-mail (span1) -->
+        <div class="form-group span3">
+          <label class="form-label">Cobertura — Especialidades</label>
+          <div class="cobertura-grid" id="coberturaGrid">
+            <div class="cobertura-card" data-espec="Clínica Geral" onclick="toggleCobertura(this)">
+              <div class="cobertura-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="cobertura-label">Clínica Geral</div><div class="cobertura-hint">Atendimento geral</div></div>
+            </div>
+            <div class="cobertura-card" data-espec="Cardiologia" onclick="toggleCobertura(this)">
+              <div class="cobertura-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="cobertura-label">Cardiologia</div><div class="cobertura-hint">Cardiologista disponível</div></div>
+            </div>
+            <div class="cobertura-card" data-espec="Ortopedia" onclick="toggleCobertura(this)">
+              <div class="cobertura-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="cobertura-label">Ortopedia</div><div class="cobertura-hint">Ortopedista disponível</div></div>
+            </div>
+            <div class="cobertura-card" data-espec="Dermatologia" onclick="toggleCobertura(this)">
+              <div class="cobertura-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <div><div class="cobertura-label">Dermatologia</div><div class="cobertura-hint">Dermatologista disponível</div></div>
+            </div>
+          </div>
+          <input type="hidden" id="convCobertura">
+          <span class="form-hint" id="coberturaHint">Nenhuma especialidade selecionada</span>
+        </div>
+        <div class="form-group span1">
+          <label class="form-label">E-mail de contato</label>
+          <input type="email" class="form-input" id="convEmail" placeholder="contato@convenio.com.br">
+        </div>
+
+        <!-- Linha 4: Observações (span4) -->
+        <div class="form-group span4">
+          <label class="form-label">Observações</label>
+          <textarea class="form-textarea" id="convObs" placeholder="Informações adicionais, restrições, procedimentos cobertos…"></textarea>
+        </div>
+
+        <!-- Linha 5: Cor (span2) + Status toggle (span2) -->
+        <div class="form-group span2">
+          <label class="form-label">Cor de identificação</label>
+          <div class="color-picker-row">
+            <input type="color" id="convColor" value="#00B4D8">
+            <div class="color-preview" id="colorPreview"></div>
+          </div>
+        </div>
+        <div class="form-group span2">
+          <label class="form-label">Disponível no agendamento</label>
+          <div class="toggle-wrap">
+            <div class="toggle-info">
+              <div class="toggle-label" id="toggleLabel">Ativo — pacientes podem selecionar</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="convAtivo" checked onchange="updateToggleLabel()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Ações -->
+        <div class="form-actions-row">
+          <button class="btn-secondary" id="btnConvCancelar" onclick="resetConvForm()">Cancelar</button>
+          <button class="btn-primary" id="btnConvSalvar" onclick="salvarConvenio()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Salvar Convênio
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TABELA -->
+    <div class="conv-table-wrap">
+      <div class="section-card-header" style="padding:16px 24px;">
+        <div class="section-card-header-left">
+          <div class="section-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+          <div>
+            <div class="section-card-title">Convênios Cadastrados</div>
+            <div class="section-card-subtitle" id="convTableSubtitle">0 registros</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="search-wrap" style="min-width:200px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="convSearch" placeholder="Buscar por nome, tipo ou cobertura…" oninput="renderConvTable()">
+          </div>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="conv-table">
+          <thead>
+            <tr>
+              <th>Convênio</th>
+              <th>Tipo</th>
+              <th>Cobertura</th>
+              <th>Reembolso</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="convTableBody">
+            <tr><td colspan="6"><div class="conv-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Nenhum convênio cadastrado ainda.<br>Preencha o formulário acima para adicionar.</p></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div><!-- /view-convenios -->
+
 
 <!-- MODAL FINANCEIRO -->
 <div class="modal-overlay" id="modalOverlay">
@@ -775,7 +1097,8 @@
   ══════════════════════════════════════════ */
   const PAGE_TITLES = {
     dashboard:  'Dashboard Gerencial',
-    financeiro: 'Módulo Financeiro'
+    financeiro: 'Módulo Financeiro',
+    convenios:  'Cadastro de Convênios'
   };
 
   function navigateTo(view) {
@@ -796,6 +1119,7 @@
 
     // Init da view se necessário
     if (view === 'financeiro') initFinanceiro();
+    if (view === 'convenios')  initConvenios();
   }
 
   /* ══════════════════════════════════════════
@@ -1109,11 +1433,7 @@
     c.status = pendingStatus;
     closeModal(); renderTable();
     const label = pendingStatus === 'pago' ? 'Pago' : 'Pendente';
-    document.getElementById('toastTitle').textContent = 'Status atualizado — ' + label;
-    document.getElementById('toastDesc').textContent  = c.paciente + ' · ' + fmtValor(c.valor);
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3500);
+    showToast('Status atualizado — ' + label, c.paciente + ' · ' + fmtValor(c.valor));
   }
   document.getElementById('modalOverlay').addEventListener('click', e => {
     if (e.target === document.getElementById('modalOverlay')) closeModal();
@@ -1133,6 +1453,264 @@
   function closeSidebar() {
     sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); document.body.style.overflow = '';
   }
+
+  /* ══════════════════════════════════════════
+     CONVÊNIOS
+  ══════════════════════════════════════════ */
+  const PRESET_COLORS = ['#00B4D8','#0A2540','#2DB86F','#E63946','#F4A261','#7C3AED','#F59E0B','#10B981'];
+  let convenios = [
+    { id:1, nome:'Unimed',      ans:'335690', tipo:'Plano de Saúde', reembolso:180, prazo:30, cobertura:'Clínica Geral, Cardiologia, Pediatria', email:'credenciamento@unimed.coop.br', obs:'Reembolso em até 30 dias úteis após envio da guia.', cor:'#00B4D8', ativo:true  },
+    { id:2, nome:'Bradesco',    ans:'005711', tipo:'Plano de Saúde', reembolso:210, prazo:45, cobertura:'Clínica Geral, Ortopedia, Dermatologia',  email:'pj@bradescosaude.com.br',    obs:'Autorização prévia para procedimentos acima de R$ 500.', cor:'#E63946', ativo:true  },
+    { id:3, nome:'SulAmérica',  ans:'005932', tipo:'Plano de Saúde', reembolso:195, prazo:30, cobertura:'Todas as especialidades',                  email:'rede@sulamerica.com.br',      obs:'',                                                        cor:'#F4A261', ativo:true  },
+    { id:4, nome:'Hapvida',     ans:'368253', tipo:'Cooperativa',    reembolso:140, prazo:60, cobertura:'Clínica Geral, Pediatria',                  email:'rede@hapvida.com.br',         obs:'Exclusivo planos corporativos.',                          cor:'#2DB86F', ativo:true  },
+    { id:5, nome:'Particular',  ans:'—',      tipo:'Particular',     reembolso:0,   prazo:0,  cobertura:'Todas as especialidades',                  email:'',                           obs:'Pagamento direto pelo paciente.',                         cor:'#7C3AED', ativo:true  },
+    { id:6, nome:'Amil',        ans:'326305', tipo:'Plano de Saúde', reembolso:165, prazo:45, cobertura:'Clínica Geral',                             email:'rede@amil.com.br',            obs:'Temporariamente suspenso.',                               cor:'#0A2540', ativo:false },
+  ];
+  let convEditId = null;
+  let convNextId = 7;
+  let conveniosInitialized = false;
+
+  function initConvenios() {
+    if (conveniosInitialized) return;
+    conveniosInitialized = true;
+    // Data
+    const now = new Date();
+    const dias   = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+    const meses  = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    document.getElementById('dataAtualConv').textContent =
+      dias[now.getDay()] + ', ' + now.getDate() + ' de ' + meses[now.getMonth()] + '. de ' + now.getFullYear();
+    // Color presets
+    const preview = document.getElementById('colorPreview');
+    PRESET_COLORS.forEach(c => {
+      const dot = document.createElement('div');
+      dot.className = 'color-dot';
+      dot.style.background = c;
+      dot.title = c;
+      dot.onclick = () => {
+        document.getElementById('convColor').value = c;
+        preview.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+        dot.classList.add('selected');
+      };
+      preview.appendChild(dot);
+    });
+    preview.querySelector('.color-dot').classList.add('selected');
+    renderConvTable();
+    updateConvMetricas();
+  }
+
+  function updateConvMetricas() {
+    const total   = convenios.length;
+    const ativos  = convenios.filter(c => c.ativo).length;
+    const inativos = total - ativos;
+    const reembArr = convenios.filter(c => c.reembolso > 0);
+    const reembMedio = reembArr.length ? Math.round(reembArr.reduce((a,c) => a + c.reembolso, 0) / reembArr.length) : 0;
+    document.getElementById('convMetricaTotal').textContent   = total;
+    document.getElementById('convMetricaAtivos').textContent  = ativos;
+    document.getElementById('convMetricaInativos').textContent = inativos;
+    document.getElementById('convMetricaReemb').textContent   = 'R$ ' + reembMedio.toLocaleString('pt-BR');
+  }
+
+  function renderConvTable() {
+    const q = (document.getElementById('convSearch')?.value || '').toLowerCase();
+    const tbody = document.getElementById('convTableBody');
+    const filtered = convenios.filter(c =>
+      !q || c.nome.toLowerCase().includes(q) || c.tipo.toLowerCase().includes(q) || c.cobertura.toLowerCase().includes(q)
+    );
+    document.getElementById('convTableSubtitle').textContent = filtered.length + ' registro' + (filtered.length !== 1 ? 's' : '');
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="6"><div class="conv-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p>Nenhum resultado encontrado.</p></div></td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtered.map(c => {
+      const statusCls = c.ativo ? 'ativo' : 'ausente';
+      const statusLbl = c.ativo ? 'Ativo' : 'Inativo';
+      const cobTags = c.cobertura ? c.cobertura.split(',').slice(0,2).map(s =>
+        `<span class="coverage-tag">${s.trim()}</span>`).join('') + (c.cobertura.split(',').length > 2 ? `<span class="coverage-tag">+${c.cobertura.split(',').length-2}</span>` : '') : '—';
+      const reembStr = c.reembolso > 0 ? 'R$ ' + c.reembolso.toLocaleString('pt-BR') : '—';
+      return `
+      <tr>
+        <td><div style="display:flex;align-items:center;gap:8px;">
+          <span class="conv-badge" style="border-color:${c.cor}22;background:${c.cor}14;color:${c.cor};">
+            <span class="conv-color-dot" style="background:${c.cor}"></span>
+            ${c.nome}
+          </span>
+          ${c.ans !== '—' ? `<span style="font-size:0.7rem;color:var(--text-muted)">ANS ${c.ans}</span>` : ''}
+        </div></td>
+        <td style="color:var(--text-sub);font-size:0.8rem;">${c.tipo}</td>
+        <td><div class="coverage-tags">${cobTags}</div></td>
+        <td style="font-family:'Sora',sans-serif;font-weight:700;font-size:0.83rem;color:var(--text-main);white-space:nowrap">${reembStr}</td>
+        <td><span class="status-pill ${statusCls}"><span class="status-pill-dot"></span>${statusLbl}</span></td>
+        <td><div class="conv-table-actions">
+          <button class="action-btn" onclick="editConvenio(${c.id})" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="action-btn" onclick="toggleConvenio(${c.id})" title="${c.ativo ? 'Desativar' : 'Ativar'}">
+            ${c.ativo
+              ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>'
+              : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'}
+          </button>
+          <button class="action-btn" onclick="deleteConvenio(${c.id})" title="Excluir" style="color:var(--error)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+        </div></td>
+      </tr>`;
+    }).join('');
+    updateConvMetricas();
+  }
+
+  function salvarConvenio() {
+    const nome      = document.getElementById('convNome').value.trim();
+    const ans       = document.getElementById('convAns').value.trim();
+    const tipo      = document.getElementById('convTipo').value;
+    const reembolso = parseFloat(document.getElementById('convReembolso').value) || 0;
+    const prazo     = parseInt(document.getElementById('convPrazo').value) || 0;
+    const cobertura = document.getElementById('convCobertura').value.trim();
+    const email     = document.getElementById('convEmail').value.trim();
+    const obs       = document.getElementById('convObs').value.trim();
+    const cor       = document.getElementById('convColor').value;
+    const ativo     = document.getElementById('convAtivo').checked;
+
+    let valid = true;
+    if (!nome) { document.getElementById('convNome').classList.add('error'); document.getElementById('errNome').classList.add('visible'); valid = false; }
+    else        { document.getElementById('convNome').classList.remove('error'); document.getElementById('errNome').classList.remove('visible'); }
+    if (!ans)  { document.getElementById('convAns').classList.add('error');  document.getElementById('errAns').classList.add('visible');  valid = false; }
+    else        { document.getElementById('convAns').classList.remove('error');  document.getElementById('errAns').classList.remove('visible');  }
+    if (!valid) return;
+
+    if (convEditId !== null) {
+      const idx = convenios.findIndex(c => c.id === convEditId);
+      if (idx > -1) convenios[idx] = { id: convEditId, nome, ans, tipo, reembolso, prazo, cobertura, email, obs, cor, ativo };
+      showToast('Convênio atualizado', nome + ' foi atualizado com sucesso.');
+    } else {
+      convenios.push({ id: convNextId++, nome, ans, tipo, reembolso, prazo, cobertura, email, obs, cor, ativo });
+      showToast('Convênio cadastrado', nome + ' foi adicionado ao sistema.');
+    }
+    resetConvForm();
+    renderConvTable();
+  }
+
+  /* ── Seletor de cobertura/especialidades ── */
+  function toggleCobertura(card) {
+    const isAll = card.dataset.espec === 'Todas as especialidades';
+    if (isAll) { toggleCoberturaAll(card); return; }
+    // Se "Todas" estava selecionado, desmarcar
+    const allCard = document.querySelector('.cobertura-card[data-espec="Todas as especialidades"]');
+    if (allCard?.classList.contains('selected')) {
+      allCard.classList.remove('selected');
+    }
+    card.classList.toggle('selected');
+    syncCoberturaHidden();
+  }
+
+  function toggleCoberturaAll(card) {
+    const isSelected = card.classList.contains('selected');
+    // Desmarcar todas as individuais
+    document.querySelectorAll('.cobertura-card:not([data-espec="Todas as especialidades"])').forEach(c => c.classList.remove('selected'));
+    card.classList.toggle('selected', !isSelected);
+    syncCoberturaHidden();
+  }
+
+  function syncCoberturaHidden() {
+    const allCard = document.querySelector('.cobertura-card[data-espec="Todas as especialidades"]');
+    let val = '';
+    if (allCard?.classList.contains('selected')) {
+      val = 'Todas as especialidades';
+    } else {
+      const selecionadas = [...document.querySelectorAll('.cobertura-card.selected')].map(c => c.dataset.espec);
+      val = selecionadas.join(', ');
+    }
+    document.getElementById('convCobertura').value = val;
+    const hint = document.getElementById('coberturaHint');
+    if (hint) hint.textContent = val ? `${val.split(',').length === 1 && val === 'Todas as especialidades' ? 'Todas as especialidades selecionadas' : val.split(',').length + ' especialidade(s) selecionada(s)'}` : 'Nenhuma especialidade selecionada';
+  }
+
+  function setCoberturaFromString(coberturaStr) {
+    // Desmarca todos primeiro
+    document.querySelectorAll('.cobertura-card').forEach(c => c.classList.remove('selected'));
+    if (!coberturaStr) { syncCoberturaHidden(); return; }
+    const partes = coberturaStr.split(',').map(s => s.trim());
+    if (partes.length === 1 && partes[0].toLowerCase().includes('todas')) {
+      const allCard = document.querySelector('.cobertura-card[data-espec="Todas as especialidades"]');
+      if (allCard) allCard.classList.add('selected');
+    } else {
+      partes.forEach(esp => {
+        const card = document.querySelector(`.cobertura-card[data-espec="${esp}"]`);
+        if (card) card.classList.add('selected');
+      });
+    }
+    syncCoberturaHidden();
+  }
+
+  function editConvenio(id) {
+    const c = convenios.find(x => x.id === id);
+    if (!c) return;
+    convEditId = id;
+    document.getElementById('convNome').value      = c.nome;
+    document.getElementById('convAns').value       = c.ans !== '—' ? c.ans : '';
+    document.getElementById('convTipo').value      = c.tipo;
+    document.getElementById('convReembolso').value = c.reembolso || '';
+    document.getElementById('convPrazo').value     = c.prazo || '';
+    setCoberturaFromString(c.cobertura);
+    document.getElementById('convEmail').value     = c.email;
+    document.getElementById('convObs').value       = c.obs;
+    document.getElementById('convColor').value     = c.cor;
+    document.getElementById('convAtivo').checked   = c.ativo;
+    updateToggleLabel();
+    document.getElementById('formCardTitle').textContent    = 'Editar Convênio';
+    document.getElementById('formCardSubtitle').textContent = 'Atualize os dados e salve as alterações';
+    document.getElementById('btnConvSalvar').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Salvar Alterações';
+    // Scroll to form
+    document.querySelector('#view-convenios .form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function toggleConvenio(id) {
+    const c = convenios.find(x => x.id === id);
+    if (!c) return;
+    c.ativo = !c.ativo;
+    renderConvTable();
+    showToast(c.ativo ? 'Convênio ativado' : 'Convênio desativado', c.nome + (c.ativo ? ' está disponível no agendamento.' : ' foi removido do agendamento.'));
+  }
+
+  function deleteConvenio(id) {
+    const c = convenios.find(x => x.id === id);
+    if (!c) return;
+    if (!confirm('Excluir o convênio "' + c.nome + '"? Esta ação não pode ser desfeita.')) return;
+    convenios = convenios.filter(x => x.id !== id);
+    if (convEditId === id) resetConvForm();
+    renderConvTable();
+    showToast('Convênio excluído', c.nome + ' foi removido do sistema.');
+  }
+
+  function updateToggleLabel() {
+    const ativo = document.getElementById('convAtivo').checked;
+    const lbl = document.getElementById('toggleLabel');
+    if (lbl) lbl.textContent = ativo ? 'Ativo — pacientes podem selecionar' : 'Inativo — oculto no agendamento';
+  }
+
+  function resetConvForm() {
+    convEditId = null;
+    ['convNome','convAns','convReembolso','convPrazo','convCobertura','convEmail','convObs'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.value = ''; el.classList.remove('error'); }
+    });
+    // Limpar seletor visual de especialidades
+    document.querySelectorAll('.cobertura-card').forEach(c => c.classList.remove('selected'));
+    const hint = document.getElementById('coberturaHint');
+    if (hint) hint.textContent = 'Nenhuma especialidade selecionada';
+    ['errNome','errAns'].forEach(id => document.getElementById(id)?.classList.remove('visible'));
+    document.getElementById('convTipo').value    = 'Plano de Saúde';
+    document.getElementById('convColor').value   = '#00B4D8';
+    document.getElementById('convAtivo').checked = true;
+    updateToggleLabel();
+    document.getElementById('formCardTitle').textContent    = 'Novo Convênio';
+    document.getElementById('formCardSubtitle').textContent = 'Preencha os dados e salve para disponibilizar no agendamento';
+    document.getElementById('btnConvSalvar').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Salvar Convênio';
+  }
+
+  function showToast(title, desc) {
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastDesc').textContent  = desc;
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
   document.getElementById('btnLogout').addEventListener('click', () => {
     localStorage.removeItem('vitacare_session');
     window.location.href = 'index.html';
