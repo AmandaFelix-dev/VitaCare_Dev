@@ -106,6 +106,28 @@ Além disso, o sistema deve possuir **segurança validada por perfil**, garantin
 
 ---
 
+# 📌 User Stories da Sprint
+
+| ID | História | Status |
+|---|---|---:|
+| US01 | Login seguro por perfil | ✅ |
+| US02 | Cadastro de pacientes | ✅ |
+| US03 | Agendamento de consulta | ✅ |
+| US04 | Agenda diária do médico | ✅ |
+| US05 | Prontuário eletrônico básico | ✅ |
+| US06 | Validação mock de CPF | ✅ |
+| US07 | Notificação simulada | ✅ |
+| US08 | Dashboard clínico | ✅ |
+| US10 | Check-in de pacientes | ✅ |
+| US11 | Histórico de consultas | ✅ |
+| US12 | Integração mock de convênios | ✅ |
+| US20 | Cadastro de convênios | ✅ |
+| US21 | Busca rápida de paciente | ✅ |
+| US26 | Módulo financeiro | ✅ |
+| US09 | Cancelamento/reagendamento | 🚧 Em progresso |
+
+---
+
 # 🚀 MVP — Funcionalidades Implementadas
 
 ## 🔐 Autenticação e Controle de Acesso
@@ -460,28 +482,6 @@ Uma funcionalidade é considerada concluída quando:
 - Cancelamento e reagendamento completo;
 - Dashboard analítico avançado;
 - Controle financeiro expandido.
-
----
-
-# 📌 User Stories da Sprint
-
-| ID | História | Status |
-|---|---|---:|
-| US01 | Login seguro por perfil | ✅ |
-| US02 | Cadastro de pacientes | ✅ |
-| US03 | Agendamento de consulta | ✅ |
-| US04 | Agenda diária do médico | ✅ |
-| US05 | Prontuário eletrônico básico | ✅ |
-| US06 | Validação mock de CPF | ✅ |
-| US07 | Notificação simulada | ✅ |
-| US08 | Dashboard clínico | ✅ |
-| US10 | Check-in de pacientes | ✅ |
-| US11 | Histórico de consultas | ✅ |
-| US12 | Integração mock de convênios | ✅ |
-| US20 | Cadastro de convênios | ✅ |
-| US21 | Busca rápida de paciente | ✅ |
-| US26 | Módulo financeiro | ✅ |
-| US09 | Cancelamento/reagendamento | 🚧 Em progresso |
 
 ---
 
